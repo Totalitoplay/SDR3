@@ -58,7 +58,7 @@
 
 
 
-    <div style="width: 1200px; margin: 0 auto; border: 1px solid #ccc; padding: 20px;" class="container">
+    <div  style="width: 1200px; margin: 0 auto; border: 1px solid #ccc; padding: 20px;"class="container">
         <!-- Contenedor del formulario -->
         <div class="form-container">
             <h2>Modificar Información</h2>
@@ -178,11 +178,33 @@
                     </div>
                     <div class="form-group">
                         <label for="cluster">CLUSTER:</label>
-                        <input type="text" id="cluster" name="cluster">
+                          <select id="cluster" name="cluster" onchange="llenarNumero()">
+				<option value="">Selecciona una opción</option>
+    				<option value="ALDAMA">ALDAMA</option>
+    				<option value="BUENOS AIRES">BUENOS AIRES</option>
+				<option value="BUENOS AIRES 2">BUENOS AIRES 2</option>
+    				<option value="CARLOS AMAYA">CARLOS AMAYA</option>
+    				<option value="EL VERGEL">EL VERGEL</option>
+    				<option value="GOMEZ MORIN">GOMEZ MORIN</option>
+    				<option value="LOMAS DE MORELOS">LOMAS DE MORELOS</option>
+    				<option value="LOS CIPRESES">LOS CIPRESES</option>
+    				<option value="MAYORCA">MAYORCA</option>
+    				<option value="NOGALES">NOGALES</option>
+    				<option value="OASIS">OASIS</option>
+    				<option value="SANTO DOMINGO">SANTO DOMINGO</option>
+    				<option value="THOMPSON">THOMPSON</option>
+				<option value="THOMPSON 2">THOMPSON 2</option>
+    				<option value="TIERRA NUEVA">TIERRA NUEVA</option>
+				<option value="TIERRA NUEVA 2">TIERRA NUEVA 2</option>
+			</select>
                     </div>
                     <div class="form-group">
+                 
                         <label for="olt">OLT:</label>
-                        <input type="text" id="olt" name="olt">
+                         <input type="text" id="olt" placeholder="Se llenará automáticamente" name="olt">
+			
+
+
                     </div>
                     <div class="form-group">
                         <label for="clientes">CLIENTES AFECTADOS:</label>
@@ -306,7 +328,49 @@
         </div>
     </div>
 
+
+
+
     <script>
+        // Usando var para declarar el objeto numeros
+        var numeros = {
+            "ALDAMA": "ALDAMA_JUA",
+            "BUENOS AIRES": "BUENOS_AIRES_JUA",
+		"BUENOS AIRES 2": "BUENOS_AIRES_2_JUA",
+            "CARLOS AMAYA": "CARLOS_AMAYA_JUA",
+            "EL VERGEL": "VERGEL_JUA",
+            "GOMEZ MORIN": "GOMEZ_MORIN_JUA",
+            "LOMAS DE MORELOS": "LOMAS_DE_MORELOS_JUA",
+            "LOS CIPRESES": "CIPRESES_JUA",
+            "MAYORCA": "MAYORCA_JUA",
+            "NOGALES": "NOGALES_JUA",
+            "OASIS": "OASIS_JUA",
+            "SANTO DOMINGO": "SANTO_DOMINGO_JUA",
+            "THOMPSON": "THOMPSON_JUA",
+		"THOMPSON 2": "THOMPSON_2_JUA",
+            "TIERRA NUEVA": "HACIENDA_DE_LAS_TORRES_JUA",
+          	"TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA"
+        };
+
+        function llenarNumero() {
+            // Obtener el valor seleccionado del desplegable
+            var seleccion = document.getElementById("cluster").value;
+
+            // Verificar si la opción seleccionada tiene un número asociado
+            if (numeros.hasOwnProperty(seleccion)) {
+                document.getElementById("olt").value = numeros[seleccion];
+		updatePreview();
+
+        	
+            } else {
+                document.getElementById("olt").value = ""; // Limpiar si no hay selección
+		updatePreview();
+
+            }
+
+        }
+
+
         // Selecciona los elementos de entrada
         const fechaInput = document.getElementById('fecha');
         const fechaTextoInput = document.getElementById('fecha-texto');
@@ -320,6 +384,7 @@
 	document.getElementById('fecha_asg_prov').value = fechaSeleccionada;
 	document.getElementById('hr_llegada').value = fechaSeleccionada;
 	document.getElementById('hr_1er_medicion').value = fechaSeleccionada;
+	updatePreview();
         });
 
 
@@ -330,10 +395,9 @@
 
 	
         function updatePreview() {
-	
 
 
-
+		
             // Obtener el valor del FOLIO del primer bloque
             var folio_ = document.getElementById('folio_').value;
 
