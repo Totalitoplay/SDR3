@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCRIPT 1</title>
+    <!-- CSS de Select2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+            gap: 20px; /* Espacio entre columnas */
+            max-width: 1200px;
+            margin: auto;
+		
+        }
+        .form-container {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+           max-height: 900px; /* Ajusta la altura máxima según sea necesario */
+            overflow-y: auto;  /* Permite el desplazamiento vertical */
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+ 		overflow-y: auto;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-container .block {
+            margin-bottom: 20px; /* Espacio entre bloques */
+        }
+        .form-container .block:last-of-type {
+            margin-bottom: 0; /* El último bloque no necesita margen inferior */
+        }
+        .text-preview {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+            white-space: pre-wrap; /* Mantiene los espacios en blanco */
+            font-size: 16px;
+        }
+        .select2-container {
+            width: 100% !important;
+        }
+
+    </style>
+
+</head>
+<body>    
+
+
+
+    <div class="container">
+        <!-- Contenedor del formulario -->
+        <div class="form-container">
+            <h2>Modificar Información</h2>
+
+        <label for="fecha">Selecciona una fecha:</label>
+        <input type="date" id="fecha" name="fecha">
+        
+        <input type="text" id="fecha-texto" name="fecha-texto" readonly>
+
+            <form id="modificar-form">
+                <!-- Primer Bloque -->
+                <div class="block">
+                    <h3>ETA</h3>
+                    <div class="form-group">
+                        <label for="folio">FOLIO:</label>
+                        <input type="text" id="folio_" name="folio_">
+                    </div>
+                    <div class="form-group">
+                        <label for="eta">ETA:</label>
+                        <input type="text" id="eta" name="eta">
+                    </div>
+                    <div class="form-group">
+                        <label for="proveedor">PROVEEDOR:</label>
+                        <input type="text" id="proveedor" name="proveedor">
+                    </div>
+                </div>
+
+                <!-- Segundo Bloque -->
+                <div class="block">
+                    <h3>SCRIPT SITIO</h3>
+                    <div class="form-group">
+                        <label for="sd">SD:</label>
+                        <input type="text" id="sd" name="sd">
+                    </div>
+                    <div class="form-group">
+                        <label for="punto">Sitio/punto de medición:</label>
+                        <input type="text" id="punto" name="punto">
+                    </div>
+                    <div class="form-group">
+                        <label for="coordenadas">Coordenadas:</label>
+                        <input type="text" id="coordenadas" name="coordenadas">
+                    </div>
+                    <div class="form-group">
+                        <label for="proveedor2">Proveedor:</label>
+                        <input type="text" id="proveedor2" name="proveedor2">
+                    </div>
+                    <div class="form-group">
+                        <label for="distrito">Distrito:</label>
+                        <input type="text" id="distrito" name="distrito">
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                       
+ 			<select id="nombre" name="nombre">         			
+				<option value="JOEL YUREN GARCIA SAMANIEGO">JOEL YUREN GARCIA SAMANIEGO</option>
+            			<option value="AARON ISAAC GUTIERREZ CALVILLO">AARON ISAAC GUTIERREZ CALVILLO</option>
+            			<option value="YGNACIO MIRANDA MORENO">YGNACIO MIRANDA MORENO</option>
+            			<option value="ROBERTO GONZALEZ NUÑEZ">ROBERTO GONZALEZ NUÑEZ</option>
+				<option value="GERARDO VIDAL RAMIREZ">GERARDO VIDAL RAMIREZ</option>
+				<option value="CESAR GRACIA GONZALEZ">CESAR GRACIA GONZALEZ</option>
+				<option value="EDGAR SANCHEZ RAMOS">EDGAR SANCHEZ RAMOS</option>
+				<option value="VICTOR DAVID NAVA CAUDILLO">VICTOR DAVID NAVA CAUDILLO</option>
+				<option value="JUAN DE DIOS GUTIERREZ DIAS">JUAN DE DIOS GUTIERREZ DIAS</option>
+				<option value="MIGUEL ANGEL GUTIERREZ FLORES">MIGUEL ANGEL GUTIERREZ FLORES</option>
+				<option value="ADRIAN ENRIQUE GANDARA SANCHEZ">ADRIAN ENRIQUE GANDARA SANCHEZ</option>
+				<option value="JAVIER ARELLANES DIAZ">JAVIER ARELLANES DIAZ</option>
+				<option value="JESÚS GUADALUPE CONTRERAS GRANADOS">JESÚS GUADALUPE CONTRERAS GRANADOS</option>
+				<option value="JOSHUA ISRAEL MORAZ MACIAS">JOSHUA ISRAEL MORAZ MACIAS</option>
+				<option value="SERGIO MELCHI LINDO">SERGIO MELCHI LINDO</option>
+    </select>
+
+    <!-- JavaScript de Select2 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+
+    <script>
+        // Inicializa Select2
+       
+    </script>
+                    </div>
+                </div>
+
+                <!-- Tercer Bloque -->
+                <div class="block">
+                    <h3>SCRIPT FALLO</h3>
+                    <div class="form-group">
+                        <label for="folio3_">Folio:</label>
+                        <input type="text" id="folio3_" name="folio3_">
+                    </div>
+                    <div class="form-group">
+                        <label for="causa">Causa del daño:</label>
+                        <input type="text" id="causa" name="causa">
+                    </div>
+                    <div class="form-group">
+                        <label for="accion">Acción correctiva:</label>
+                        <input type="text" id="accion" name="accion">
+                    </div>
+                    <div class="form-group">
+                        <label for="calibre">Calibre de fo:</label>
+                        <input type="text" id="calibre" name="calibre">
+                    </div>
+                    <div class="form-group">
+                        <label for="coordenadas3">Coordenadas:</label>
+                        <input type="text" id="coordenadas3" name="coordenadas3">
+                    </div>
+                    <div class="form-group">
+                        <label for="etr">ETR:</label>
+                        <input type="text" id="etr" name="etr">
+                    </div>
+                </div>
+
+                <!-- Cuarto Bloque -->
+                <div class="block">
+                    <h3>SCRIPT FINAL</h3>
+                    <div class="form-group">
+                        <label for="folio4">FOLIO:</label>
+                        <input type="text" id="folio4" name="folio4">
+                    </div>
+                    <div class="form-group">
+                        <label for="ciudad">CIUDAD:</label>
+                        <input type="text" id="ciudad" name="ciudad">
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">ESTADO:</label>
+                        <input type="text" id="estado" name="estado">
+                    </div>
+                    <div class="form-group">
+                        <label for="cluster">CLUSTER:</label>
+                          <select id="cluster" name="cluster" onchange="llenarNumero()">
+				<option value="">Selecciona una opción</option>
+    				<option value="ALDAMA">ALDAMA</option>
+    				<option value="BUENOS AIRES">BUENOS AIRES</option>
+				<option value="BUENOS AIRES 2">BUENOS AIRES 2</option>
+    				<option value="CARLOS AMAYA">CARLOS AMAYA</option>
+    				<option value="EL VERGEL">EL VERGEL</option>
+    				<option value="GOMEZ MORIN">GOMEZ MORIN</option>
+    				<option value="LOMAS DE MORELOS">LOMAS DE MORELOS</option>
+    				<option value="LOS CIPRESES">LOS CIPRESES</option>
+    				<option value="MAYORCA">MAYORCA</option>
+    				<option value="NOGALES">NOGALES</option>
+    				<option value="OASIS">OASIS</option>
+    				<option value="SANTO DOMINGO">SANTO DOMINGO</option>
+    				<option value="THOMPSON">THOMPSON</option>
+				<option value="THOMPSON 2">THOMPSON 2</option>
+    				<option value="TIERRA NUEVA">TIERRA NUEVA</option>
+				<option value="TIERRA NUEVA 2">TIERRA NUEVA 2</option>
+			</select>
+                    </div>
+                    <div class="form-group">
+                        <label for="olt">OLT:</label>
+                         <input type="text" id="olt" placeholder="Se llenará automáticamente" name="olt">
+                    </div>
+                    <div class="form-group">
+                        <label for="clientes">CLIENTES AFECTADOS:</label>
+                        <input type="text" id="clientes" name="clientes">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_asg_desp">FECHA_Y_HR_DE_ASG_DESP:</label>
+                        <input type="text" id="fecha_asg_desp" name="fecha_asg_desp">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_asg_prov">FECHA_Y_HR_DE_ASG_PROV:</label>
+                        <input type="text" id="fecha_asg_prov" name="fecha_asg_prov">
+                    </div>
+                    <div class="form-group">
+                        <label for="hr_llegada">HR_DE_LLEGADA_A_LA_ZONA:</label>
+                        <input type="text" id="hr_llegada" name="hr_llegada">
+                    </div>
+                    <div class="form-group">
+                        <label for="hr_1er_medicion">HR_DE_LA_1er_MEDICIÓN:</label>
+                        <input type="text" id="hr_1er_medicion" name="hr_1er_medicion">
+                    </div>
+                    <div class="form-group">
+                        <label for="ubicacion_1er_2do">UBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS:</label>
+                        <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do">
+                    </div>
+                    <div class="form-group">
+                        <label for="ubicacion_dano">UBICACIÓN_DEL_DAÑO:</label>
+                        <input type="text" id="ubicacion_dano" name="ubicacion_dano">
+                    </div>
+                    <div class="form-group">
+                        <label for="coordenadas_dano">COORDENADAS DE DAÑO:</label>
+                        <input type="text" id="coordenadas_dano" name="coordenadas_dano">
+                    </div>
+                    <div class="form-group">
+                        <label for="causa_dano">CAUSA DE DAÑO:</label>
+                        <input type="text" id="causa_dano" name="causa_dano">
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion_actividades">DESCRIP_DE_ACTIVIDADES:</label>
+                        <input type="text" id="descripcion_actividades" name="descripcion_actividades">
+                    </div>
+                    <div class="form-group">
+                        <label for="potencia_inicial">POTENCIA_INICIAL:</label>
+                        <input type="text" id="potencia_inicial" name="potencia_inicial">
+                    </div>
+                    <div class="form-group">
+                        <label for="potencia_final">POTENCIA_FINAL:</label>
+                        <input type="text" id="potencia_final" name="potencia_final">
+                    </div>
+                    <div class="form-group">
+                        <label for="trabajos_realizados">TRABAJOS_REALIZADOS(CONCEPTOS):</label>
+                        <input type="text" id="trabajos_realizados" name="trabajos_realizados">
+                    </div>
+                    <div class="form-group">
+                        <label for="coordenadas_cab">COORDENADAS_DEL_CAB-024:</label>
+                        <input type="text" id="coordenadas_cab" name="coordenadas_cab">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_hr_final">FECHA_HR_FINAL_DE_REPARACIÓN:</label>
+                        <input type="text" id="fecha_hr_final" name="fecha_hr_final">
+                    </div>
+                    <div class="form-group">
+                        <label for="atiende_nom_tec">ATIENDE_NOM_TEC:</label>
+                        <input type="text" id="atiende_nom_tec" name="atiende_nom_tec">
+                    </div>
+                    <div class="form-group">
+                        <label for="proveedor4">PROVEEDOR:</label>
+                        <input type="text" id="proveedor4" name="proveedor4">
+                    </div>
+                    <div class="form-group">
+                        <label for="supervisor">SUPERVISOR:</label>
+        		<select id="supervisor" name="supervisor">
+           			<option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
+            			<option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
+        		</select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo_mantenimiento">TIPO DE MANTENIMIENTO:</label>
+                        <input type="text" id="tipo_mantenimiento" name="tipo_mantenimiento">
+                    </div>
+                    <div class="form-group">
+                        <label for="material_utilizado">MATERIAL UTILIZADO:</label>
+                        <input type="text" id="material_utilizado" name="material_utilizado">
+                    </div>
+                    <div class="form-group">
+                        <label for="atendio_desp">ATENDIO_DESP:</label>
+ 			<select class="form-control" id="atendio_desp" name="atendio_des">
+          			<option value="Karla Patricia Ortega Garcia">Karla Patricia Ortega Garcia</option>
+           			<option value="Alejandro Martinez Serrano">Alejandro Martinez Serrano</option>
+			        <option value="Aline Esmeralda Gonzalez Acevedo">Aline Esmeralda Gonzalez Acevedo</option>
+      			      	<option value="Alma Delia Aguilar Olvera">Alma Delia Aguilar Olvera</option>
+      			     	<option value="Carolina Reyes Lopez">Carolina Reyes Lopez</option>
+    			        <option value="Dulce Karina Lopez Leon">Dulce Karina Lopez Leon</option>
+       				<option value="Fany Elizabeth Cabrera Peralta">Fany Elizabeth Cabrera Peralta</option>
+       				<option value="Ivonne Hernandez Gutierrez">Ivonne Hernandez Gutierrez</option>
+         		   	<option value="Lizbeth Mendoza Cruz">Lizbeth Mendoza Cruz</option>
+        			<option value="Lucia Patricia Ortiz Solis">Lucia Patricia Ortiz Solis</option>
+        			<option value="Luis Eduardo Hernandez Castañeda">Luis Eduardo Hernandez Castañeda</option>
+        		    	<option value="Miguel Paredes Vazquez">Miguel Paredes Vazquez</option>
+        			<option value="Nelly Jazmin Cruz Lopez">Nelly Jazmin Cruz Lopez</option>
+        			<option value="Nestor Julian Nuñez Garcia">Nestor Julian Nuñez Garcia</option>
+        			<option value="Roberto Carlos Rebollar Rodriguez">Roberto Carlos Rebollar Rodriguez</option>
+        			<option value="Sleny Josselin Bautista Hernandez">Sleny Josselin Bautista Hernandez</option>
+         			<option value="Uriel Calderon Arias">Uriel Calderon Arias</option>
+        			<option value="Yadira Angelica Balbuena Antonio">Yadira Angelica Balbuena Antonio</option>
+            			
+        		</select>
+                    </div>
+                    <div class="form-group">
+                        <label for="justificacion_sla">JUSTIFICACIÓN_DE_SLA:</label>
+                        <input type="text" id="justificacion_sla" name="justificacion_sla">
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Área de vista previa -->
+        <div class="text-preview" id="resultado">
+            <!-- La vista previa se actualizará automáticamente -->
+        </div>
+    </div>
+
+    <script>
+
+// LLENADO AUTOMATICO Y FUNCION DE SELECT CON BUSQUEDA CON SCRIPT2
+
+	//NOMBRE DE TECNICO
+ 	$(document).ready(function() {
+            $('#nombre').select2({
+                placeholder: 'Selecciona una opción',
+                allowClear: true,
+          });
+ 	$('#nombre').on('change', function() {
+                // Obtener el texto de la opción seleccionada
+                var nombre = $(this).val();
+
+                // Actualizar el contenido de la vista previa
+                updatePreview();
+            });
+
+            // Llamar al evento change al cargar la página para mostrar el texto por defecto
+            $('#nombre').trigger('change');
+        });
+
+
+ // AUTO LLENADO DE OLT SEGUN CLUSTER
+
+        var numeros = {
+            "ALDAMA": "ALDAMA_JUA",
+            "BUENOS AIRES": "BUENOS_AIRES_JUA",
+	    "BUENOS AIRES 2": "BUENOS_AIRES_2_JUA",
+            "CARLOS AMAYA": "CARLOS_AMAYA_JUA",
+            "EL VERGEL": "VERGEL_JUA",
+            "GOMEZ MORIN": "GOMEZ_MORIN_JUA",
+            "LOMAS DE MORELOS": "LOMAS_DE_MORELOS_JUA",
+            "LOS CIPRESES": "CIPRESES_JUA",
+            "MAYORCA": "MAYORCA_JUA",
+            "NOGALES": "NOGALES_JUA",
+            "OASIS": "OASIS_JUA",
+            "SANTO DOMINGO": "SANTO_DOMINGO_JUA",
+            "THOMPSON": "THOMPSON_JUA",
+		"THOMPSON 2": "THOMPSON_2_JUA",
+            "TIERRA NUEVA": "HACIENDA_DE_LAS_TORRES_JUA",
+          	"TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA"
+        };
+
+        function llenarNumero() {
+            // Obtener el valor seleccionado del desplegable
+            var seleccion = document.getElementById("cluster").value;
+
+            // Verificar si la opción seleccionada tiene un número asociado
+            if (numeros.hasOwnProperty(seleccion)) {
+                document.getElementById("olt").value = numeros[seleccion];
+		updatePreview();
+
+        	
+            } else {
+                document.getElementById("olt").value = ""; // Limpiar si no hay selección
+		updatePreview();
+
+            }
+
+        }
+
+
+        // Selecciona los elementos de entrada
+        const fechaInput = document.getElementById('fecha');
+        const fechaTextoInput = document.getElementById('fecha-texto');
+
+        // Añade un evento para actualizar el valor del campo de texto
+        fechaInput.addEventListener('input', function() {
+            const fechaSeleccionada = this.value;
+            fechaTextoInput.value = fechaSeleccionada || 'No se ha seleccionado ninguna fecha.';
+	document.getElementById('fecha_hr_final').value = fechaSeleccionada; 
+	document.getElementById('fecha_asg_desp').value = fechaSeleccionada;
+	document.getElementById('fecha_asg_prov').value = fechaSeleccionada;
+	document.getElementById('hr_llegada').value = fechaSeleccionada;
+	document.getElementById('hr_1er_medicion').value = fechaSeleccionada;
+        });
+
+
+	document.getElementById('proveedor').value = "OREX";
+	document.getElementById('distrito').value = "JUAREZ";
+	document.getElementById('tipo_mantenimiento').value = "CORRECTIVO";
+	document.getElementById('estado').value = "CHIHUAHUA";
+
+	
+        function updatePreview() {
+	
+
+
+
+            // Obtener el valor del FOLIO del primer bloque
+            var folio_ = document.getElementById('folio_').value;
+
+            // Sincronizar el valor de los otros campos FOLIO
+            document.getElementById('folio3_').value = folio_;
+            document.getElementById('folio4').value = folio_;
+            document.getElementById('sd').value = folio_; // Suponiendo que SD debe ser igual al folio
+
+
+      	// Obtener el valor del PROVEEDOR del primer bloque
+            var proveedor= document.getElementById('proveedor').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('proveedor2').value = proveedor;
+            document.getElementById('proveedor4').value = proveedor;
+
+
+	// Obtener el valor del DISTRITO del SEGUNDO bloque
+            var distrito=document.getElementById('distrito').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('ciudad').value = distrito;
+
+	// Obtener el valor del NOMBRE del SEGUNDO bloque
+            var nombre=document.getElementById('nombre').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('atiende_nom_tec').value = nombre;
+
+
+	// Obtener el valor de CAUSA DE DAÑO del TERCER bloque
+            var causa=document.getElementById('causa').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('causa_dano').value = causa;
+
+	// Obtener el valor de CORDENADAS DAÑO del TERCER bloque
+            var coordenadas3=document.getElementById('coordenadas3').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('coordenadas_dano').value = coordenadas3;
+
+	// Obtener el valor de ACCION CORRECTIVA del TERCER bloque
+            var accion=document.getElementById('accion').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('descripcion_actividades').value = accion;
+
+
+
+
+            // Obtener los valores de los campos del primer bloque
+            var eta = document.getElementById('eta').value;
+            var proveedor = document.getElementById('proveedor').value;
+
+            // Obtener los valores de los campos del segundo bloque
+            var punto = document.getElementById('punto').value;
+            var coordenadas = document.getElementById('coordenadas').value;
+            var proveedor2 = document.getElementById('proveedor2').value;
+            var distrito = document.getElementById('distrito').value;
+	    var nombre = document.getElementById('nombre').value;
+
+            // Obtener los valores de los campos del tercer bloque
+            var causa = document.getElementById('causa').value;
+            var accion = document.getElementById('accion').value;
+            var calibre = document.getElementById('calibre').value;
+            var coordenadas3 = document.getElementById('coordenadas3').value;
+            var etr = document.getElementById('etr').value;
+
+            // Obtener los valores de los campos del cuarto bloque
+            var ciudad = document.getElementById('ciudad').value;
+            var estado = document.getElementById('estado').value;
+            var cluster = document.getElementById('cluster').value;
+            var olt = document.getElementById('olt').value;
+            var clientes = document.getElementById('clientes').value;
+            var fecha_asg_desp = document.getElementById('fecha_asg_desp').value;
+            var fecha_asg_prov = document.getElementById('fecha_asg_prov').value;
+            var hr_llegada = document.getElementById('hr_llegada').value;
+            var hr_1er_medicion = document.getElementById('hr_1er_medicion').value;
+            var ubicacion_1er_2do = document.getElementById('ubicacion_1er_2do').value;
+            var ubicacion_dano = document.getElementById('ubicacion_dano').value;
+            var coordenadas_dano = document.getElementById('coordenadas_dano').value;
+            var causa_dano = document.getElementById('causa_dano').value;
+            var descripcion_actividades = document.getElementById('descripcion_actividades').value;
+            var potencia_inicial = document.getElementById('potencia_inicial').value;
+            var potencia_final = document.getElementById('potencia_final').value;
+            var trabajos_realizados = document.getElementById('trabajos_realizados').value;
+            var coordenadas_cab = document.getElementById('coordenadas_cab').value;
+            var fecha_hr_final = document.getElementById('fecha_hr_final').value;
+            var atiende_nom_tec = document.getElementById('atiende_nom_tec').value;
+            var proveedor4 = document.getElementById('proveedor4').value;
+            var supervisor = document.getElementById('supervisor').value;
+            var tipo_mantenimiento = document.getElementById('tipo_mantenimiento').value;
+            var material_utilizado = document.getElementById('material_utilizado').value;
+            var atendio_desp = document.getElementById('atendio_desp').value;
+            var justificacion_sla = document.getElementById('justificacion_sla').value;
+
+            // Actualizar el contenido del div de vista previa
+            var resultado = document.getElementById('resultado');
+            resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n\n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n\n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nETR: *${etr}*\n\n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFECHA_Y_HR_DE_ASG_DESP: *${fecha_asg_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${fecha_asg_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICIÓN: *${hr_1er_medicion}*\nUBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS: *${ubicacion_1er_2do}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DE DAÑO: *${coordenadas_dano}*\nCAUSA DE DAÑO: *${causa_dano}*\nDESCRIP_DE_ACTIVIDADES: *${descripcion_actividades}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nCOORDENADAS_DEL_CAB-024: *${coordenadas_cab}*\nFECHA_HR_FINAL_DE_REPARACIÓN: *${fecha_hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR: *${supervisor}*\nTIPO DE MANTENIMIENTO: *${tipo_mantenimiento}*\nMATERIAL UTILIZADO: *${material_utilizado}*\nATENDIO_DESP: *${atendio_desp}*\nJUSTIFICACIÓN_DE_SLA: *${justificacion_sla}*`;
+        }
+
+        // Agregar eventos para actualizar la vista previa
+        document.getElementById('folio_').addEventListener('input', updatePreview);
+        document.getElementById('eta').addEventListener('input', updatePreview);
+        document.getElementById('proveedor').addEventListener('input', updatePreview);
+        document.getElementById('punto').addEventListener('input', updatePreview);
+        document.getElementById('coordenadas').addEventListener('input', updatePreview);
+        document.getElementById('proveedor2').addEventListener('input', updatePreview);
+        document.getElementById('distrito').addEventListener('input', updatePreview);
+        document.getElementById('nombre').addEventListener('input', updatePreview);
+        document.getElementById('causa').addEventListener('input', updatePreview);
+        document.getElementById('accion').addEventListener('input', updatePreview);
+        document.getElementById('calibre').addEventListener('input', updatePreview);
+        document.getElementById('coordenadas3').addEventListener('input', updatePreview);
+        document.getElementById('etr').addEventListener('input', updatePreview);
+        document.getElementById('ciudad').addEventListener('input', updatePreview);
+        document.getElementById('estado').addEventListener('input', updatePreview);
+        document.getElementById('cluster').addEventListener('input', updatePreview);
+        document.getElementById('olt').addEventListener('input', updatePreview);
+        document.getElementById('clientes').addEventListener('input', updatePreview);
+        document.getElementById('fecha_asg_desp').addEventListener('input', updatePreview);
+        document.getElementById('fecha_asg_prov').addEventListener('input', updatePreview);
+        document.getElementById('hr_llegada').addEventListener('input', updatePreview);
+        document.getElementById('hr_1er_medicion').addEventListener('input', updatePreview);
+        document.getElementById('ubicacion_1er_2do').addEventListener('input', updatePreview);
+        document.getElementById('ubicacion_dano').addEventListener('input', updatePreview);
+        document.getElementById('coordenadas_dano').addEventListener('input', updatePreview);
+        document.getElementById('causa_dano').addEventListener('input', updatePreview);
+        document.getElementById('descripcion_actividades').addEventListener('input', updatePreview);
+        document.getElementById('potencia_inicial').addEventListener('input', updatePreview);
+        document.getElementById('potencia_final').addEventListener('input', updatePreview);
+        document.getElementById('trabajos_realizados').addEventListener('input', updatePreview);
+        document.getElementById('coordenadas_cab').addEventListener('input', updatePreview);
+        document.getElementById('fecha_hr_final').addEventListener('input', updatePreview);
+        document.getElementById('atiende_nom_tec').addEventListener('input', updatePreview);
+        document.getElementById('proveedor4').addEventListener('input', updatePreview);
+        document.getElementById('supervisor').addEventListener('input', updatePreview);
+        document.getElementById('tipo_mantenimiento').addEventListener('input', updatePreview);
+        document.getElementById('material_utilizado').addEventListener('input', updatePreview);
+        document.getElementById('atendio_desp').addEventListener('input', updatePreview);
+        document.getElementById('justificacion_sla').addEventListener('input', updatePreview);
+
+        // Llamar a updatePreview al cargar la página para inicializar la vista previa
+        updatePreview();
+    </script>
+</body>
+</html>
