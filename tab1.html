@@ -408,7 +408,23 @@
 
 // LLENADO AUTOMATICO Y FUNCION DE SELECT CON BUSQUEDA CON SCRIPT2
 
+	//NOMBRE DE TECNICO
+ 	$(document).ready(function() {
+            $('#nombre').select2({
+                placeholder: 'Selecciona una opción',
+                allowClear: true,
+          });
+ 	$('#nombre').on('change', function() {
+                // Obtener el texto de la opción seleccionada
+                var nombre = $(this).val();
 
+                // Actualizar el contenido de la vista previa
+                updatePreview();
+            });
+
+            // Llamar al evento change al cargar la página para mostrar el texto por defecto
+            $('#nombre').trigger('change');
+        });
 
 
  // AUTO LLENADO DE OLT SEGUN CLUSTER
