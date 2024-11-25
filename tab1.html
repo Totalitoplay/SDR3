@@ -294,9 +294,7 @@
                     <div class="form-group">
                         <label for="atendio_desp">ATENDIO_DESP:</label>
  			<select id="atendio_desp" name="atendio_des">
-
-  				 <!-----SELECT DE MDR'S ----->
-            			
+  				 //-----SELECT DE MDR'S -----
         		</select>
                     </div>
                     <div class="form-group">
@@ -317,46 +315,6 @@
 
 //-----------------------------LLENADO DE MDRS
 
-       async function cargarArchivoAutomatico1() {
-            // Ruta del archivo .txt (en el mismo directorio del proyecto)
-            const archivoRuta1 = './mdr.txt';
-
-            // Usamos fetch para obtener el contenido del archivo
-            try {
-                const respuesta = await fetch(archivoRuta1);
-
-                // Comprobar que el archivo se cargó correctamente
-                if (!respuesta.ok) {
-                    throw new Error('No se pudo cargar el archivo.');
-                }
-
-                // Leer el contenido del archivo como texto
-                const contenido = await respuesta.text();
-
-                // Dividir el contenido por líneas
-                const lineas = contenido.split('\n');
-
-                // Obtener el select
-                const select = document.getElementById('atendio_desp');
-
-                // Añadir las líneas como opciones
-                lineas.forEach(linea => {
-                    const opcion = linea.trim();
-                    if (opcion) {
-                        const nuevaOpcion = document.createElement('option');
-                        nuevaOpcion.value = opcion;
-                        nuevaOpcion.textContent = opcion;
-                        select.appendChild(nuevaOpcion);
-                    }
-                });
-            } catch (error) {
-                console.error('Error al cargar el archivo:', error);
-                alert('Hubo un problema al cargar los mdr.');
-            }
-        }
-
-        // Llamar a la función al cargar la página
-        cargarArchivoAutomatico1();
 
 
 
