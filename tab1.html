@@ -59,7 +59,8 @@
             width: 100% !important;
         }
 
-   </style>
+    </style>
+
 </head>
 <body>    
 
@@ -120,22 +121,8 @@
                         <label for="nombre">Nombre:</label>
                        
  			<select id="nombre" name="nombre">         			
-				<option value="JOEL YUREN GARCIA SAMANIEGO">JOEL YUREN GARCIA SAMANIEGO</option>
-            			<option value="AARON ISAAC GUTIERREZ CALVILLO">AARON ISAAC GUTIERREZ CALVILLO</option>
-            			<option value="YGNACIO MIRANDA MORENO">YGNACIO MIRANDA MORENO</option>
-            			<option value="ROBERTO GONZALEZ NUÑEZ">ROBERTO GONZALEZ NUÑEZ</option>
-				<option value="GERARDO VIDAL RAMIREZ">GERARDO VIDAL RAMIREZ</option>
-				<option value="CESAR GRACIA GONZALEZ">CESAR GRACIA GONZALEZ</option>
-				<option value="EDGAR SANCHEZ RAMOS">EDGAR SANCHEZ RAMOS</option>
-				<option value="VICTOR DAVID NAVA CAUDILLO">VICTOR DAVID NAVA CAUDILLO</option>
-				<option value="JUAN DE DIOS GUTIERREZ DIAS">JUAN DE DIOS GUTIERREZ DIAS</option>
-				<option value="MIGUEL ANGEL GUTIERREZ FLORES">MIGUEL ANGEL GUTIERREZ FLORES</option>
-				<option value="ADRIAN ENRIQUE GANDARA SANCHEZ">ADRIAN ENRIQUE GANDARA SANCHEZ</option>
-				<option value="JAVIER ARELLANES DIAZ">JAVIER ARELLANES DIAZ</option>
-				<option value="JESÚS GUADALUPE CONTRERAS GRANADOS">JESÚS GUADALUPE CONTRERAS GRANADOS</option>
-				<option value="JOSHUA ISRAEL MORAZ MACIAS">JOSHUA ISRAEL MORAZ MACIAS</option>
-				<option value="SERGIO MELCHI LINDO">SERGIO MELCHI LINDO</option>
-    </select>
+				<!---SELECT DE TECNICOS-->
+    			</select>
 
     <!-- JavaScript de Select2 -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -212,8 +199,6 @@
 				<option value="THOMPSON 2">THOMPSON 2</option>
     				<option value="TIERRA NUEVA">TIERRA NUEVA</option>
 				<option value="TIERRA NUEVA 2">TIERRA NUEVA 2</option>
-            			<option value="SWITCH_CD_JUAREZ"> SWITCH_CD_JUAREZ</option>
-            			<option value="GRANJERO_CDJRZ">GRANJERO_CDJRZ</option>
 			</select>
                     </div>
                     <div class="form-group">
@@ -306,24 +291,8 @@
                     <div class="form-group">
                         <label for="atendio_desp">ATENDIO_DESP:</label>
  			<select id="atendio_desp" name="atendio_des">
-          			<option value="Karla Patricia Ortega Garcia">Karla Patricia Ortega Garcia</option>
-           			<option value="Alejandro Martinez Serrano">Alejandro Martinez Serrano</option>
-			        <option value="Aline Esmeralda Gonzalez Acevedo">Aline Esmeralda Gonzalez Acevedo</option>
-      			      	<option value="Alma Delia Aguilar Olvera">Alma Delia Aguilar Olvera</option>
-      			     	<option value="Carolina Reyes Lopez">Carolina Reyes Lopez</option>
-    			        <option value="Dulce Karina Lopez Leon">Dulce Karina Lopez Leon</option>
-       				<option value="Fany Elizabeth Cabrera Peralta">Fany Elizabeth Cabrera Peralta</option>
-       				<option value="Ivonne Hernandez Gutierrez">Ivonne Hernandez Gutierrez</option>
-         		   	<option value="Lizbeth Mendoza Cruz">Lizbeth Mendoza Cruz</option>
-        			<option value="Lucia Patricia Ortiz Solis">Lucia Patricia Ortiz Solis</option>
-        			<option value="Luis Eduardo Hernandez Castañeda">Luis Eduardo Hernandez Castañeda</option>
-        		    	<option value="Miguel Paredes Vazquez">Miguel Paredes Vazquez</option>
-        			<option value="Nelly Jazmin Cruz Lopez">Nelly Jazmin Cruz Lopez</option>
-        			<option value="Nestor Julian Nuñez Garcia">Nestor Julian Nuñez Garcia</option>
-        			<option value="Roberto Carlos Rebollar Rodriguez">Roberto Carlos Rebollar Rodriguez</option>
-        			<option value="Sleny Josselin Bautista Hernandez">Sleny Josselin Bautista Hernandez</option>
-         			<option value="Uriel Calderon Arias">Uriel Calderon Arias</option>
-        			<option value="Yadira Angelica Balbuena Antonio">Yadira Angelica Balbuena Antonio</option>
+
+  				 <!-----SELECT DE MDR'S ----->
             			
         		</select>
                     </div>
@@ -342,9 +311,48 @@
     </div>
 
     <script>
-
 //-----------------------------LLENADO DE MDRS
 
+       async function cargarArchivoAutomatico1() {
+            // Ruta del archivo .txt (en el mismo directorio del proyecto)
+            const archivoRuta1 = './mdr.txt';
+
+            // Usamos fetch para obtener el contenido del archivo
+            try {
+                const respuesta = await fetch(archivoRuta1);
+
+                // Comprobar que el archivo se cargó correctamente
+                if (!respuesta.ok) {
+                    throw new Error('No se pudo cargar el archivo.');
+                }
+
+                // Leer el contenido del archivo como texto
+                const contenido = await respuesta.text();
+
+                // Dividir el contenido por líneas
+                const lineas = contenido.split('\n');
+
+                // Obtener el select
+                const select = document.getElementById('atendio_desp');
+
+                // Añadir las líneas como opciones
+                lineas.forEach(linea => {
+                    const opcion = linea.trim();
+                    if (opcion) {
+                        const nuevaOpcion = document.createElement('option');
+                        nuevaOpcion.value = opcion;
+                        nuevaOpcion.textContent = opcion;
+                        select.appendChild(nuevaOpcion);
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar el archivo:', error);
+                alert('Hubo un problema al cargar los mdr.');
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        cargarArchivoAutomatico1();
 
 
 
@@ -373,12 +381,46 @@
 //------------------------------------------------------------------------- LLENADO DE TECNICOS
 
 
+       async function cargarArchivoAutomatico() {
+            // Ruta del archivo .txt (en el mismo directorio del proyecto)
+            const archivoRuta = './tecnicos.txt';
 
+            // Usamos fetch para obtener el contenido del archivo
+            try {
+                const respuesta = await fetch(archivoRuta);
 
+                // Comprobar que el archivo se cargó correctamente
+                if (!respuesta.ok) {
+                    throw new Error('No se pudo cargar el archivo.');
+                }
 
+                // Leer el contenido del archivo como texto
+                const contenido = await respuesta.text();
 
+                // Dividir el contenido por líneas
+                const lineas = contenido.split('\n');
 
+                // Obtener el select
+                const select = document.getElementById('nombre');
 
+                // Añadir las líneas como opciones
+                lineas.forEach(linea => {
+                    const opcion = linea.trim();
+                    if (opcion) {
+                        const nuevaOpcion = document.createElement('option');
+                        nuevaOpcion.value = opcion;
+                        nuevaOpcion.textContent = opcion;
+                        select.appendChild(nuevaOpcion);
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar el archivo:', error);
+                alert('Hubo un problema al cargar los tecnicos.');
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        cargarArchivoAutomatico();
 
 // LLENADO AUTOMATICO Y FUNCION DE SELECT CON BUSQUEDA CON SCRIPT2
 
@@ -417,12 +459,9 @@
             "OASIS": "OASIS_JUA",
             "SANTO DOMINGO": "SANTO_DOMINGO_JUA",
             "THOMPSON": "THOMPSON_JUA",
-	    "THOMPSON 2": "THOMPSON_2_JUA",
+		"THOMPSON 2": "THOMPSON_2_JUA",
             "TIERRA NUEVA": "HACIENDA_DE_LAS_TORRES_JUA",
-            "TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA",
-            "SWITCH_CD_JUAREZ": "SWITCH_CD_JUAREZ",
-            "GRANJERO_CDJRZ": "GRANJERO_CDJRZ"
-
+          	"TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA"
         };
 
         function llenarNumero() {
