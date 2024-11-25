@@ -33,6 +33,7 @@ iframe {
     height: 1100px;
     border: none;
     display: none;
+    overflow: hidden; 
 }
 
 
