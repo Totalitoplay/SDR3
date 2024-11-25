@@ -343,46 +343,7 @@
 //------------------------------------------------------------------------- LLENADO DE TECNICOS
 
 
-       async function cargarArchivoAutomatico() {
-            // Ruta del archivo .txt (en el mismo directorio del proyecto)
-            const archivoRuta = './tecnicos.txt';
 
-            // Usamos fetch para obtener el contenido del archivo
-            try {
-                const respuesta = await fetch(archivoRuta);
-
-                // Comprobar que el archivo se cargó correctamente
-                if (!respuesta.ok) {
-                    throw new Error('No se pudo cargar el archivo.');
-                }
-
-                // Leer el contenido del archivo como texto
-                const contenido = await respuesta.text();
-
-                // Dividir el contenido por líneas
-                const lineas = contenido.split('\n');
-
-                // Obtener el select
-                const select = document.getElementById('nombre');
-
-                // Añadir las líneas como opciones
-                lineas.forEach(linea => {
-                    const opcion = linea.trim();
-                    if (opcion) {
-                        const nuevaOpcion = document.createElement('option');
-                        nuevaOpcion.value = opcion;
-                        nuevaOpcion.textContent = opcion;
-                        select.appendChild(nuevaOpcion);
-                    }
-                });
-            } catch (error) {
-                console.error('Error al cargar el archivo:', error);
-                alert('Hubo un problema al cargar los tecnicos.');
-            }
-        }
-
-        // Llamar a la función al cargar la página
-        cargarArchivoAutomatico();
 
 
 
