@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCRIPT 1</title>
+    <title>SCRIPT 2</title>
     <!-- CSS de Select2 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
 
@@ -11,6 +11,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+		
         }
         .container {
             display: grid;
@@ -24,7 +25,7 @@
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
-           max-height: 900px; /* Ajusta la altura máxima según sea necesario */
+           max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
             overflow-y: auto;  /* Permite el desplazamiento vertical */
         }
         .form-group {
@@ -119,13 +120,11 @@
                     </div>
                     <div class="form-group">
                         <label for="nombre">Nombre:</label>
-
-                        
-
+                       
  			<select id="nombre" name="nombre">         			
 				<!---SELECT DE TECNICOS-->
     			</select>
-
+</div>
     <!-- JavaScript de Select2 -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
@@ -134,7 +133,7 @@
         // Inicializa Select2
        
     </script>
-                    </div>
+                    
                 </div>
 
                 <!-- Tercer Bloque -->
@@ -236,7 +235,7 @@
                     <div class="form-group">
                         <label for="ubicacion_dano">UBICACIÓN_DEL_DAÑO:</label>
                         <input type="text" id="ubicacion_dano" name="ubicacion_dano">
-                    </div>
+                    </div>                   
                     <div class="form-group">
                         <label for="coordenadas_dano">COORDENADAS DE DAÑO:</label>
                         <input type="text" id="coordenadas_dano" name="coordenadas_dano">
@@ -292,14 +291,13 @@
                         <label for="material_utilizado">MATERIAL UTILIZADO:</label>
                         <input type="text" id="material_utilizado" name="material_utilizado">
                     </div>
-                    <div class="form-group">
+		<div class="form-group">
                         <label for="atendio_desp">ATENDIO_DESP:</label>
  			<select id="atendio_desp" name="atendio_des">
-
-  				 <!-----SELECT DE MDR'S ----->
-            			
+  				 <!-----SELECT DE MDR'S ----->      			
         		</select>
                     </div>
+
                     <div class="form-group">
                         <label for="justificacion_sla">JUSTIFICACIÓN_DE_SLA:</label>
                         <input type="text" id="justificacion_sla" name="justificacion_sla">
@@ -315,8 +313,8 @@
     </div>
 
     <script>
-
 //-----------------------------LLENADO DE MDRS
+
 
        async function cargarArchivoAutomatico1() {
             // Ruta del archivo .txt (en el mismo directorio del proyecto)
@@ -360,29 +358,6 @@
         cargarArchivoAutomatico1();
 
 
-
-
-
-
-// LLENADO AUTOMATICO Y FUNCION DE SELECT CON BUSQUEDA CON SCRIPT2
-
-	//NOMBRE DE TECNICO
- 	$(document).ready(function() {
-            $('#atendio_desp').select2({
-                placeholder: 'Selecciona una opción',
-                allowClear: true,
-          });
- 	$('#atendio_desp').on('change', function() {
-                // Obtener el texto de la opción seleccionada
-                var atendio_desp = $(this).val();
-
-                // Actualizar el contenido de la vista previa
-                updatePreview();
-            });
-
-            // Llamar al evento change al cargar la página para mostrar el texto por defecto
-            $('#atendio_desp').trigger('change');
-        });
 //------------------------------------------------------------------------- LLENADO DE TECNICOS
 
 
@@ -427,11 +402,6 @@
         // Llamar a la función al cargar la página
         cargarArchivoAutomatico();
 
-
-
-
-
-
 // LLENADO AUTOMATICO Y FUNCION DE SELECT CON BUSQUEDA CON SCRIPT2
 
 	//NOMBRE DE TECNICO
@@ -440,9 +410,13 @@
                 placeholder: 'Selecciona una opción',
                 allowClear: true,
           });
+
  	$('#nombre').on('change', function() {
                 // Obtener el texto de la opción seleccionada
                 var nombre = $(this).val();
+
+		// Obtener el texto de la opción seleccionada
+            
 
                 // Actualizar el contenido de la vista previa
                 updatePreview();
@@ -450,7 +424,11 @@
 
             // Llamar al evento change al cargar la página para mostrar el texto por defecto
             $('#nombre').trigger('change');
+		
         });
+
+	    
+
 
 
  // AUTO LLENADO DE OLT SEGUN CLUSTER
@@ -474,7 +452,6 @@
             "TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA",
             "SWITCH_CD_JUAREZ": "SWITCH_CD_JUAREZ",
             "GRANJERO_CDJRZ": "GRANJERO_CDJRZ"
-
         };
 
         function llenarNumero() {
