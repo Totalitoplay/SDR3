@@ -7,6 +7,12 @@ body {
     display: flex;
     flex-direction: column;
 }
+.container {
+  width: 90%; /* En lugar de un valor fijo como 600px */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
 
 input[type="radio"] {
     display: none;
