@@ -15,7 +15,7 @@
         }
         .container {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+            grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); /* Dos columnas de igual tamaño */
             gap: 20px; /* Espacio entre columnas */
             max-width: 1200px;
             margin: auto;
@@ -55,6 +55,8 @@
             font-family: monospace;
             white-space: pre-wrap; /* Mantiene los espacios en blanco */
             font-size: 16px;
+		           max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
+            overflow-y: auto;  /* Permite el desplazamiento vertical */
         }
         .select2-container {
             width: 100% !important;
@@ -151,8 +153,12 @@
                         <label for="accion">Acción correctiva:</label>
                         <input type="text" id="accion" name="accion">
                     </div>
+                     <div class="form-group">
+                        <label for="etr">ETR:</label>
+                        <input type="text" id="etr" name="etr">
+                    </div>                   
                     <div class="form-group">
-                        <label for="calibre">Calibre de fo:</label>
+                        <label for="calibre">Capacidad de FO</label>
                         <input type="text" id="calibre" name="calibre">
                     </div>
                     <div class="form-group">
@@ -160,9 +166,13 @@
                         <input type="text" id="coordenadas3" name="coordenadas3">
                     </div>
                     <div class="form-group">
-                        <label for="etr">ETR:</label>
-                        <input type="text" id="etr" name="etr">
+                        <label for="qr">Numero QR:</label>
+                        <input type="text" id="qr" name="qr">
                     </div>
+                     <div class="form-group">
+                        <label for="materiales">Materiales a utilizar:</label>
+                        <input type="text" id="materiales" name="materiales">
+                    </div>                   
                 </div>
 
                 <!-- Cuarto Bloque -->
@@ -562,6 +572,8 @@
             var calibre = document.getElementById('calibre').value;
             var coordenadas3 = document.getElementById('coordenadas3').value;
             var etr = document.getElementById('etr').value;
+            var qr = document.getElementById('qr').value;
+            var materiales = document.getElementById('materiales').value;
 
             // Obtener los valores de los campos del cuarto bloque
             var ciudad = document.getElementById('ciudad').value;
@@ -593,7 +605,10 @@
 
             // Actualizar el contenido del div de vista previa
             var resultado = document.getElementById('resultado');
-            resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n\n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n\n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nETR: *${etr}*\n\n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFECHA_Y_HR_DE_ASG_DESP: *${fecha_asg_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${fecha_asg_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICIÓN: *${hr_1er_medicion}*\nUBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS: *${ubicacion_1er_2do}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DE DAÑO: *${coordenadas_dano}*\nCAUSA DE DAÑO: *${causa_dano}*\nDESCRIP_DE_ACTIVIDADES: *${descripcion_actividades}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nCOORDENADAS_DEL_CAB-024: *${coordenadas_cab}*\nFECHA_HR_FINAL_DE_REPARACIÓN: *${fecha_hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR: *${supervisor}*\nTIPO DE MANTENIMIENTO: *${tipo_mantenimiento}*\nMATERIAL UTILIZADO: *${material_utilizado}*\nATENDIO_DESP: *${atendio_desp}*\nJUSTIFICACIÓN_DE_SLA: *${justificacion_sla}*`;
+            resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n
+            \n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n
+            \n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*\n
+            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFECHA_Y_HR_DE_ASG_DESP: *${fecha_asg_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${fecha_asg_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICIÓN: *${hr_1er_medicion}*\nUBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS: *${ubicacion_1er_2do}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DE DAÑO: *${coordenadas_dano}*\nCAUSA DE DAÑO: *${causa_dano}*\nDESCRIP_DE_ACTIVIDADES: *${descripcion_actividades}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nCOORDENADAS_DEL_CAB-024: *${coordenadas_cab}*\nFECHA_HR_FINAL_DE_REPARACIÓN: *${fecha_hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR: *${supervisor}*\nTIPO DE MANTENIMIENTO: *${tipo_mantenimiento}*\nMATERIAL UTILIZADO: *${material_utilizado}*\nATENDIO_DESP: *${atendio_desp}*\nJUSTIFICACIÓN_DE_SLA: *${justificacion_sla}*`;
         }
 
         // Agregar eventos para actualizar la vista previa
@@ -636,7 +651,8 @@
         document.getElementById('material_utilizado').addEventListener('input', updatePreview);
         document.getElementById('atendio_desp').addEventListener('input', updatePreview);
         document.getElementById('justificacion_sla').addEventListener('input', updatePreview);
-
+        document.getElementById('qr').addEventListener('input', updatePreview);
+        document.getElementById('materiales').addEventListener('input', updatePreview);
         // Llamar a updatePreview al cargar la página para inicializar la vista previa
         updatePreview();
     </script>
