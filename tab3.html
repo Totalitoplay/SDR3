@@ -86,10 +86,10 @@
         <div class="form-container">
             <h2>Modificar Información</h2>
 
-        <label for="fecha">Selecciona una fecha:</label>
+        <!--<label for="fecha">Selecciona una fecha:</label>
         <input type="date" id="fecha" name="fecha">
         
-        <input type="text" id="fecha-texto" name="fecha-texto" readonly>
+        <input type="text" id="fecha-texto" name="fecha-texto" readonly>-->
 
             <form id="modificar-form">
                 <!-- Primer Bloque -->
@@ -136,23 +136,9 @@
                         <label for="nombre">Nombre:</label>
                        
  			<select id="nombre" name="nombre">         			
-				<option value="JOEL YUREN GARCIA SAMANIEGO">JOEL YUREN GARCIA SAMANIEGO</option>
-            			<option value="AARON ISAAC GUTIERREZ CALVILLO">AARON ISAAC GUTIERREZ CALVILLO</option>
-            			<option value="YGNACIO MIRANDA MORENO">YGNACIO MIRANDA MORENO</option>
-            			<option value="ROBERTO GONZALEZ NUÑEZ">ROBERTO GONZALEZ NUÑEZ</option>
-				<option value="GERARDO VIDAL RAMIREZ">GERARDO VIDAL RAMIREZ</option>
-				<option value="CESAR GRACIA GONZALEZ">CESAR GRACIA GONZALEZ</option>
-				<option value="EDGAR SANCHEZ RAMOS">EDGAR SANCHEZ RAMOS</option>
-				<option value="VICTOR DAVID NAVA CAUDILLO">VICTOR DAVID NAVA CAUDILLO</option>
-				<option value="JUAN DE DIOS GUTIERREZ DIAS">JUAN DE DIOS GUTIERREZ DIAS</option>
-				<option value="MIGUEL ANGEL GUTIERREZ FLORES">MIGUEL ANGEL GUTIERREZ FLORES</option>
-				<option value="ADRIAN ENRIQUE GANDARA SANCHEZ">ADRIAN ENRIQUE GANDARA SANCHEZ</option>
-				<option value="JAVIER ARELLANES DIAZ">JAVIER ARELLANES DIAZ</option>
-				<option value="JESÚS GUADALUPE CONTRERAS GRANADOS">JESÚS GUADALUPE CONTRERAS GRANADOS</option>
-				<option value="JOSHUA ISRAEL MORAZ MACIAS">JOSHUA ISRAEL MORAZ MACIAS</option>
-				<option value="SERGIO MELCHI LINDO">SERGIO MELCHI LINDO</option>
-    </select>
-
+				<!---SELECT DE TECNICOS-->
+    			</select>
+</div>
     <!-- JavaScript de Select2 -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
@@ -161,7 +147,7 @@
         // Inicializa Select2
        
     </script>
-                    </div>
+                    
                 </div>
 
                 <!-- Tercer Bloque -->
@@ -236,6 +222,8 @@
 				<option value="THOMPSON 2">THOMPSON 2</option>
     				<option value="TIERRA NUEVA">TIERRA NUEVA</option>
 				<option value="TIERRA NUEVA 2">TIERRA NUEVA 2</option>
+            			<option value="SWITCH_CD_JUAREZ"> SWITCH_CD_JUAREZ</option>
+            			<option value="GRANJERO_CDJRZ">GRANJERO_CDJRZ</option>
 			</select>
                     </div>
                     <div class="form-group">
@@ -245,6 +233,16 @@
                     <div class="form-group">
                         <label for="clientes">CLIENTES AFECTADOS:</label>
                         <input type="text" id="clientes" name="clientes">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clientes">FALLA REPORTADA:</label>
+                        <input type="text" id="falla_r" name="falla_r">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha">Selecciona una fecha:</label>
+                        <input type="date" id="fecha" name="fecha"  >
+                        <input type="hidden" id="fecha-texto" name="fecha-texto" readonly>
                     </div>
                     <div class="form-group">
                         <label for="fecha_asg_desp">FECHA_Y_HR_DE_ASG_DESP:</label>
@@ -267,16 +265,16 @@
                         <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do">
                     </div>
                     <div class="form-group">
-                        <label for="ubicacion_dano">UBICACIÓN_DEL_DAÑO:</label>
-                        <input type="text" id="ubicacion_dano" name="ubicacion_dano">
-                    </div>
-                    <div class="form-group">
-                        <label for="coordenadas_dano">COORDENADAS DE DAÑO:</label>
-                        <input type="text" id="coordenadas_dano" name="coordenadas_dano">
-                    </div>
-                    <div class="form-group">
                         <label for="causa_dano">CAUSA DE DAÑO:</label>
                         <input type="text" id="causa_dano" name="causa_dano">
+                    </div>
+                    <div class="form-group">
+                        <label for="ubicacion_dano">UBICACIÓN_DEL_DAÑO:</label>
+                        <input type="text" id="ubicacion_dano" name="ubicacion_dano">
+                    </div>                   
+                    <div class="form-group">
+                        <label for="coordenadas_dano">COORDENADAS:</label>
+                        <input type="text" id="coordenadas_dano" name="coordenadas_dano">
                     </div>
                     <div class="form-group">
                         <label for="descripcion_actividades">DESCRIP_DE_ACTIVIDADES:</label>
@@ -295,12 +293,16 @@
                         <input type="text" id="trabajos_realizados" name="trabajos_realizados">
                     </div>
                     <div class="form-group">
-                        <label for="coordenadas_cab">COORDENADAS_DEL_CAB-024:</label>
+                        <label for="coordenadas_cab">COORDENADAS_DEL_CAB-024H 96H:</label>
                         <input type="text" id="coordenadas_cab" name="coordenadas_cab">
                     </div>
                     <div class="form-group">
                         <label for="fecha_hr_final">FECHA_HR_FINAL_DE_REPARACIÓN:</label>
                         <input type="text" id="fecha_hr_final" name="fecha_hr_final">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_hr_final">QR DE SEGUNDO NIVEL:</label>
+                        <input type="text" id="qr_2" name="qr_2">
                     </div>
                     <div class="form-group">
                         <label for="atiende_nom_tec">ATIENDE_NOM_TEC:</label>
@@ -311,7 +313,7 @@
                         <input type="text" id="proveedor4" name="proveedor4">
                     </div>
                     <div class="form-group">
-                        <label for="supervisor">SUPERVISOR:</label>
+                        <label for="supervisor">SUPERVISOR DISTRITO:</label>
         		<select id="supervisor" name="supervisor">
            			<option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
             			<option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
@@ -325,34 +327,25 @@
                         <label for="material_utilizado">MATERIAL UTILIZADO:</label>
                         <input type="text" id="material_utilizado" name="material_utilizado">
                     </div>
-                    <div class="form-group">
+		<!---- <div class="form-group">
                         <label for="atendio_desp">ATENDIO_DESP:</label>
- 			<select class="form-control" id="atendio_desp" name="atendio_des">
-          			<option value="Karla Patricia Ortega Garcia">Karla Patricia Ortega Garcia</option>
-           			<option value="Alejandro Martinez Serrano">Alejandro Martinez Serrano</option>
-			        <option value="Aline Esmeralda Gonzalez Acevedo">Aline Esmeralda Gonzalez Acevedo</option>
-      			      	<option value="Alma Delia Aguilar Olvera">Alma Delia Aguilar Olvera</option>
-      			     	<option value="Carolina Reyes Lopez">Carolina Reyes Lopez</option>
-    			        <option value="Dulce Karina Lopez Leon">Dulce Karina Lopez Leon</option>
-       				<option value="Fany Elizabeth Cabrera Peralta">Fany Elizabeth Cabrera Peralta</option>
-       				<option value="Ivonne Hernandez Gutierrez">Ivonne Hernandez Gutierrez</option>
-         		   	<option value="Lizbeth Mendoza Cruz">Lizbeth Mendoza Cruz</option>
-        			<option value="Lucia Patricia Ortiz Solis">Lucia Patricia Ortiz Solis</option>
-        			<option value="Luis Eduardo Hernandez Castañeda">Luis Eduardo Hernandez Castañeda</option>
-        		    	<option value="Miguel Paredes Vazquez">Miguel Paredes Vazquez</option>
-        			<option value="Nelly Jazmin Cruz Lopez">Nelly Jazmin Cruz Lopez</option>
-        			<option value="Nestor Julian Nuñez Garcia">Nestor Julian Nuñez Garcia</option>
-        			<option value="Roberto Carlos Rebollar Rodriguez">Roberto Carlos Rebollar Rodriguez</option>
-        			<option value="Sleny Josselin Bautista Hernandez">Sleny Josselin Bautista Hernandez</option>
-         			<option value="Uriel Calderon Arias">Uriel Calderon Arias</option>
-        			<option value="Yadira Angelica Balbuena Antonio">Yadira Angelica Balbuena Antonio</option>
-            			
+ 			<select id="atendio_desp" name="atendio_des">
+  				 <-----SELECT DE MDR'S     			
         		</select>
-                    </div>
+                    </div>----->  
+
                     <div class="form-group">
-                        <label for="justificacion_sla">JUSTIFICACIÓN_DE_SLA:</label>
+                        <label for="justificacion_sla">PAUSA HORA INICIAL Y FINAL:</label>
                         <input type="text" id="justificacion_sla" name="justificacion_sla">
                     </div>
+                    <div class="form-group">
+                        <label for="motivo_pausa">MOTIVO DE PAUSA:</label>
+                        <input type="text" id="m_pausa" name="m_pausa">
+                    </div>
+                    <div class="form-group">
+                        <label for="tiempo_pausa">TIEMPO TOTAL DE PAUSA:</label>
+                        <input type="text" id="t_pausa" name="t_pausa">
+                    </div>                    
                 </div>
             </form>
         </div>
@@ -364,6 +357,94 @@
     </div>
 
     <script>
+//-----------------------------LLENADO DE MDRS
+
+
+        async function cargarArchivoAutomatico1() {
+            // Ruta del archivo .txt (en el mismo directorio del proyecto)
+            const archivoRuta1 = './mdr.txt';
+
+            // Usamos fetch para obtener el contenido del archivo
+            try {
+                const respuesta = await fetch(archivoRuta1);
+
+                // Comprobar que el archivo se cargó correctamente
+                if (!respuesta.ok) {
+                    throw new Error('No se pudo cargar el archivo.');
+                }
+
+                // Leer el contenido del archivo como texto
+                const contenido = await respuesta.text();
+
+                // Dividir el contenido por líneas
+                const lineas = contenido.split('\n');
+
+                // Obtener el select
+                //const select = document.getElementById('atendio_desp');
+
+                // Añadir las líneas como opciones
+                lineas.forEach(linea => {
+                    const opcion = linea.trim();
+                    if (opcion) {
+                        const nuevaOpcion = document.createElement('option');
+                        nuevaOpcion.value = opcion;
+                        nuevaOpcion.textContent = opcion;
+                        select.appendChild(nuevaOpcion);
+                    }
+                });
+            } catch (error) {
+               // console.error('Error al cargar el archivo:', error);
+                //alert('Hubo un problema al cargar los mdr.');
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        cargarArchivoAutomatico1();
+
+
+//------------------------------------------------------------------------- LLENADO DE TECNICOS
+
+
+       async function cargarArchivoAutomatico() {
+            // Ruta del archivo .txt (en el mismo directorio del proyecto)
+            const archivoRuta = './tecnicos.txt';
+
+            // Usamos fetch para obtener el contenido del archivo
+            try {
+                const respuesta = await fetch(archivoRuta);
+
+                // Comprobar que el archivo se cargó correctamente
+                if (!respuesta.ok) {
+                    throw new Error('No se pudo cargar el archivo.');
+                }
+
+                // Leer el contenido del archivo como texto
+                const contenido = await respuesta.text();
+
+                // Dividir el contenido por líneas
+                const lineas = contenido.split('\n');
+
+                // Obtener el select
+                const select = document.getElementById('nombre');
+
+                // Añadir las líneas como opciones
+                lineas.forEach(linea => {
+                    const opcion = linea.trim();
+                    if (opcion) {
+                        const nuevaOpcion = document.createElement('option');
+                        nuevaOpcion.value = opcion;
+                        nuevaOpcion.textContent = opcion;
+                        select.appendChild(nuevaOpcion);
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar el archivo:', error);
+                alert('Hubo un problema al cargar los tecnicos.');
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        cargarArchivoAutomatico();
 
 // LLENADO AUTOMATICO Y FUNCION DE SELECT CON BUSQUEDA CON SCRIPT2
 
@@ -373,9 +454,13 @@
                 placeholder: 'Selecciona una opción',
                 allowClear: true,
           });
+
  	$('#nombre').on('change', function() {
                 // Obtener el texto de la opción seleccionada
                 var nombre = $(this).val();
+
+		// Obtener el texto de la opción seleccionada
+            
 
                 // Actualizar el contenido de la vista previa
                 updatePreview();
@@ -383,7 +468,11 @@
 
             // Llamar al evento change al cargar la página para mostrar el texto por defecto
             $('#nombre').trigger('change');
+		
         });
+
+	    
+
 
 
  // AUTO LLENADO DE OLT SEGUN CLUSTER
@@ -402,9 +491,11 @@
             "OASIS": "OASIS_JUA",
             "SANTO DOMINGO": "SANTO_DOMINGO_JUA",
             "THOMPSON": "THOMPSON_JUA",
-		"THOMPSON 2": "THOMPSON_2_JUA",
+	    "THOMPSON 2": "THOMPSON_2_JUA",
             "TIERRA NUEVA": "HACIENDA_DE_LAS_TORRES_JUA",
-          	"TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA"
+            "TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA",
+            "SWITCH_CD_JUAREZ": "SWITCH_CD_JUAREZ",
+            "GRANJERO_CDJRZ": "GRANJERO_CDJRZ"
         };
 
         function llenarNumero() {
@@ -439,6 +530,8 @@
 	document.getElementById('fecha_asg_prov').value = fechaSeleccionada;
 	document.getElementById('hr_llegada').value = fechaSeleccionada;
 	document.getElementById('hr_1er_medicion').value = fechaSeleccionada;
+
+    updatePreview();
         });
 
 
@@ -495,6 +588,10 @@
 	// Sincronizar el valor de los otros campo
             document.getElementById('descripcion_actividades').value = accion;
 
+	// Obtener el valor de NUMERO QR del TERCER bloque
+            var qr=document.getElementById('qr').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('qr_2').value = qr;
 
 
 
@@ -507,7 +604,7 @@
             var coordenadas = document.getElementById('coordenadas').value;
             var proveedor2 = document.getElementById('proveedor2').value;
             var distrito = document.getElementById('distrito').value;
-	    var nombre = document.getElementById('nombre').value;
+	        var nombre = document.getElementById('nombre').value;
 
             // Obtener los valores de los campos del tercer bloque
             var causa = document.getElementById('causa').value;
@@ -538,20 +635,24 @@
             var trabajos_realizados = document.getElementById('trabajos_realizados').value;
             var coordenadas_cab = document.getElementById('coordenadas_cab').value;
             var fecha_hr_final = document.getElementById('fecha_hr_final').value;
+            var qr_2 = document.getElementById('qr_2').value;
             var atiende_nom_tec = document.getElementById('atiende_nom_tec').value;
             var proveedor4 = document.getElementById('proveedor4').value;
             var supervisor = document.getElementById('supervisor').value;
             var tipo_mantenimiento = document.getElementById('tipo_mantenimiento').value;
             var material_utilizado = document.getElementById('material_utilizado').value;
-            var atendio_desp = document.getElementById('atendio_desp').value;
+            //var atendio_desp = document.getElementById('atendio_desp').value;
             var justificacion_sla = document.getElementById('justificacion_sla').value;
+            var m_pausa = document.getElementById('m_pausa').value;
+            var t_pausa = document.getElementById('t_pausa').value;
 
             // Actualizar el contenido del div de vista previa
             var resultado = document.getElementById('resultado');
             resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n
             \n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n
             \n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*\n
-            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFECHA_Y_HR_DE_ASG_DESP: *${fecha_asg_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${fecha_asg_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICIÓN: *${hr_1er_medicion}*\nUBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS: *${ubicacion_1er_2do}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DE DAÑO: *${coordenadas_dano}*\nCAUSA DE DAÑO: *${causa_dano}*\nDESCRIP_DE_ACTIVIDADES: *${descripcion_actividades}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nCOORDENADAS_DEL_CAB-024: *${coordenadas_cab}*\nFECHA_HR_FINAL_DE_REPARACIÓN: *${fecha_hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR: *${supervisor}*\nTIPO DE MANTENIMIENTO: *${tipo_mantenimiento}*\nMATERIAL UTILIZADO: *${material_utilizado}*\nATENDIO_DESP: *${atendio_desp}*\nJUSTIFICACIÓN_DE_SLA: *${justificacion_sla}*`;
+           
+            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFECHA_Y_HR_DE_ASG_DESP: *${fecha_asg_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${fecha_asg_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICIÓN: *${hr_1er_medicion}*\nUBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS: *${ubicacion_1er_2do}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DE DAÑO: *${coordenadas_dano}*\nCAUSA DE DAÑO: *${causa_dano}*\nDESCRIP_DE_ACTIVIDADES: *${descripcion_actividades}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nCOORDENADAS_DEL_CAB-024: *${coordenadas_cab}*\nFECHA_HR_FINAL_DE_REPARACIÓN: *${fecha_hr_final}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR: *${supervisor}*\nTIPO DE MANTENIMIENTO: *${tipo_mantenimiento}*\nMATERIAL UTILIZADO: *${material_utilizado}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*`;
         }
 
         // Agregar eventos para actualizar la vista previa
@@ -567,6 +668,7 @@
         document.getElementById('accion').addEventListener('input', updatePreview);
         document.getElementById('calibre').addEventListener('input', updatePreview);
         document.getElementById('coordenadas3').addEventListener('input', updatePreview);
+        document.getElementById('qr').addEventListener('input', updatePreview);
         document.getElementById('etr').addEventListener('input', updatePreview);
         document.getElementById('ciudad').addEventListener('input', updatePreview);
         document.getElementById('estado').addEventListener('input', updatePreview);
@@ -587,15 +689,17 @@
         document.getElementById('trabajos_realizados').addEventListener('input', updatePreview);
         document.getElementById('coordenadas_cab').addEventListener('input', updatePreview);
         document.getElementById('fecha_hr_final').addEventListener('input', updatePreview);
+        document.getElementById('qr_2').addEventListener('input', updatePreview);
         document.getElementById('atiende_nom_tec').addEventListener('input', updatePreview);
         document.getElementById('proveedor4').addEventListener('input', updatePreview);
         document.getElementById('supervisor').addEventListener('input', updatePreview);
         document.getElementById('tipo_mantenimiento').addEventListener('input', updatePreview);
         document.getElementById('material_utilizado').addEventListener('input', updatePreview);
-        document.getElementById('atendio_desp').addEventListener('input', updatePreview);
+       // document.getElementById('atendio_desp').addEventListener('input', updatePreview);
         document.getElementById('justificacion_sla').addEventListener('input', updatePreview);
-        document.getElementById('qr').addEventListener('input', updatePreview);
         document.getElementById('materiales').addEventListener('input', updatePreview);
+        document.getElementById('m_pausa').addEventListener('input', updatePreview);
+        document.getElementById('t_pausa').addEventListener('input', updatePreview);
         // Llamar a updatePreview al cargar la página para inicializar la vista previa
         updatePreview();
     </script>
