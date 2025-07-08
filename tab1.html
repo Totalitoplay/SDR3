@@ -10,23 +10,30 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 05px;
 		
         }
         .container {
             display: grid;
-            grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); /* Dos columnas de igual tamaño */
-            gap: 20px; /* Espacio entre columnas */
-            max-width: 1200px;
+            grid-template-columns: 150px 1fr 1fr; /* Primera columna pequeña, las otras dos iguales */
+            gap: 20px;
+            max-width: 1500px;
             margin: auto;
 		
         }
         .form-container {
-            padding: 20px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-           max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
+            max-height: 1500px; /* Ajusta la altura máxima según sea necesario */
             overflow-y: auto;  /* Permite el desplazamiento vertical */
+        }
+        .centrar-pantalla {
+            display: flex;
+            flex-direction: column;  /* Para que los elementos se apilen verticalmente */
+            justify-content: center; /* Centrado vertical */
+            height: 100vh;
+            background-color: #c0fc98; /* Solo para que se vea el fondo */
         }
         .form-group {
             margin-bottom: 10px;
@@ -55,7 +62,7 @@
             font-family: monospace;
             white-space: pre-wrap; /* Mantiene los espacios en blanco */
             font-size: 16px;
-		           max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
+		    max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
             overflow-y: auto;  /* Permite el desplazamiento vertical */
         }
         .select2-container {
@@ -66,8 +73,23 @@
 
 </head>
 <body>    
+
+
     <div class="container">
         <!-- Contenedor del formulario -->
+            
+        <div class="centrar-pantalla">
+    <!--BUSCAR POR SD-->
+                <h3>Buscar por SD</h3>
+                <input type="text" id="buscarId" placeholder="SD del corte">
+                    <button onclick="buscar()">Buscar</button>  
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                   <button type="submit" form="modificar-form">Guardar</button>
+        </div>
+
         <div class="form-container">
             <h2>Modificar Información</h2>
 
@@ -75,14 +97,7 @@
         <input type="date" id="fecha" name="fecha">
         
         <input type="text" id="fecha-texto" name="fecha-texto" readonly>-->
-                <div class="ID">
-                <!--BUSCAR POR SD-->
-                  <h3>Buscar por SD</h3>
-                    <input type="text" id="buscarId" placeholder="SD del corte">
-                    <button onclick="buscar()">Buscar</button>
 
-                    
-                </div>
             <form id="modificar-form">
                 
 
@@ -92,15 +107,15 @@
                     <h3>ETA</h3>
                     <div class="form-group">
                         <label for="folio">FOLIO:</label>
-                        <input type="text" id="folio_" name="folio_" placeholder="folio_">
+                        <input type="text" id="folio_" name="folio_">
                     </div>
                     <div class="form-group">
                         <label for="eta">ETA:</label>
-                        <input type="text" id="eta" name="eta" placeholder="eta">
+                        <input type="text" id="eta" name="eta">
                     </div>
                     <div class="form-group">
                         <label for="proveedor">PROVEEDOR:</label>
-                        <input type="text" id="proveedor" name="proveedor" placeholder="proveedor">
+                        <input type="text" id="proveedor" name="proveedor">
                     </div>
                 </div>
 
@@ -286,7 +301,7 @@
                         <input type="text" id="trabajos_realizados" name="trabajos_realizados">
                     </div>
                     <div class="form-group">
-                        <label for="coordenadas_cab">COORDENADAS_DEL_CAB-024H 96H:</label>
+                        <label for="coordenadas_cab">CALIBRE_DEL_CAB-024H 96H:</label>
                         <input type="text" id="coordenadas_cab" name="coordenadas_cab">
                     </div>
                     <div class="form-group">
@@ -340,7 +355,7 @@
                         <input type="text" id="t_pausa" name="t_pausa">
                     </div>                    
                 </div>
-                <button type="submit">Guardar</button>
+                
 
                          <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -779,6 +794,7 @@
             var cluster = document.getElementById('cluster').value;
             var olt = document.getElementById('olt').value;
             var clientes = document.getElementById('clientes').value;
+            var falla_r = document.getElementById('falla_r').value;
             var fecha_asg_desp = document.getElementById('fecha_asg_desp').value;
             var fecha_asg_prov = document.getElementById('fecha_asg_prov').value;
             var hr_llegada = document.getElementById('hr_llegada').value;
@@ -810,7 +826,7 @@
             \n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n
             \n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*\n
            
-            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFECHA_Y_HR_DE_ASG_DESP: *${fecha_asg_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${fecha_asg_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICIÓN: *${hr_1er_medicion}*\nUBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS: *${ubicacion_1er_2do}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DE DAÑO: *${coordenadas_dano}*\nCAUSA DE DAÑO: *${causa_dano}*\nDESCRIP_DE_ACTIVIDADES: *${descripcion_actividades}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nCOORDENADAS_DEL_CAB-024: *${coordenadas_cab}*\nFECHA_HR_FINAL_DE_REPARACIÓN: *${fecha_hr_final}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR: *${supervisor}*\nTIPO DE MANTENIMIENTO: *${tipo_mantenimiento}*\nMATERIAL UTILIZADO: *${material_utilizado}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*`;
+            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${fecha_asg_desp}*\nFECHA_Y_HR_DE_ASG_DESP: *${falla_r}*\nFECHA_Y_HR_DE_ASG_PROV: *${fecha_asg_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICIÓN: *${hr_1er_medicion}*\nUBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS: *${ubicacion_1er_2do}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${descripcion_actividades}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nCALIBRE_DEL_CAB-024H 96H: *${coordenadas_cab}*\nFECHA_HR_FINAL_DE_REPARACIÓN: *${fecha_hr_final}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nTIPO DE MANTENIMIENTO: *${tipo_mantenimiento}*\nMATERIAL UTILIZADO: *${material_utilizado}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*`;
         }
 
         // Agregar eventos para actualizar la vista previa
@@ -834,6 +850,7 @@
         document.getElementById('olt').addEventListener('input', updatePreview);
         document.getElementById('clientes').addEventListener('input', updatePreview);
         document.getElementById('fecha_asg_desp').addEventListener('input', updatePreview);
+        document.getElementById('falla_r').addEventListener('input', updatePreview);
         document.getElementById('fecha_asg_prov').addEventListener('input', updatePreview);
         document.getElementById('hr_llegada').addEventListener('input', updatePreview);
         document.getElementById('hr_1er_medicion').addEventListener('input', updatePreview);
