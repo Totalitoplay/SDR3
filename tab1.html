@@ -8,6 +8,20 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
 
     <style>
+        #lista-folios li {
+            list-style: none;
+            margin-bottom: 5px;
+        }
+
+        #lista-folios li a {
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #lista-folios li a:hover {
+            color: #0056b3;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 25px;
@@ -84,8 +98,11 @@
                 <h3>Buscar por SD</h3>
                 <input type="text" id="buscarId" placeholder="SD del corte">
                     <button onclick="buscar()">Buscar</button>  
+                    <button type="button" onclick="limpiarSeleccion()">Limpiar</button>
                     <br>
                     <br>
+                    <h3 style="font-size: 16px;">Últimos 10 folios registrados</h3>
+                        <ul id="lista-folios"></ul>
                     <br>
                     <br>
                    <button type="submit" form="modificar-form">Guardar</button>
@@ -403,8 +420,10 @@
                                                                 hr_llegada, ubicacion_1er_2do,
                                                                 causa_dano, ubicacion_dano, coordenadas_dano, trabajos_realizados,
                                                                 potencia_final, qr_2, atiende_nom_tec, proveedor4, supervisor,
-                                                                justificacion_sla, m_pausa, t_pausa, material_utilizado});
+                                                                justificacion_sla, m_pausa, t_pausa, material_utilizado, timestamp: firebase.firestore.FieldValue.serverTimestamp()});
+                                                                
                 alert("Datos guardados con folio: " + folio);
+                 cargarUltimosFolios(); 
                 //form.reset();
             } catch (error) {
                 console.error("Error al guardar:", error);
@@ -475,6 +494,86 @@
         alert("ERROR AL BUSCAR");
       }
     }
+    //----------------------------CARGAR 1O ULTIMOS FOLIOS---------------------------------}
+async function cargarUltimosFolios() {
+  const lista = document.getElementById("lista-folios");
+  lista.innerHTML = "<li>Cargando...</li>";
+
+  try {
+    const querySnapshot = await db.collection("usuarios")
+      .orderBy("timestamp", "desc")
+      .limit(10)
+      .get();
+
+    lista.innerHTML = "";
+
+    querySnapshot.forEach((doc) => {
+      const datos = doc.data();
+      const folio = datos.folio || doc.id;
+
+      const li = document.createElement("li");
+
+      const link = document.createElement("a");
+      link.textContent = folio;
+      link.style.marginRight = "10px";
+      link.style.color = "#007bff";
+      link.style.textDecoration = "underline";
+      link.style.cursor = "pointer";
+      link.onclick = () => {
+        document.getElementById("buscarId").value = folio;
+        buscar();
+      };
+
+      const btnEliminar = document.createElement("button");
+      btnEliminar.textContent = "🗑️";
+      btnEliminar.title = "Eliminar este folio";
+      btnEliminar.style.color = "red";
+      btnEliminar.style.border = "none";
+      btnEliminar.style.background = "none";
+      btnEliminar.style.cursor = "pointer";
+      btnEliminar.onclick = async () => {
+        if (confirm(`¿Eliminar el folio "${folio}"?`)) {
+          try {
+            await db.collection("usuarios").doc(folio).delete();
+            alert(`Folio "${folio}" eliminado`);
+            cargarUltimosFolios(); // 🔄 actualizar lista
+          } catch (err) {
+            alert("Error al eliminar");
+            console.error(err);
+          }
+        }
+      };
+
+      li.appendChild(link);
+      li.appendChild(btnEliminar);
+      lista.appendChild(li);
+    });
+
+    if (querySnapshot.empty) {
+      lista.innerHTML = "<li>No hay registros</li>";
+    }
+
+  } catch (error) {
+    console.error("Error al cargar folios:", error);
+    lista.innerHTML = "<li>Error al cargar</li>";
+  }
+}
+
+
+  // Ejecutar al cargar la página
+  window.addEventListener("DOMContentLoaded", cargarUltimosFolios);
+
+  //----------------------BORRAR FOLIOS------------------------------
+  function limpiarSeleccion() {
+        document.getElementById("buscarId").value = "";
+
+        // Si usas clases o efectos activos, puedes limpiarlos aquí:
+        document.querySelectorAll("#lista-folios li").forEach(el => el.classList.remove("activo"));
+        document.getElementById("modificar-form").reset();
+        updatePreview();
+    }
+    
+
     </script>
             </form>
         </div>
@@ -485,7 +584,8 @@
         </div>
 
     </div>
-   
+
+
 
     <script>
 //-----------------------------LLENADO DE MDRS
