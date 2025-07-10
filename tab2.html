@@ -29,7 +29,7 @@
         }
         .container {
             display: grid;
-            grid-template-columns: 150px 1fr 1fr; /* Primera columna pequeña, las otras dos iguales */
+            grid-template-columns: 150px 1fr 1fr .1fr; /* Primera columna pequeña, las otras dos iguales */
             gap: 20px;
             max-width: 1500px;
             margin: auto;
@@ -48,7 +48,7 @@
             flex-direction: column;  /* Para que los elementos se apilen verticalmente */
             justify-content: center; /* Centrado vertical */
             height: 100vh;
-            background-color: #c0fc98; /* Solo para que se vea el fondo */
+            background-color: #cacacaab; /* Solo para que se vea el fondo */
         }
         .form-group {
             margin-bottom: 10px;
@@ -342,7 +342,7 @@
                         <input type="text" id="material_utilizado" name="material_utilizado" onblur="this.value = this.value.trim()">
                     </div>
                 </div>
-                
+
 
                          <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -575,17 +575,27 @@ async function cargarUltimosFolios() {
     
 
     </script>
-            </form>
+
+    </form>
         </div>
-        
+
         <!-- Área de vista previa -->
         <div class="text-preview" id="resultado">
             <!-- La vista previa se actualizará automáticamente -->
+
+
         </div>
-
+        <div class="centrar-pantalla" >
+            <h3 style="font-size: 16px;">COPIAR SCRIPT'S</h3>
+            <button onclick="copiarSeccion('seccion-eta')">INICIAL</button>
+            <br><br>
+            <button onclick="copiarSeccion('seccion-sitio')">LLEGADA</button>
+            <br><br>
+            <button onclick="copiarSeccion('seccion-fallo')">FALLO</button>
+            <br><br>
+            <button onclick="copiarSeccion('seccion-final')">FINAL</button>
+        </div>
     </div>
-
-
 
     <script>
 //-----------------------------LLENADO DE MDRS
@@ -875,12 +885,23 @@ async function cargarUltimosFolios() {
 
             // Actualizar el contenido del div de vista previa
             var resultado = document.getElementById('resultado');
-            resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n
+
+            resultado.innerHTML = `
+                <b>SCRIPT ETA:</b><div id="seccion-eta">FOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*</div>
+
+                <b>SCRIPT SITIO:</b><div id="seccion-sitio" style="white-space: pre-wrap;">SD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*</div>
+
+                <b>SCRIPT FALLO:</b><div id="seccion-fallo" style="white-space: pre-wrap;">Folio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*</div>
+
+                <b>SCRIPT FINAL:</b><div id="seccion-final" style="white-space: pre-wrap;">FOLIO: *${folio_}*\nOT: *${ot}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nENLACES AFECTADOS: *${enlaces}*\nFALLA_REPORTADA: *${falla_r}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nUBICACIÓN_DE_1N_2N*${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nDIRECCION_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DEL DAÑO: *${coordenadas_dano}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nPOTENCIA_FINAL: *${potencia_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*</div>
+`;
+
+           /* resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n
             \n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n
             \n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*\n
            
             \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nOT: *${ot}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nENLACES AFECTADOS: *${enlaces}*\nFALLA_REPORTADA: *${falla_r}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nUBICACIÓN_DE_1N_2N*${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nDIRECCION_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DEL DAÑO: *${coordenadas_dano}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nPOTENCIA_FINAL: *${potencia_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*`;
-        }
+        */}
 
         // Agregar eventos para actualizar la vista previa
         document.getElementById('folio_').addEventListener('input', updatePreview);
@@ -923,6 +944,28 @@ async function cargarUltimosFolios() {
         document.getElementById('enlaces').addEventListener('input', updatePreview);
         // Llamar a updatePreview al cargar la página para inicializar la vista previa
         updatePreview();
+
+        function copiarSeccion(id) {
+    var elemento = document.getElementById(id);
+
+    if (!elemento) {
+        alert("Sección no encontrada");
+        return;
+    }
+
+    // Crear textarea temporal
+    var tempTextarea = document.createElement("textarea");
+    tempTextarea.value = elemento.innerText; // copiar solo texto plano
+    document.body.appendChild(tempTextarea);
+
+    tempTextarea.select();
+    document.execCommand("copy");
+
+    document.body.removeChild(tempTextarea);
+   // alert("Sección copiada al portapapeles.");
+}
+
     </script>
+
 </body>
 </html>
