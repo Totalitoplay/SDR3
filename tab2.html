@@ -8,25 +8,47 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
 
     <style>
+        #lista-folios li {
+            list-style: none;
+            margin-bottom: 5px;
+        }
+
+        #lista-folios li a {
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #lista-folios li a:hover {
+            color: #0056b3;
+        }
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 25px;
 		
         }
         .container {
             display: grid;
-            grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); /* Dos columnas de igual tamaño */
-            gap: 20px; /* Espacio entre columnas */
-            max-width: 1200px;
+            grid-template-columns: 150px 1fr 1fr; /* Primera columna pequeña, las otras dos iguales */
+            gap: 20px;
+            max-width: 1500px;
             margin: auto;
 		
         }
         .form-container {
-            padding: 20px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-           max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
+            max-height: 1500px; /* Ajusta la altura máxima según sea necesario */
             overflow-y: auto;  /* Permite el desplazamiento vertical */
+        }
+        .centrar-pantalla {
+            display: flex;
+            border: 1px solid #ddd;
+            flex-direction: column;  /* Para que los elementos se apilen verticalmente */
+            justify-content: center; /* Centrado vertical */
+            height: 100vh;
+            background-color: #c0fc98; /* Solo para que se vea el fondo */
         }
         .form-group {
             margin-bottom: 10px;
@@ -55,7 +77,7 @@
             font-family: monospace;
             white-space: pre-wrap; /* Mantiene los espacios en blanco */
             font-size: 16px;
-		           max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
+		    max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
             overflow-y: auto;  /* Permite el desplazamiento vertical */
         }
         .select2-container {
@@ -68,9 +90,24 @@
 <body>    
 
 
-
     <div class="container">
         <!-- Contenedor del formulario -->
+            
+        <div class="centrar-pantalla">
+    <!--BUSCAR POR SD-->
+                <h3>Buscar por SD</h3>
+                <input type="text" id="buscarId" placeholder="SD del corte">
+                    <button onclick="buscar()">Buscar</button>  
+                    <button type="button" onclick="limpiarSeleccion()">Limpiar</button>
+                    <br>
+                    <br>
+                    <h3 style="font-size: 16px;">Últimos 10 folios registrados</h3>
+                        <ul id="lista-folios"></ul>
+                    <br>
+                    <br>
+                   <button type="submit" form="modificar-form">Guardar</button>
+        </div>
+
         <div class="form-container">
             <h2>Modificar Información</h2>
 
@@ -80,20 +117,23 @@
         <input type="text" id="fecha-texto" name="fecha-texto" readonly>-->
 
             <form id="modificar-form">
+                
+
+
                 <!-- Primer Bloque -->
                 <div class="block">
                     <h3>ETA</h3>
                     <div class="form-group">
                         <label for="folio">FOLIO:</label>
-                        <input type="text" id="folio_" name="folio_">
+                        <input type="text" id="folio_" name="folio_" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="eta">ETA:</label>
-                        <input type="text" id="eta" name="eta">
+                        <input type="text" id="eta" name="eta" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="proveedor">PROVEEDOR:</label>
-                        <input type="text" id="proveedor" name="proveedor">
+                        <input type="text" id="proveedor" name="proveedor" onblur="this.value = this.value.trim()">
                     </div>
                 </div>
 
@@ -102,23 +142,23 @@
                     <h3>SCRIPT SITIO</h3>
                     <div class="form-group">
                         <label for="sd">SD:</label>
-                        <input type="text" id="sd" name="sd">
+                        <input type="text" id="sd" name="sd" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="punto">Sitio/punto de medición:</label>
-                        <input type="text" id="punto" name="punto">
+                        <input type="text" id="punto" name="punto" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="coordenadas">Coordenadas:</label>
-                        <input type="text" id="coordenadas" name="coordenadas">
+                        <input type="text" id="coordenadas" name="coordenadas" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="proveedor2">Proveedor:</label>
-                        <input type="text" id="proveedor2" name="proveedor2">
+                        <input type="text" id="proveedor2" name="proveedor2" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="distrito">Distrito:</label>
-                        <input type="text" id="distrito" name="distrito">
+                        <input type="text" id="distrito" name="distrito" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="nombre">Nombre:</label>
@@ -128,7 +168,7 @@
     			</select>
 </div>
     <!-- JavaScript de Select2 -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
 
     <script>
@@ -143,35 +183,35 @@
                     <h3>SCRIPT FALLO</h3>
                     <div class="form-group">
                         <label for="folio3_">Folio:</label>
-                        <input type="text" id="folio3_" name="folio3_">
+                        <input type="text" id="folio3_" name="folio3_" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="causa">Causa del daño:</label>
-                        <input type="text" id="causa" name="causa">
+                        <input type="text" id="causa" name="causa" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="accion">Acción correctiva:</label>
-                        <input type="text" id="accion" name="accion">
+                        <input type="text" id="accion" name="accion" onblur="this.value = this.value.trim()">
                     </div>
                      <div class="form-group">
                         <label for="etr">ETR:</label>
-                        <input type="text" id="etr" name="etr">
+                        <input type="text" id="etr" name="etr" onblur="this.value = this.value.trim()">
                     </div>                   
                     <div class="form-group">
                         <label for="calibre">Capacidad de FO</label>
-                        <input type="text" id="calibre" name="calibre">
+                        <input type="text" id="calibre" name="calibre" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="coordenadas3">Coordenadas:</label>
-                        <input type="text" id="coordenadas3" name="coordenadas3">
+                        <input type="text" id="coordenadas3" name="coordenadas3" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="qr">Numero QR:</label>
-                        <input type="text" id="qr" name="qr">
+                        <input type="text" id="qr" name="qr" onblur="this.value = this.value.trim()">
                     </div>
                      <div class="form-group">
                         <label for="materiales">Materiales a utilizar:</label>
-                        <input type="text" id="materiales" name="materiales">
+                        <input type="text" id="materiales" name="materiales" onblur="this.value = this.value.trim()">
                     </div>                   
                 </div>
 
@@ -180,23 +220,28 @@
                     <h3>SCRIPT FINAL</h3>
                     <div class="form-group">
                         <label for="folio4">FOLIO:</label>
-                        <input type="text" id="folio4" name="folio4">
+                        <input type="text" id="folio4" name="folio4" onblur="this.value = this.value.trim()">
+                    </div>
+                    <div class="form-group">
+                        <label for="folio4">OT:</label>
+                        <input type="text" id="ot" name="ot" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="ciudad">CIUDAD:</label>
-                        <input type="text" id="ciudad" name="ciudad">
+                        <input type="text" id="ciudad" name="ciudad" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="estado">ESTADO:</label>
-                        <input type="text" id="estado" name="estado">
+                        <input type="text" id="estado" name="estado" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="cluster">CLUSTER:</label>
                           <select id="cluster" name="cluster" onchange="llenarNumero()">
 				<option value="">Selecciona una opción</option>
     				<option value="ALDAMA">ALDAMA</option>
+                    <option value="ALDAMA_2">ALDAMA_2</option>
     				<option value="BUENOS AIRES">BUENOS AIRES</option>
-				<option value="BUENOS AIRES 2">BUENOS AIRES 2</option>
+				    <option value="BUENOS AIRES 2">BUENOS AIRES 2</option>
     				<option value="CARLOS AMAYA">CARLOS AMAYA</option>
     				<option value="EL VERGEL">EL VERGEL</option>
     				<option value="GOMEZ MORIN">GOMEZ MORIN</option>
@@ -207,11 +252,9 @@
     				<option value="OASIS">OASIS</option>
     				<option value="SANTO DOMINGO">SANTO DOMINGO</option>
     				<option value="THOMPSON">THOMPSON</option>
-				<option value="THOMPSON 2">THOMPSON 2</option>
+				    <option value="THOMPSON 2">THOMPSON 2</option>
     				<option value="TIERRA NUEVA">TIERRA NUEVA</option>
-				<option value="TIERRA NUEVA 2">TIERRA NUEVA 2</option>
-            			<option value="SWITCH_CD_JUAREZ"> SWITCH_CD_JUAREZ</option>
-            			<option value="GRANJERO_CDJRZ">GRANJERO_CDJRZ</option>
+				    <option value="TIERRA NUEVA 2">TIERRA NUEVA 2</option>
 			</select>
                     </div>
                     <div class="form-group">
@@ -220,121 +263,318 @@
                     </div>
                     <div class="form-group">
                         <label for="clientes">CLIENTES AFECTADOS:</label>
-                        <input type="text" id="clientes" name="clientes">
+                        <input type="text" id="clientes" name="clientes" onblur="this.value = this.value.trim()">
                     </div>
-
+                    <div class="form-group">
+                        <label for="clientes">ENLACES AFECTADOS:</label>
+                        <input type="text" id="enlaces" name="enlaces" onblur="this.value = this.value.trim()">
+                    </div>
                     <div class="form-group">
                         <label for="clientes">FALLA REPORTADA:</label>
-                        <input type="text" id="falla_r" name="falla_r">
+                        <input type="text" id="falla_r" name="falla_r" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="fecha">Selecciona una fecha:</label>
                         <input type="date" id="fecha" name="fecha"  >
-                        <input type="hidden" id="fecha-texto" name="fecha-texto" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha_asg_desp">FECHA_Y_HR_DE_ASG_DESP:</label>
-                        <input type="text" id="fecha_asg_desp" name="fecha_asg_desp">
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha_asg_prov">FECHA_Y_HR_DE_ASG_PROV:</label>
-                        <input type="text" id="fecha_asg_prov" name="fecha_asg_prov">
+                        <input type="hidden" id="fecha-texto" name="fecha-texto" readonly onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="hr_llegada">HR_DE_LLEGADA_A_LA_ZONA:</label>
-                        <input type="text" id="hr_llegada" name="hr_llegada">
+                        <input type="text" id="hr_llegada" name="hr_llegada" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
-                        <label for="hr_1er_medicion">HR_DE_LA_1er_MEDICIÓN:</label>
-                        <input type="text" id="hr_1er_medicion" name="hr_1er_medicion">
+                        <label for="ubicacion_1er_2do">UBICACIÓN_DE_1N_2N:</label>
+                        <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
-                        <label for="ubicacion_1er_2do">UBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS:</label>
-                        <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do">
+                        <label for="qr_2">QR DE SEGUNDO NIVEL:</label>
+                        <input type="text" id="qr_2" name="qr_2" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="causa_dano">CAUSA DE DAÑO:</label>
-                        <input type="text" id="causa_dano" name="causa_dano">
+                        <input type="text" id="causa_dano" name="causa_dano" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
-                        <label for="ubicacion_dano">UBICACIÓN_DEL_DAÑO:</label>
-                        <input type="text" id="ubicacion_dano" name="ubicacion_dano">
+                        <label for="ubicacion_dano">DIRECCION_DEL_DAÑO:</label>
+                        <input type="text" id="ubicacion_dano" name="ubicacion_dano" onblur="this.value = this.value.trim()">
                     </div>                   
                     <div class="form-group">
-                        <label for="coordenadas_dano">COORDENADAS:</label>
-                        <input type="text" id="coordenadas_dano" name="coordenadas_dano">
-                    </div>
-                    <div class="form-group">
-                        <label for="descripcion_actividades">DESCRIP_DE_ACTIVIDADES:</label>
-                        <input type="text" id="descripcion_actividades" name="descripcion_actividades">
-                    </div>
-                    <div class="form-group">
-                        <label for="potencia_inicial">POTENCIA_INICIAL:</label>
-                        <input type="text" id="potencia_inicial" name="potencia_inicial">
-                    </div>
-                    <div class="form-group">
-                        <label for="potencia_final">POTENCIA_FINAL:</label>
-                        <input type="text" id="potencia_final" name="potencia_final">
+                        <label for="coordenadas_dano">COORDENADAS DEL DAÑO:</label>
+                        <input type="text" id="coordenadas_dano" name="coordenadas_dano" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="trabajos_realizados">TRABAJOS_REALIZADOS(CONCEPTOS):</label>
-                        <input type="text" id="trabajos_realizados" name="trabajos_realizados">
+                        <input type="text" id="trabajos_realizados" name="trabajos_realizados" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
-                        <label for="coordenadas_cab">COORDENADAS_DEL_CAB-024H 96H:</label>
-                        <input type="text" id="coordenadas_cab" name="coordenadas_cab">
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha_hr_final">FECHA_HR_FINAL_DE_REPARACIÓN:</label>
-                        <input type="text" id="fecha_hr_final" name="fecha_hr_final">
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha_hr_final">QR DE SEGUNDO NIVEL:</label>
-                        <input type="text" id="qr_2" name="qr_2">
+                        <label for="potencia_final">POTENCIA_FINAL:</label>
+                        <input type="text" id="potencia_final" name="potencia_final" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="atiende_nom_tec">ATIENDE_NOM_TEC:</label>
-                        <input type="text" id="atiende_nom_tec" name="atiende_nom_tec">
+                        <input type="text" id="atiende_nom_tec" name="atiende_nom_tec" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="proveedor4">PROVEEDOR:</label>
-                        <input type="text" id="proveedor4" name="proveedor4">
+                        <input type="text" id="proveedor4" name="proveedor4" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="supervisor">SUPERVISOR DISTRITO:</label>
-        		<select id="supervisor" name="supervisor">
-           			<option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
-            			<option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
-        		</select>
+                        <select id="supervisor" name="supervisor">
+                            <option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
+                            <option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
+                        </select>
                     </div>
-                    <div class="form-group">
-                        <label for="tipo_mantenimiento">TIPO DE MANTENIMIENTO:</label>
-                        <input type="text" id="tipo_mantenimiento" name="tipo_mantenimiento">
-                    </div>
-                    <div class="form-group">
-                        <label for="material_utilizado">MATERIAL UTILIZADO:</label>
-                        <input type="text" id="material_utilizado" name="material_utilizado">
-                    </div>
-		<!---- <div class="form-group">
-                        <label for="atendio_desp">ATENDIO_DESP:</label>
- 			<select id="atendio_desp" name="atendio_des">
-  				 <-----SELECT DE MDR'S     			
-        		</select>
-                    </div>----->  
-
                     <div class="form-group">
                         <label for="justificacion_sla">PAUSA HORA INICIAL Y FINAL:</label>
-                        <input type="text" id="justificacion_sla" name="justificacion_sla">
+                        <input type="text" id="justificacion_sla" name="justificacion_sla" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="motivo_pausa">MOTIVO DE PAUSA:</label>
-                        <input type="text" id="m_pausa" name="m_pausa">
+                        <input type="text" id="m_pausa" name="m_pausa" onblur="this.value = this.value.trim()">
                     </div>
                     <div class="form-group">
                         <label for="tiempo_pausa">TIEMPO TOTAL DE PAUSA:</label>
-                        <input type="text" id="t_pausa" name="t_pausa">
+                        <input type="text" id="t_pausa" name="t_pausa" onblur="this.value = this.value.trim()">
                     </div>                    
+                    <div class="form-group">
+                        <label for="material_utilizado">MATERIAL UTILIZADO:</label>
+                        <input type="text" id="material_utilizado" name="material_utilizado" onblur="this.value = this.value.trim()">
+                    </div>
                 </div>
+                
+
+                         <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script>
+        // Tu configuración de Firebase (reemplaza con la tuya)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
+            authDomain: "scripts-2c739.firebaseapp.com",
+            projectId: "scripts-2c739",
+            storageBucket: "scripts-2c739.firebasestorage.app",
+            messagingSenderId: "1054970007452",
+            appId: "1:1054970007452:web:1d283693bb8377192c0259",
+            measurementId: "G-08TE213QDH"
+        };
+        // Inicializar Firebase
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+        // Referencia al formulario
+            const form = document.getElementById("modificar-form");
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const folio = document.getElementById("folio_").value.trim();
+            const eta = document.getElementById("eta").value;
+            const proveedor = document.getElementById("proveedor").value;
+
+            const punto = document.getElementById("punto").value;
+            const coordenadas = document.getElementById("coordenadas").value;
+            const proveedor2 = document.getElementById("proveedor2").value;
+            const distrito = document.getElementById("distrito").value;
+            const nombre = document.getElementById("nombre").value; //REVISAR LABEL DE NOMBRE IDC
+
+            const causa = document.getElementById("causa").value;
+            const accion = document.getElementById("accion").value;
+            const etr = document.getElementById("etr").value;
+            const calibre = document.getElementById("calibre").value;
+            const coordenadas3 = document.getElementById("coordenadas3").value;
+            const qr = document.getElementById("qr").value;
+            const materiales = document.getElementById("materiales").value;
+
+            const ot = document.getElementById("ot").value;
+            const ciudad = document.getElementById("ciudad").value;
+            const estado = document.getElementById("estado").value;
+            const cluster = document.getElementById("cluster").value;
+            const olt = document.getElementById("olt").value;
+            const clientes = document.getElementById("clientes").value;
+            const enlaces = document.getElementById("enlaces").value;
+            const falla_r = document.getElementById("falla_r").value;
+            const fecha = document.getElementById("fecha-texto").value;
+            const hr_llegada = document.getElementById("hr_llegada").value;
+            const ubicacion_1er_2do = document.getElementById("ubicacion_1er_2do").value;
+            const qr_2 = document.getElementById("qr_2").value;
+            const causa_dano = document.getElementById("causa_dano").value;
+            const ubicacion_dano = document.getElementById("ubicacion_dano").value;
+            const coordenadas_dano = document.getElementById("coordenadas_dano").value;
+            const trabajos_realizados = document.getElementById("trabajos_realizados").value;
+            const potencia_final = document.getElementById("potencia_final").value;
+            const atiende_nom_tec = document.getElementById("atiende_nom_tec").value;
+            const proveedor4 = document.getElementById("proveedor4").value;
+            const supervisor = document.getElementById("supervisor").value;
+            const justificacion_sla = document.getElementById("justificacion_sla").value;
+            const m_pausa = document.getElementById("m_pausa").value;
+            const t_pausa = document.getElementById("t_pausa").value;
+            const material_utilizado = document.getElementById("material_utilizado").value;
+
+
+            if (!folio) return alert("Debes ingresar un SD");
+
+            try {
+                await db.collection("usuarios").doc(folio).set({folio, eta, proveedor, punto, coordenadas, proveedor2, distrito, nombre,
+                                                                causa, accion, etr, calibre, coordenadas3, qr, materiales, ot,
+                                                                ciudad, estado, cluster, olt, clientes, enlaces, falla_r,
+                                                                hr_llegada, ubicacion_1er_2do,
+                                                                causa_dano, ubicacion_dano, coordenadas_dano, trabajos_realizados,
+                                                                potencia_final, qr_2, atiende_nom_tec, proveedor4, supervisor,
+                                                                justificacion_sla, m_pausa, t_pausa, material_utilizado, timestamp: firebase.firestore.FieldValue.serverTimestamp()});
+                                                                
+                alert("Datos guardados con folio: " + folio);
+                 cargarUltimosFolios(); 
+                //form.reset();
+            } catch (error) {
+                console.error("Error al guardar:", error);
+            }
+        });
+
+        async function buscar() {
+      const id = document.getElementById("buscarId").value.trim();
+      //const resultado = document.getElementById("resultado");
+
+      if (!id) return alert("Ingresa un ID válido.");
+
+      try {
+        const doc = await db.collection("usuarios").doc(id).get();
+
+        if (doc.exists) {
+          const datos = doc.data();
+            document.getElementById("folio_").value = datos.folio || "";
+            document.getElementById("eta").value = datos.eta || "";
+            document.getElementById("proveedor").value = datos.proveedor || "";
+
+            document.getElementById("punto").value = datos.punto || "";
+            document.getElementById("coordenadas").value = datos.coordenadas || "";
+            document.getElementById("proveedor2").value = datos.proveedor2 || "";
+            document.getElementById("distrito").value = datos.distrito || "";
+            document.getElementById("nombre").value = datos.nombre || ""; //REVISAR LABEL DE NOMBRE IDC
+
+            document.getElementById("causa").value = datos.causa || "";
+            document.getElementById("accion").value = datos.accion || "";
+            document.getElementById("etr").value = datos.etr || "";
+            document.getElementById("calibre").value = datos.calibre || "";
+            document.getElementById("coordenadas3").value = datos.coordenadas3 || "";
+            document.getElementById("qr").value = datos.qr || "";
+            document.getElementById("materiales").value = datos.materiales || "";
+
+            document.getElementById("ot").value = datos.ot || "";
+            document.getElementById("ciudad").value = datos.ciudad || "";
+            document.getElementById("estado").value = datos.estado || "";
+            document.getElementById("cluster").value = datos.cluster || "";
+            document.getElementById("olt").value = datos.olt || "";
+            document.getElementById("clientes").value = datos.clientes || "";
+            document.getElementById("enlaces").value = datos.enlaces || "";
+            document.getElementById("falla_r").value = datos.falla_r || "";
+            document.getElementById("fecha-texto").value = datos.fecha || "";
+            document.getElementById("hr_llegada").value = datos.hr_llegada || "";
+            document.getElementById("ubicacion_1er_2do").value = datos.ubicacion_1er_2do || "";
+            document.getElementById("causa_dano").value = datos.causa_dano || "";
+            document.getElementById("ubicacion_dano").value = datos.ubicacion_dano || "";
+            document.getElementById("coordenadas_dano").value = datos.coordenadas_dano || "";
+            document.getElementById("trabajos_realizados").value = datos.trabajos_realizados || "";
+            document.getElementById("potencia_final").value = datos.potencia_final || "";
+            document.getElementById("qr_2").value = datos.qr_2 || "";
+            document.getElementById("atiende_nom_tec").value = datos.atiende_nom_tec || "";
+            document.getElementById("proveedor4").value = datos.proveedor4 || "";
+            document.getElementById("supervisor").value = datos.supervisor || "";
+            document.getElementById("justificacion_sla").value = datos.justificacion_sla || "";
+            document.getElementById("m_pausa").value = datos.m_pausa || "";
+            document.getElementById("t_pausa").value = datos.t_pausa || "";
+            document.getElementById("material_utilizado").value = datos.material_utilizado || "";
+          //resultado.innerText = "Datos cargados.";
+          updatePreview();
+        } else {
+         // resultado.innerText = "Documento no encontrado.";
+         alert("SD NO EXISTE");
+        }
+      } catch (error) {
+        //resultado.innerText = "Error al buscar.";
+        alert("ERROR AL BUSCAR");
+      }
+    }
+    //----------------------------CARGAR 1O ULTIMOS FOLIOS---------------------------------}
+async function cargarUltimosFolios() {
+  const lista = document.getElementById("lista-folios");
+  lista.innerHTML = "<li>Cargando...</li>";
+
+  try {
+    const querySnapshot = await db.collection("usuarios")
+      .orderBy("timestamp", "desc")
+      .limit(10)
+      .get();
+
+    lista.innerHTML = "";
+
+    querySnapshot.forEach((doc) => {
+      const datos = doc.data();
+      const folio = datos.folio || doc.id;
+
+      const li = document.createElement("li");
+
+      const link = document.createElement("a");
+      link.textContent = folio;
+      link.style.marginRight = "10px";
+      link.style.color = "#007bff";
+      link.style.textDecoration = "underline";
+      link.style.cursor = "pointer";
+      link.onclick = () => {
+        document.getElementById("buscarId").value = folio;
+        buscar();
+      };
+
+      const btnEliminar = document.createElement("button");
+      btnEliminar.textContent = "🗑️";
+      btnEliminar.title = "Eliminar este folio";
+      btnEliminar.style.color = "red";
+      btnEliminar.style.border = "none";
+      btnEliminar.style.background = "none";
+      btnEliminar.style.cursor = "pointer";
+      btnEliminar.onclick = async () => {
+        if (confirm(`¿Eliminar el folio "${folio}"?`)) {
+          try {
+            await db.collection("usuarios").doc(folio).delete();
+            alert(`Folio "${folio}" eliminado`);
+            cargarUltimosFolios(); // 🔄 actualizar lista
+          } catch (err) {
+            alert("Error al eliminar");
+            console.error(err);
+          }
+        }
+      };
+
+      li.appendChild(link);
+      li.appendChild(btnEliminar);
+      lista.appendChild(li);
+    });
+
+    if (querySnapshot.empty) {
+      lista.innerHTML = "<li>No hay registros</li>";
+    }
+
+  } catch (error) {
+    console.error("Error al cargar folios:", error);
+    lista.innerHTML = "<li>Error al cargar</li>";
+  }
+}
+
+
+  // Ejecutar al cargar la página
+  window.addEventListener("DOMContentLoaded", cargarUltimosFolios);
+
+  //----------------------BORRAR FOLIOS------------------------------
+  function limpiarSeleccion() {
+        document.getElementById("buscarId").value = "";
+
+        // Si usas clases o efectos activos, puedes limpiarlos aquí:
+        document.querySelectorAll("#lista-folios li").forEach(el => el.classList.remove("activo"));
+        document.getElementById("modificar-form").reset();
+        updatePreview();
+    }
+    
+
+    </script>
             </form>
         </div>
         
@@ -342,12 +582,13 @@
         <div class="text-preview" id="resultado">
             <!-- La vista previa se actualizará automáticamente -->
         </div>
+
     </div>
+
+
 
     <script>
 //-----------------------------LLENADO DE MDRS
-
-
         async function cargarArchivoAutomatico1() {
             // Ruta del archivo .txt (en el mismo directorio del proyecto)
             const archivoRuta1 = './mdr.txt';
@@ -427,7 +668,7 @@
                 });
             } catch (error) {
                 console.error('Error al cargar el archivo:', error);
-                alert('Hubo un problema al cargar los tecnicos.');
+               // alert('Hubo un problema al cargar los tecnicos.');
             }
         }
 
@@ -467,8 +708,9 @@
 
         var numeros = {
             "ALDAMA": "ALDAMA_JUA",
+            "ALDAMA_2": "ALDAMA_2_JUA",
             "BUENOS AIRES": "BUENOS_AIRES_JUA",
-	    "BUENOS AIRES 2": "BUENOS_AIRES_2_JUA",
+	        "BUENOS AIRES 2": "BUENOS_AIRES_2_JUA",
             "CARLOS AMAYA": "CARLOS_AMAYA_JUA",
             "EL VERGEL": "VERGEL_JUA",
             "GOMEZ MORIN": "GOMEZ_MORIN_JUA",
@@ -479,7 +721,7 @@
             "OASIS": "OASIS_JUA",
             "SANTO DOMINGO": "SANTO_DOMINGO_JUA",
             "THOMPSON": "THOMPSON_JUA",
-	    "THOMPSON 2": "THOMPSON_2_JUA",
+	        "THOMPSON 2": "THOMPSON_2_JUA",
             "TIERRA NUEVA": "HACIENDA_DE_LAS_TORRES_JUA",
             "TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA",
             "SWITCH_CD_JUAREZ": "SWITCH_CD_JUAREZ",
@@ -513,11 +755,7 @@
         fechaInput.addEventListener('input', function() {
             const fechaSeleccionada = this.value;
             fechaTextoInput.value = fechaSeleccionada || 'No se ha seleccionado ninguna fecha.';
-	document.getElementById('fecha_hr_final').value = fechaSeleccionada; 
-	document.getElementById('fecha_asg_desp').value = fechaSeleccionada;
-	document.getElementById('fecha_asg_prov').value = fechaSeleccionada;
 	document.getElementById('hr_llegada').value = fechaSeleccionada;
-	document.getElementById('hr_1er_medicion').value = fechaSeleccionada;
 
     updatePreview();
         });
@@ -525,7 +763,6 @@
 
 	document.getElementById('proveedor').value = "GTB";
 	document.getElementById('distrito').value = "JUAREZ";
-	document.getElementById('tipo_mantenimiento').value = "CORRECTIVO";
 	document.getElementById('estado').value = "CHIHUAHUA";
 
 	
@@ -571,15 +808,23 @@
 	// Sincronizar el valor de los otros campo
             document.getElementById('coordenadas_dano').value = coordenadas3;
 
-	// Obtener el valor de ACCION CORRECTIVA del TERCER bloque
-            var accion=document.getElementById('accion').value;
-	// Sincronizar el valor de los otros campo
-            document.getElementById('descripcion_actividades').value = accion;
 
 	// Obtener el valor de NUMERO QR del TERCER bloque
             var qr=document.getElementById('qr').value;
 	// Sincronizar el valor de los otros campo
             document.getElementById('qr_2').value = qr;
+
+
+    // Obtener el valor de MATERIALES del TERCER bloque
+            var materiales=document.getElementById('materiales').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('material_utilizado').value = materiales;
+
+    // Obtener el valor de COORDENADAS FALLO del TERCER bloque
+            var coordenadas3 = document.getElementById('coordenadas3').value;
+	// Sincronizar el valor de los otros campo
+            document.getElementById('coordenadas_dano').value = coordenadas3;
+
 
 
 
@@ -604,35 +849,29 @@
             var materiales = document.getElementById('materiales').value;
 
             // Obtener los valores de los campos del cuarto bloque
+            var ot = document.getElementById('ot').value;
             var ciudad = document.getElementById('ciudad').value;
             var estado = document.getElementById('estado').value;
             var cluster = document.getElementById('cluster').value;
             var olt = document.getElementById('olt').value;
             var clientes = document.getElementById('clientes').value;
-            var fecha_asg_desp = document.getElementById('fecha_asg_desp').value;
-            var fecha_asg_prov = document.getElementById('fecha_asg_prov').value;
+            var enlaces = document.getElementById('enlaces').value;
+            var falla_r = document.getElementById('falla_r').value;
             var hr_llegada = document.getElementById('hr_llegada').value;
-            var hr_1er_medicion = document.getElementById('hr_1er_medicion').value;
             var ubicacion_1er_2do = document.getElementById('ubicacion_1er_2do').value;
             var ubicacion_dano = document.getElementById('ubicacion_dano').value;
             var coordenadas_dano = document.getElementById('coordenadas_dano').value;
-            var causa_dano = document.getElementById('causa_dano').value;
-            var descripcion_actividades = document.getElementById('descripcion_actividades').value;
-            var potencia_inicial = document.getElementById('potencia_inicial').value;
-            var potencia_final = document.getElementById('potencia_final').value;
             var trabajos_realizados = document.getElementById('trabajos_realizados').value;
-            var coordenadas_cab = document.getElementById('coordenadas_cab').value;
-            var fecha_hr_final = document.getElementById('fecha_hr_final').value;
+            var causa_dano = document.getElementById('causa_dano').value;
+            var potencia_final = document.getElementById('potencia_final').value;
             var qr_2 = document.getElementById('qr_2').value;
             var atiende_nom_tec = document.getElementById('atiende_nom_tec').value;
             var proveedor4 = document.getElementById('proveedor4').value;
             var supervisor = document.getElementById('supervisor').value;
-            var tipo_mantenimiento = document.getElementById('tipo_mantenimiento').value;
-            var material_utilizado = document.getElementById('material_utilizado').value;
-            //var atendio_desp = document.getElementById('atendio_desp').value;
             var justificacion_sla = document.getElementById('justificacion_sla').value;
             var m_pausa = document.getElementById('m_pausa').value;
             var t_pausa = document.getElementById('t_pausa').value;
+            var material_utilizado = document.getElementById('material_utilizado').value;
 
             // Actualizar el contenido del div de vista previa
             var resultado = document.getElementById('resultado');
@@ -640,7 +879,7 @@
             \n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n
             \n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*\n
            
-            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFECHA_Y_HR_DE_ASG_DESP: *${fecha_asg_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${fecha_asg_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICIÓN: *${hr_1er_medicion}*\nUBICACIÓNDE_1er_._2do_NIVEL_Y_DERIVACION_CON_SUS_FIBRAS: *${ubicacion_1er_2do}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DE DAÑO: *${coordenadas_dano}*\nCAUSA DE DAÑO: *${causa_dano}*\nDESCRIP_DE_ACTIVIDADES: *${descripcion_actividades}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nCOORDENADAS_DEL_CAB-024: *${coordenadas_cab}*\nFECHA_HR_FINAL_DE_REPARACIÓN: *${fecha_hr_final}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR: *${supervisor}*\nTIPO DE MANTENIMIENTO: *${tipo_mantenimiento}*\nMATERIAL UTILIZADO: *${material_utilizado}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*`;
+            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nOT: *${ot}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nENLACES AFECTADOS: *${enlaces}*\nFALLA_REPORTADA: *${falla_r}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nUBICACIÓN_DE_1N_2N*${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nDIRECCION_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DEL DAÑO: *${coordenadas_dano}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nPOTENCIA_FINAL: *${potencia_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*`;
         }
 
         // Agregar eventos para actualizar la vista previa
@@ -663,31 +902,25 @@
         document.getElementById('cluster').addEventListener('input', updatePreview);
         document.getElementById('olt').addEventListener('input', updatePreview);
         document.getElementById('clientes').addEventListener('input', updatePreview);
-        document.getElementById('fecha_asg_desp').addEventListener('input', updatePreview);
-        document.getElementById('fecha_asg_prov').addEventListener('input', updatePreview);
+        document.getElementById('falla_r').addEventListener('input', updatePreview);
         document.getElementById('hr_llegada').addEventListener('input', updatePreview);
-        document.getElementById('hr_1er_medicion').addEventListener('input', updatePreview);
         document.getElementById('ubicacion_1er_2do').addEventListener('input', updatePreview);
         document.getElementById('ubicacion_dano').addEventListener('input', updatePreview);
         document.getElementById('coordenadas_dano').addEventListener('input', updatePreview);
         document.getElementById('causa_dano').addEventListener('input', updatePreview);
-        document.getElementById('descripcion_actividades').addEventListener('input', updatePreview);
-        document.getElementById('potencia_inicial').addEventListener('input', updatePreview);
         document.getElementById('potencia_final').addEventListener('input', updatePreview);
         document.getElementById('trabajos_realizados').addEventListener('input', updatePreview);
-        document.getElementById('coordenadas_cab').addEventListener('input', updatePreview);
-        document.getElementById('fecha_hr_final').addEventListener('input', updatePreview);
         document.getElementById('qr_2').addEventListener('input', updatePreview);
         document.getElementById('atiende_nom_tec').addEventListener('input', updatePreview);
         document.getElementById('proveedor4').addEventListener('input', updatePreview);
         document.getElementById('supervisor').addEventListener('input', updatePreview);
-        document.getElementById('tipo_mantenimiento').addEventListener('input', updatePreview);
         document.getElementById('material_utilizado').addEventListener('input', updatePreview);
-       // document.getElementById('atendio_desp').addEventListener('input', updatePreview);
         document.getElementById('justificacion_sla').addEventListener('input', updatePreview);
         document.getElementById('materiales').addEventListener('input', updatePreview);
         document.getElementById('m_pausa').addEventListener('input', updatePreview);
         document.getElementById('t_pausa').addEventListener('input', updatePreview);
+        document.getElementById('ot').addEventListener('input', updatePreview);
+        document.getElementById('enlaces').addEventListener('input', updatePreview);
         // Llamar a updatePreview al cargar la página para inicializar la vista previa
         updatePreview();
     </script>
