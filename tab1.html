@@ -592,6 +592,9 @@ async function cargarUltimosFolios() {
         // Si usas clases o efectos activos, puedes limpiarlos aquí:
         document.querySelectorAll("#lista-folios li").forEach(el => el.classList.remove("activo"));
         document.getElementById("modificar-form").reset();
+        	document.getElementById('proveedor').value = "GTB";
+	        document.getElementById('distrito').value = "JUAREZ";
+	        document.getElementById('estado').value = "CHIHUAHUA";
         updatePreview();
     }
     
