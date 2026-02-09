@@ -889,7 +889,7 @@ async function cargarUltimosFolios() {
 
 
             // Obtener el valor del FOLIO del primer bloque
-            var folio_ = document.getElementById('folio_').value;
+            var folio_ = document.getElementById('folio_').value.trim();
 
             // Sincronizar el valor de los otros campos FOLIO
             document.getElementById('folio3_').value = folio_;
@@ -898,47 +898,47 @@ async function cargarUltimosFolios() {
 
 
       	// Obtener el valor del PROVEEDOR del primer bloque
-            var proveedor= document.getElementById('proveedor').value;
+            var proveedor= document.getElementById('proveedor').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('proveedor2').value = proveedor;
             document.getElementById('proveedor4').value = proveedor;
 
 
 	// Obtener el valor del DISTRITO del SEGUNDO bloque
-            var distrito=document.getElementById('distrito').value;
+            var distrito=document.getElementById('distrito').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('ciudad').value = distrito;
 
 	// Obtener el valor del NOMBRE del SEGUNDO bloque
-            var nombre=document.getElementById('nombre').value;
+            var nombre=document.getElementById('nombre').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('atiende_nom_tec').value = nombre;
 
 
 	// Obtener el valor de CAUSA DE DAÑO del TERCER bloque
-            var causa=document.getElementById('causa').value;
+            var causa=document.getElementById('causa').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('causa_dano').value = causa;
 
 	// Obtener el valor de CORDENADAS DAÑO del TERCER bloque
-            var coordenadas3=document.getElementById('coordenadas3').value;
+            var coordenadas3=document.getElementById('coordenadas3').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('coordenadas_dano').value = coordenadas3;
 
 
 	// Obtener el valor de NUMERO QR del TERCER bloque
-            var qr=document.getElementById('qr').value;
+            var qr=document.getElementById('qr').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('qr_2').value = qr;
 
 
     // Obtener el valor de MATERIALES del TERCER bloque
-            var materiales=document.getElementById('materiales').value;
+            var materiales=document.getElementById('materiales').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('material_utilizado').value = materiales;
 
     // Obtener el valor de COORDENADAS FALLO del TERCER bloque
-            var coordenadas3 = document.getElementById('coordenadas3').value;
+            var coordenadas3 = document.getElementById('coordenadas3').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('coordenadas_dano').value = coordenadas3;
 
@@ -946,53 +946,53 @@ async function cargarUltimosFolios() {
 
 
             // Obtener los valores de los campos del primer bloque
-            var eta = document.getElementById('eta').value;
-            var proveedor = document.getElementById('proveedor').value;
+            var eta = document.getElementById('eta').value.trim();
+            var proveedor = document.getElementById('proveedor').value.trim();
 
             // Obtener los valores de los campos del segundo bloque
             var punto = document.getElementById('punto').value;
-            var coordenadas = document.getElementById('coordenadas').value;
-            var proveedor2 = document.getElementById('proveedor2').value;
-            var distrito = document.getElementById('distrito').value;
-	        var nombre = document.getElementById('nombre').value;
+            var coordenadas = document.getElementById('coordenadas').value.trim();
+            var proveedor2 = document.getElementById('proveedor2').value.trim();
+            var distrito = document.getElementById('distrito').value.trim();
+	        var nombre = document.getElementById('nombre').value.trim();
 
             // Obtener los valores de los campos del tercer bloque
-            var causa = document.getElementById('causa').value;
-            var accion = document.getElementById('accion').value;
-            var calibre = document.getElementById('calibre').value;
-            var coordenadas3 = document.getElementById('coordenadas3').value;
-            var etr = document.getElementById('etr').value;
-            var qr = document.getElementById('qr').value;
-            var materiales = document.getElementById('materiales').value;
+            var causa = document.getElementById('causa').value.trim();
+            var accion = document.getElementById('accion').value.trim();
+            var calibre = document.getElementById('calibre').value.trim();
+            var coordenadas3 = document.getElementById('coordenadas3').value.trim();
+            var etr = document.getElementById('etr').value.trim();
+            var qr = document.getElementById('qr').value.trim();
+            var materiales = document.getElementById('materiales').value.trim();
 
             // Obtener los valores de los campos del cuarto bloque
-            var ciudad = document.getElementById('ciudad').value;
-            var estado = document.getElementById('estado').value;
-            var cluster = document.getElementById('cluster').value;
-            var olt = document.getElementById('olt').value;
-            var clientes = document.getElementById('clientes').value;
-            var falla_r = document.getElementById('falla_r').value;
-            var hr_desp = document.getElementById('hr_desp').value;
-            var hr_prov = document.getElementById('hr_prov').value;
-            var hr_llegada = document.getElementById('hr_llegada').value;
-            var hr_med = document.getElementById('hr_med').value;
-            var ubicacion_1er_2do = document.getElementById('ubicacion_1er_2do').value;
-            var qr_2 = document.getElementById('qr_2').value;
-            var ubicacion_dano = document.getElementById('ubicacion_dano').value;
-            var coordenadas_dano = document.getElementById('coordenadas_dano').value;
-            var desc_act = document.getElementById('desc_act').value;
-            var potencia_inicial= document.getElementById('potencia_inicial').value;
-            var potencia_final = document.getElementById('potencia_final').value;
-            var trabajos_realizados = document.getElementById('trabajos_realizados').value;
-            var hr_final = document.getElementById('hr_final').value;
-            var causa_dano = document.getElementById('causa_dano').value;
-            var atiende_nom_tec = document.getElementById('atiende_nom_tec').value;
-            var proveedor4 = document.getElementById('proveedor4').value;
-            var supervisor = document.getElementById('supervisor').value;
-            var justificacion_sla = document.getElementById('justificacion_sla').value;
-            var m_pausa = document.getElementById('m_pausa').value;
-            var t_pausa = document.getElementById('t_pausa').value;
-            var material_utilizado = document.getElementById('material_utilizado').value;
+            var ciudad = document.getElementById('ciudad').value.trim();
+            var estado = document.getElementById('estado').value.trim();
+            var cluster = document.getElementById('cluster').value.trim();
+            var olt = document.getElementById('olt').value.trim();
+            var clientes = document.getElementById('clientes').value.trim();
+            var falla_r = document.getElementById('falla_r').value.trim();
+            var hr_desp = document.getElementById('hr_desp').value.trim();
+            var hr_prov = document.getElementById('hr_prov').value.trim();
+            var hr_llegada = document.getElementById('hr_llegada').value.trim();
+            var hr_med = document.getElementById('hr_med').value.trim();
+            var ubicacion_1er_2do = document.getElementById('ubicacion_1er_2do').value.trim();
+            var qr_2 = document.getElementById('qr_2').value.trim();
+            var ubicacion_dano = document.getElementById('ubicacion_dano').value.trim();
+            var coordenadas_dano = document.getElementById('coordenadas_dano').value.trim();
+            var desc_act = document.getElementById('desc_act').value.trim();
+            var potencia_inicial= document.getElementById('potencia_inicial').value.trim();
+            var potencia_final = document.getElementById('potencia_final').value.trim();
+            var trabajos_realizados = document.getElementById('trabajos_realizados').value.trim();
+            var hr_final = document.getElementById('hr_final').value.trim();
+            var causa_dano = document.getElementById('causa_dano').value.trim();
+            var atiende_nom_tec = document.getElementById('atiende_nom_tec').value.trim();
+            var proveedor4 = document.getElementById('proveedor4').value.trim();
+            var supervisor = document.getElementById('supervisor').value.trim();
+            var justificacion_sla = document.getElementById('justificacion_sla').value.trim();
+            var m_pausa = document.getElementById('m_pausa').value.trim();
+            var t_pausa = document.getElementById('t_pausa').value.trim();
+            var material_utilizado = document.getElementById('material_utilizado').value.trim();
 
             // Actualizar el contenido del div de vista previa
             var resultado = document.getElementById('resultado');
