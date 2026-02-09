@@ -233,27 +233,49 @@
                           <select id="cluster" name="cluster" onchange="llenarNumero()">
                                 <option value="">Selecciona una opción</option>
                                 <option value="ALDAMA">ALDAMA</option>
-                                <option value="ALDAMA_2">ALDAMA_2</option>
+                                <option value="AMPLIACION ALDAMA">AMPLIACION ALDAMA</option>
+                                <option value="AMPLIACION ALDAMA 2">AMPLIACION ALDAMA 2</option>
+                                <option value="AMPLIACION ALDAMA 3">AMPLIACION ALDAMA 3</option>
+                                <option value="AMPLIACION ALDAMA 4">AMPLIACION ALDAMA 4</option>                                   
+                                <option value="AMPLIACION ALDAMA 5">AMPLIACION ALDAMA 5</option>
                                 <option value="BUENOS AIRES">BUENOS AIRES</option>
+                                <option value="BUENOS AIRES_A">BUENOS AIRES_A</option>
+                                <option value="AMPLIACION BUENOS AIRES">AMPLIACION BUENOS AIRES</option>
+                                <option value="AMPLIACION BUENOS AIRES_A">AMPLIACION BUENOS AIRES_A</option>
+                                <option value="AMPLIACION BUENOS AIRES_2_A">AMPLIACION BUENOS AIRES_2_A</option>
+                                <option value="AMPLIACION BUENOS AIRES_3_A">AMPLIACION BUENOS AIRES_3_A</option>
+                                <option value="AMPLIACION BUENOS AIRES_4_A">AMPLIACION BUENOS AIRES_4_A</option>
+                                <option value="AMPLIACION BUENOS AIRES_5_A">AMPLIACION BUENOS AIRES_5_A</option>
+                                <option value="AMPLIACION BUENOS AIRES_6_A">AMPLIACION BUENOS AIRES_6_A</option>
                                 <option value="BUENOS AIRES 2">BUENOS AIRES 2</option>
                                 <option value="CARLOS AMAYA">CARLOS AMAYA</option>
                                 <option value="EL VERGEL">EL VERGEL</option>
                                 <option value="GOMEZ MORIN">GOMEZ MORIN</option>
+                                <option value="AMPLIACION GOMEZ MORIN">AMPLIACION GOMEZ MORIN</option>
                                 <option value="LOMAS DE MORELOS">LOMAS DE MORELOS</option>
+                                <option value="AMPLIACION LOMAS DE MORELOS 2">AMPLIACION LOMAS DE MORELOS 3</option>
+                                <option value="AMPLIACION LOMAS DE MORELOS 3">AMPLIACION LOMAS DE MORELOS 3</option>
                                 <option value="LOS CIPRESES">LOS CIPRESES</option>
                                 <option value="MAYORCA">MAYORCA</option>
                                 <option value="NOGALES">NOGALES</option>
                                 <option value="OASIS">OASIS</option>
                                 <option value="SANTO DOMINGO">SANTO DOMINGO</option>
                                 <option value="THOMPSON">THOMPSON</option>
-                                <option value="THOMPSON 2">THOMPSON 2</option>
+                                <option value="THOMPSON_A">THOMPSON_A</option>
                                 <option value="TIERRA NUEVA">TIERRA NUEVA</option>
-                                <option value="TIERRA NUEVA 2">TIERRA NUEVA 2</option>
+                                <option value="TIERRA NUEVA_A">TIERRA NUEVA</option>
+                                <option value="AMPLIACION TIERRA NUEVA">AMPLIACION TIERRA NUEVA</option>
+                                <option value="AMPLIACION TIERRA NUEVA 2">AMPLIACION TIERRA NUEVA 2</option>
+                                <option value="AMPLIACION TIERRA NUEVA 3">AMPLIACION TIERRA NUEVA 3</option>
+                                <option value="AMPLIACION TIERRA NUEVA 4">AMPLIACION TIERRA NUEVA 4</option>
+                                <option value="AMPLIACION TIERRA NUEVA 5">AMPLIACION TIERRA NUEVA 5</option>
                             </select>
                     </div>
                     <div class="form-group">
                         <label for="olt">OLT:</label>
-                         <input type="text" id="olt" placeholder="Se llenará automáticamente" name="olt">
+                        <select id="olt" name="olt" onchange="updatePreview()">
+                            <option value="">Selecciona un Cluster primero</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="clientes">CLIENTES AFECTADOS:</label>
@@ -468,7 +490,7 @@
             document.getElementById("proveedor2").value = datos.proveedor2 || "";
             document.getElementById("distrito").value = datos.distrito || "";
             document.getElementById("nombre").value = datos.nombre || ""; //REVISAR LABEL DE NOMBRE IDC
-
+            $('#nombre').val(datos.nombre).trigger('change');
             document.getElementById("causa").value = datos.causa || "";
             document.getElementById("accion").value = datos.accion || "";
             document.getElementById("etr").value = datos.etr || "";
@@ -480,6 +502,7 @@
             document.getElementById("ciudad").value = datos.ciudad || "";
             document.getElementById("estado").value = datos.estado || "";
             document.getElementById("cluster").value = datos.cluster || "";
+            $('#cluster').val(datos.cluster).trigger('change');
             document.getElementById("olt").value = datos.olt || "";
             document.getElementById("clientes").value = datos.clientes || "";
             document.getElementById("falla_r").value = datos.falla_r || "";
@@ -732,7 +755,18 @@ async function cargarUltimosFolios() {
 
             // Llamar al evento change al cargar la página para mostrar el texto por defecto
             $('#nombre').trigger('change');
-		
+            
+
+            // NUEVO: Inicializa búsqueda en Cluster
+    $('#cluster').select2({
+        placeholder: 'Escribe para buscar cluster...',
+        allowClear: true
+    });
+
+    // EVENTO PARA CLUSTER: Importante usar 'select2:select' para que dispare el auto-llenado
+    $('#cluster').on('select2:select', function (e) {
+        llenarNumero(); // Esto dispara tu lógica de OLT
+    });
         });
 
 	    
@@ -742,43 +776,87 @@ async function cargarUltimosFolios() {
  // AUTO LLENADO DE OLT SEGUN CLUSTER
 
         var numeros = {
-            "ALDAMA": "ALDAMA_JUA",
-            "ALDAMA_2": "ALDAMA_2_JUA",
-            "BUENOS AIRES": "BUENOS_AIRES_JUA",
-	        "BUENOS AIRES 2": "BUENOS_AIRES_2_JUA",
-            "CARLOS AMAYA": "CARLOS_AMAYA_JUA",
-            "EL VERGEL": "VERGEL_JUA",
-            "GOMEZ MORIN": "GOMEZ_MORIN_JUA",
-            "LOMAS DE MORELOS": "LOMAS_DE_MORELOS_JUA",
-            "LOS CIPRESES": "CIPRESES_JUA",
-            "MAYORCA": "MAYORCA_JUA",
-            "NOGALES": "NOGALES_JUA",
-            "OASIS": "OASIS_JUA",
-            "SANTO DOMINGO": "SANTO_DOMINGO_JUA",
-            "THOMPSON": "THOMPSON_JUA",
-	        "THOMPSON 2": "THOMPSON_2_JUA",
-            "TIERRA NUEVA": "HACIENDA_DE_LAS_TORRES_JUA",
-            "TIERRA NUEVA 2": "HACIENDA_DE_LAS_TORRES_2_JUA",
-            "SWITCH_CD_JUAREZ": "SWITCH_CD_JUAREZ",
-            "GRANJERO_CDJRZ": "GRANJERO_CDJRZ"
+            // ALDAMA
+            "ALDAMA": ["ALDAMA_JUA","ALDAMA_2_JUA"],
+            "AMPLIACION ALDAMA": ["ALDAMA_JUA","ALDAMA_2_JUA"],
+            "AMPLIACION ALDAMA 2": ["ALDAMA_JUA","ALDAMA_2_JUA"],
+            "AMPLIACION ALDAMA 3": ["ALDAMA_JUA","ALDAMA_2_JUA"],
+            "AMPLIACION ALDAMA 4": ["ALDAMA_JUA","ALDAMA_2_JUA"],
+            "AMPLIACION ALDAMA 5": ["ALDAMA_JUA","ALDAMA_2_JUA"],
+
+            // BUENOS AIRES
+            "BUENOS AIRES": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+            "BUENOS AIRES_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+            "AMPLIACION BUENOS AIRES": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+            "AMPLIACION BUENOS AIRES_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+            "AMPLIACION BUENOS AIRES_2_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+            "AMPLIACION BUENOS AIRES_3_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+            "AMPLIACION BUENOS AIRES_4_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+            "AMPLIACION BUENOS AIRES_5_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+            "AMPLIACION BUENOS AIRES_6_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+
+            
+            // OTROS CLUSTERS
+            "CARLOS AMAYA": ["CARLOS_AMAYA_JUA"],
+            "EL VERGEL": ["VERGEL_JUA"],
+            "LOS CIPRESES": ["CIPRESES_JUA"],
+            "MAYORCA": ["MAYORCA_JUA"],
+            "NOGALES": ["NOGALES_JUA"],
+            "OASIS": ["OASIS_JUA"],
+            "SANTO DOMINGO": ["SANTO_DOMINGO_JUA"],
+            
+            // GOMEZ MORIN
+            "GOMEZ MORIN": ["GOMEZ_MORIN_JUA"],
+            "AMPLIACION GOMEZ MORIN": ["GOMEZ_MORIN_JUA"],
+
+            // LOMAS DE MORELOS
+            "LOMAS DE MORELOS": ["LOMAS_DE_MORELOS_JUA"],
+            "AMPLIACION LOMAS DE MORELOS 2": ["LOMAS_DE_MORELOS_JUA"],
+            "AMPLIACION LOMAS DE MORELOS 3": ["LOMAS_DE_MORELOS_JUA"],
+
+            // THOMPSON
+            "THOMPSON": ["THOMPSON_JUA", "THOMPSON_2_JUA"],
+            "THOMPSON_A": ["HACIENDA_DE_LAS_TORRES_2_JUA","THOMPSON_JUA","THOMPSON_2_JUA"],
+
+            // TIERRA NUEVA (Aquí habilitamos la doble opción)
+            "TIERRA NUEVA": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
+            "TIERRA NUEVA_A": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
+            "AMPLIACION TIERRA NUEVA": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
+            "AMPLIACION TIERRA NUEVA 2": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
+            "AMPLIACION TIERRA NUEVA 3": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
+            "AMPLIACION TIERRA NUEVA 4": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
+            "AMPLIACION TIERRA NUEVA 5": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"]
         };
 
         function llenarNumero() {
-            // Obtener el valor seleccionado del desplegable
             var seleccion = document.getElementById("cluster").value;
+            var oltSelect = document.getElementById("olt");
+            
+            // Limpiar opciones anteriores
+            oltSelect.innerHTML = "";
 
-            // Verificar si la opción seleccionada tiene un número asociado
             if (numeros.hasOwnProperty(seleccion)) {
-                document.getElementById("olt").value = numeros[seleccion];
-		updatePreview();
+                var opciones = numeros[seleccion];
 
-        	
+                opciones.forEach(function(oltNombre) {
+                    var el = document.createElement("option");
+                    el.textContent = oltNombre;
+                    el.value = oltNombre;
+                    oltSelect.appendChild(el);
+                });
+
+                // Si solo hay una opción, seleccionarla automáticamente
+                if (opciones.length === 1) {
+                    oltSelect.value = opciones[0];
+                }
             } else {
-                document.getElementById("olt").value = ""; // Limpiar si no hay selección
-		updatePreview();
-
+                var porDefecto = document.createElement("option");
+                porDefecto.textContent = "Sin OLT asociada";
+                porDefecto.value = "";
+                oltSelect.appendChild(porDefecto);
             }
-
+            
+            updatePreview();
         }
 
 
@@ -811,7 +889,7 @@ async function cargarUltimosFolios() {
 
 
             // Obtener el valor del FOLIO del primer bloque
-            var folio_ = document.getElementById('folio_').value;
+            var folio_ = document.getElementById('folio_').value.trim();
 
             // Sincronizar el valor de los otros campos FOLIO
             document.getElementById('folio3_').value = folio_;
@@ -820,47 +898,47 @@ async function cargarUltimosFolios() {
 
 
       	// Obtener el valor del PROVEEDOR del primer bloque
-            var proveedor= document.getElementById('proveedor').value;
+            var proveedor= document.getElementById('proveedor').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('proveedor2').value = proveedor;
             document.getElementById('proveedor4').value = proveedor;
 
 
 	// Obtener el valor del DISTRITO del SEGUNDO bloque
-            var distrito=document.getElementById('distrito').value;
+            var distrito=document.getElementById('distrito').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('ciudad').value = distrito;
 
 	// Obtener el valor del NOMBRE del SEGUNDO bloque
-            var nombre=document.getElementById('nombre').value;
+            var nombre=document.getElementById('nombre').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('atiende_nom_tec').value = nombre;
 
 
 	// Obtener el valor de CAUSA DE DAÑO del TERCER bloque
-            var causa=document.getElementById('causa').value;
+            var causa=document.getElementById('causa').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('causa_dano').value = causa;
 
 	// Obtener el valor de CORDENADAS DAÑO del TERCER bloque
-            var coordenadas3=document.getElementById('coordenadas3').value;
+            var coordenadas3=document.getElementById('coordenadas3').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('coordenadas_dano').value = coordenadas3;
 
 
 	// Obtener el valor de NUMERO QR del TERCER bloque
-            var qr=document.getElementById('qr').value;
+            var qr=document.getElementById('qr').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('qr_2').value = qr;
 
 
     // Obtener el valor de MATERIALES del TERCER bloque
-            var materiales=document.getElementById('materiales').value;
+            var materiales=document.getElementById('materiales').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('material_utilizado').value = materiales;
 
     // Obtener el valor de COORDENADAS FALLO del TERCER bloque
-            var coordenadas3 = document.getElementById('coordenadas3').value;
+            var coordenadas3 = document.getElementById('coordenadas3').value.trim();
 	// Sincronizar el valor de los otros campo
             document.getElementById('coordenadas_dano').value = coordenadas3;
 
@@ -868,53 +946,53 @@ async function cargarUltimosFolios() {
 
 
             // Obtener los valores de los campos del primer bloque
-            var eta = document.getElementById('eta').value;
-            var proveedor = document.getElementById('proveedor').value;
+            var eta = document.getElementById('eta').value.trim();
+            var proveedor = document.getElementById('proveedor').value.trim();
 
             // Obtener los valores de los campos del segundo bloque
             var punto = document.getElementById('punto').value;
-            var coordenadas = document.getElementById('coordenadas').value;
-            var proveedor2 = document.getElementById('proveedor2').value;
-            var distrito = document.getElementById('distrito').value;
-	        var nombre = document.getElementById('nombre').value;
+            var coordenadas = document.getElementById('coordenadas').value.trim();
+            var proveedor2 = document.getElementById('proveedor2').value.trim();
+            var distrito = document.getElementById('distrito').value.trim();
+	        var nombre = document.getElementById('nombre').value.trim();
 
             // Obtener los valores de los campos del tercer bloque
-            var causa = document.getElementById('causa').value;
-            var accion = document.getElementById('accion').value;
-            var calibre = document.getElementById('calibre').value;
-            var coordenadas3 = document.getElementById('coordenadas3').value;
-            var etr = document.getElementById('etr').value;
-            var qr = document.getElementById('qr').value;
-            var materiales = document.getElementById('materiales').value;
+            var causa = document.getElementById('causa').value.trim();
+            var accion = document.getElementById('accion').value.trim();
+            var calibre = document.getElementById('calibre').value.trim();
+            var coordenadas3 = document.getElementById('coordenadas3').value.trim();
+            var etr = document.getElementById('etr').value.trim();
+            var qr = document.getElementById('qr').value.trim();
+            var materiales = document.getElementById('materiales').value.trim();
 
             // Obtener los valores de los campos del cuarto bloque
-            var ciudad = document.getElementById('ciudad').value;
-            var estado = document.getElementById('estado').value;
-            var cluster = document.getElementById('cluster').value;
-            var olt = document.getElementById('olt').value;
-            var clientes = document.getElementById('clientes').value;
-            var falla_r = document.getElementById('falla_r').value;
-            var hr_desp = document.getElementById('hr_desp').value;
-            var hr_prov = document.getElementById('hr_prov').value;
-            var hr_llegada = document.getElementById('hr_llegada').value;
-            var hr_med = document.getElementById('hr_med').value;
-            var ubicacion_1er_2do = document.getElementById('ubicacion_1er_2do').value;
-            var qr_2 = document.getElementById('qr_2').value;
-            var ubicacion_dano = document.getElementById('ubicacion_dano').value;
-            var coordenadas_dano = document.getElementById('coordenadas_dano').value;
-            var desc_act = document.getElementById('desc_act').value;
-            var potencia_inicial= document.getElementById('potencia_inicial').value;
-            var potencia_final = document.getElementById('potencia_final').value;
-            var trabajos_realizados = document.getElementById('trabajos_realizados').value;
-            var hr_final = document.getElementById('hr_final').value;
-            var causa_dano = document.getElementById('causa_dano').value;
-            var atiende_nom_tec = document.getElementById('atiende_nom_tec').value;
-            var proveedor4 = document.getElementById('proveedor4').value;
-            var supervisor = document.getElementById('supervisor').value;
-            var justificacion_sla = document.getElementById('justificacion_sla').value;
-            var m_pausa = document.getElementById('m_pausa').value;
-            var t_pausa = document.getElementById('t_pausa').value;
-            var material_utilizado = document.getElementById('material_utilizado').value;
+            var ciudad = document.getElementById('ciudad').value.trim();
+            var estado = document.getElementById('estado').value.trim();
+            var cluster = document.getElementById('cluster').value.trim();
+            var olt = document.getElementById('olt').value.trim();
+            var clientes = document.getElementById('clientes').value.trim();
+            var falla_r = document.getElementById('falla_r').value.trim();
+            var hr_desp = document.getElementById('hr_desp').value.trim();
+            var hr_prov = document.getElementById('hr_prov').value.trim();
+            var hr_llegada = document.getElementById('hr_llegada').value.trim();
+            var hr_med = document.getElementById('hr_med').value.trim();
+            var ubicacion_1er_2do = document.getElementById('ubicacion_1er_2do').value.trim();
+            var qr_2 = document.getElementById('qr_2').value.trim();
+            var ubicacion_dano = document.getElementById('ubicacion_dano').value.trim();
+            var coordenadas_dano = document.getElementById('coordenadas_dano').value.trim();
+            var desc_act = document.getElementById('desc_act').value.trim();
+            var potencia_inicial= document.getElementById('potencia_inicial').value.trim();
+            var potencia_final = document.getElementById('potencia_final').value.trim();
+            var trabajos_realizados = document.getElementById('trabajos_realizados').value.trim();
+            var hr_final = document.getElementById('hr_final').value.trim();
+            var causa_dano = document.getElementById('causa_dano').value.trim();
+            var atiende_nom_tec = document.getElementById('atiende_nom_tec').value.trim();
+            var proveedor4 = document.getElementById('proveedor4').value.trim();
+            var supervisor = document.getElementById('supervisor').value.trim();
+            var justificacion_sla = document.getElementById('justificacion_sla').value.trim();
+            var m_pausa = document.getElementById('m_pausa').value.trim();
+            var t_pausa = document.getElementById('t_pausa').value.trim();
+            var material_utilizado = document.getElementById('material_utilizado').value.trim();
 
             // Actualizar el contenido del div de vista previa
             var resultado = document.getElementById('resultado');
@@ -926,7 +1004,7 @@ async function cargarUltimosFolios() {
 
                 <b>SCRIPT FALLO:</b><div id="seccion-fallo" style="white-space: pre-wrap;">Folio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*</div>
 
-                <b>SCRIPT FINAL:</b><div id="seccion-final" style="white-space: pre-wrap;">FOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${falla_r}*\nFECHA_Y_HR_DE_ASG_DESP: *${hr_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${hr_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICION: *${hr_med}*\nUBICACIÓN_DE_1N_2N*${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${desc_act}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS: *${trabajos_realizados}*\nFECHA_HR_FINAL_DE_REPARACION: *${hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*</div>`;
+                <b>SCRIPT FINAL:</b><div id="seccion-final" style="white-space: pre-wrap;">FOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${falla_r}*\nFECHA_Y_HR_DE_ASG_DESP: *${hr_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${hr_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICION: *${hr_med}*\nUBICACIÓN_DE_1N_2N: *${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${desc_act}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS: *${trabajos_realizados}*\nFECHA_HR_FINAL_DE_REPARACION: *${hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA: *${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*</div>`;
 
            /* resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n
             \n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n
