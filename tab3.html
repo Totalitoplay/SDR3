@@ -83,7 +83,148 @@
         .select2-container {
             width: 100% !important;
         }
+        /* --- Mantener tus estilos base y añadir estos --- */
 
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px; /* Reducido para móvil */
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: grid;
+            /* Por defecto en Desktop: 4 columnas */
+            grid-template-columns: 150px 1fr 1fr 180px; 
+            gap: 15px;
+            max-width: 100%;
+        }
+
+        /* --- ADAPTACIÓN MÓVIL (Media Query) --- */
+        @media (max-width: 768px) {
+            .container {
+                display: flex;
+                flex-direction: column; /* Apilar todo */
+            }
+
+            .centrar-pantalla {
+                height: auto; /* Ya no ocupa toda la pantalla vertical */
+                order: 1;    /* El buscador arriba */
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+
+            .form-container {
+                order: 2;    /* El formulario en medio */
+                max-height: none; 
+            }
+
+            .text-preview {
+                order: 3;    /* La vista previa abajo */
+                font-size: 14px;
+                max-height: 400px;
+            }
+
+            /* Botones de copia: los haremos más grandes y juntos */
+            div[style*="centrar-pantalla"] { 
+                order: 4;
+                flex-direction: row !important;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: space-around;
+                padding-bottom: 50px;
+            }
+
+            div[style*="centrar-pantalla"] button {
+                flex: 1 1 40%; /* 2 botones por fila */
+                padding: 15px;
+                font-weight: bold;
+            }
+
+            /* Inputs más grandes para dedos */
+            input, select, button {
+                min-height: 45px;
+                font-size: 16px !important; /* Evita que iOS haga zoom automático */
+            }
+        }
+
+        /* Estilo para la lista de folios en móvil */
+        #lista-folios {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0;
+        }
+
+        #lista-folios li {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+
+                /* Contenedor de las pestañas */
+        .tabs-nav {
+            display: flex;
+            overflow-x: auto;
+            background: #fff;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 5px;
+            border: none;
+            background: none;
+            font-size: 13px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+        .tab-button.active {
+            color: #007bff;
+            border-bottom: 3px solid #007bff;
+            background: #f0f7ff;
+        }
+
+        /* Manejo de visibilidad de bloques */
+        .block {
+            display: none; /* Ocultar todos por defecto */
+            animation: fadeIn 0.3s;
+        }
+
+        .block.active {
+            display: block; /* Solo mostrar el activo */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Ajuste móvil para botones de copiar */
+        @media (max-width: 768px) {
+            .botones-copiar-mobile {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                padding: 10px;
+            }
+            
+            .botones-copiar-mobile button {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
     </style>
 
 </head>
@@ -101,7 +242,7 @@
                     <button type="button" onclick="limpiarSeleccion()">Limpiar</button>
                     <br>
                     <br>
-                    <h3 style="font-size: 16px;">Últimos 10 folios registrados</h3>
+                    <h3 style="font-size: 16px;">Últimos 5 folios registrados</h3>
                         <ul id="lista-folios"></ul>
                     <br>
                     <br>
@@ -117,11 +258,16 @@
         <input type="text" id="fecha-texto" name="fecha-texto" readonly>-->
 
             <form id="modificar-form">
-                
+                <div class="tabs-nav">
+                <button type="button" class="tab-button active" onclick="openTab(event, 'tab-eta')">ETA</button>
+                <button type="button" class="tab-button" onclick="openTab(event, 'tab-sitio')">SITIO</button>
+                <button type="button" class="tab-button" onclick="openTab(event, 'tab-fallo')">FALLO</button>
+                <button type="button" class="tab-button" onclick="openTab(event, 'tab-final')">FINAL</button>
+            </div>
 
 
                 <!-- Primer Bloque -->
-                <div class="block">
+                <div id="tab-eta" class="block active">
                     <h3>ETA</h3>
                     <div class="form-group">
                         <label for="folio">FOLIO:</label>
@@ -138,7 +284,7 @@
                 </div>
 
                 <!-- Segundo Bloque -->
-                <div class="block">
+                 <div id="tab-sitio" class="block">
                     <h3>SCRIPT SITIO</h3>
                     <div class="form-group">
                         <label for="sd">SD:</label>
@@ -177,7 +323,7 @@
                     
                 </div>
                 <!-- Tercer Bloque -->
-                <div class="block">
+                <div id="tab-fallo" class="block">
                     <h3>SCRIPT FALLO</h3>
                     <div class="form-group">
                         <label for="folio3_">Folio:</label>
@@ -214,7 +360,7 @@
                 </div>
 
                 <!-- Cuarto Bloque -->
-                <div class="block">
+                <div id="tab-final" class="block">
                     <h3>SCRIPT FINAL</h3>
                     <div class="form-group">
                         <label for="folio4">FOLIO:</label>
@@ -539,7 +685,7 @@
         alert("ERROR AL BUSCAR");
       }
     }
-    //----------------------------CARGAR 1O ULTIMOS FOLIOS---------------------------------}
+    //----------------------------CARGAR 5 ULTIMOS FOLIOS---------------------------------}
 async function cargarUltimosFolios() {
   const lista = document.getElementById("lista-folios");
   lista.innerHTML = "<li>Cargando...</li>";
@@ -547,7 +693,7 @@ async function cargarUltimosFolios() {
   try {
     const querySnapshot = await db.collection("usuarios")
       .orderBy("timestamp", "desc")
-      .limit(10)
+      .limit(5)
       .get();
 
     lista.innerHTML = "";
@@ -633,14 +779,11 @@ async function cargarUltimosFolios() {
 
 
         </div>
-        <div class="centrar-pantalla" >
-            <h3 style="font-size: 16px;">COPIAR SCRIPT'S</h3>
+        <div class="centrar-pantalla botones-copiar-mobile">
+            <h3 style="font-size: 16px; width: 100%; text-align: center;">COPIAR SCRIPT'S</h3>
             <button onclick="copiarSeccion('seccion-eta')">INICIAL</button>
-            <br><br>
             <button onclick="copiarSeccion('seccion-sitio')">LLEGADA</button>
-            <br><br>
             <button onclick="copiarSeccion('seccion-fallo')">FALLO</button>
-            <br><br>
             <button onclick="copiarSeccion('seccion-final')">FINAL</button>
         </div>
     </div>
@@ -1079,7 +1222,26 @@ async function cargarUltimosFolios() {
     document.body.removeChild(tempTextarea);
    // alert("Sección copiada al portapapeles.");
 }
+function openTab(evt, tabId) {
+    // 1. Ocultar todos los bloques
+    var blocks = document.getElementsByClassName("block");
+    for (var i = 0; i < blocks.length; i++) {
+        blocks[i].classList.remove("active");
+    }
 
+    // 2. Quitar la clase active de todos los botones
+    var buttons = document.getElementsByClassName("tab-button");
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("active");
+    }
+
+    // 3. Mostrar el bloque actual y marcar el botón como activo
+    document.getElementById(tabId).classList.add("active");
+    evt.currentTarget.classList.add("active");
+    
+    // 4. Scroll al inicio para que no se quede a media pantalla
+    window.scrollTo(0, 0);
+}
     </script>
 
 </body>
