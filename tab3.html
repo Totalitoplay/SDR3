@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCRIPT 3</title>
+    <title>SCRIPT 1</title>
     <!-- CSS de Select2 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
 
@@ -114,8 +114,9 @@
             }
 
             .form-container {
-                order: 2;    /* El formulario en medio */
-                max-height: none; 
+                min-height: 60vh; /* Mantiene una altura mínima para que la página no "baile" */
+                display: flex;
+                flex-direction: column;
             }
 
             .text-preview {
@@ -166,14 +167,11 @@
 
                 /* Contenedor de las pestañas */
         .tabs-nav {
-            display: flex;
-            overflow-x: auto;
-            background: #fff;
-            border-bottom: 2px solid #ddd;
-            margin-bottom: 15px;
             position: sticky;
-            top: 0;
-            z-index: 100;
+            top: 0; /* Se queda pegado arriba para que siempre puedas cambiar de menú */
+            background: white;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .tab-button {
@@ -214,15 +212,104 @@
         /* Ajuste móvil para botones de copiar */
         @media (max-width: 768px) {
             .botones-copiar-mobile {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                display: flex !important;
+                gap: 4px;
+                padding: 8px;
+                background: #fff;
+                border-top: 2px solid #007bff;
+                position: sticky;
+                bottom: 0;
+                z-index: 1001;
+            }
+
+            .botones-copiar-mobile button {
+                flex: 1;
+                padding: 10px 2px;
+                font-size: 10px;
+                font-weight: bold;
+                border: none;
+                border-radius: 6px;
+                color: white;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+            /* Colores por tipo de script */
+            .botones-copiar-mobile button:nth-child(1) { background-color: #5bc0de; } /* Celeste - Ini */
+            .botones-copiar-mobile button:nth-child(2) { background-color: #f0ad4e; } /* Naranja - Llegada */
+            .botones-copiar-mobile button:nth-child(3) { background-color: #d9534f; } /* Rojo - Fallo */
+            .botones-copiar-mobile button:nth-child(4) { background-color: #0275d8; } /* Azul - Final */
+
+            .botones-copiar-mobile button:active {
+                transform: scale(0.9);
+            }
+
+            @media (min-width: 769px) {
+                /* En PC mantenemos un tamaño normal */
+                .botones-copiar-mobile h3 { display: block; }
+                .botones-copiar-mobile button { font-size: 14px !important; padding: 15px !important; }
+            }
+        }
+        /* Estilo del Acordeón */
+        .buscador-acordeon {
+            background: #e9e9e9;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .buscador-acordeon summary {
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            list-style: none;
+        }
+
+        .buscador-acordeon summary::-webkit-details-marker {
+            display: none; /* Quita la flecha fea de Chrome */
+        }
+
+        /* Compactar la lista de folios para que no ocupe tanto espacio */
+        #lista-folios {
+            display: flex;
+            flex-wrap: wrap; /* Se acomodan a lo ancho */
+            gap: 8px;
+            padding: 10px 0;
+        }
+
+        #lista-folios li {
+            font-size: 12px;
+            background: #fff;
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Botones de búsqueda en una sola fila */
+        .botones-busqueda-row {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .botones-busqueda-row button {
+            flex: 1;
+        }
+
+        /* Ajustes para móviles */
+        @media (max-width: 768px) {
+            .centrar-pantalla {
+                height: auto !important; /* Quita el 100vh que tenías */
                 padding: 10px;
             }
             
-            .botones-copiar-mobile button {
-                padding: 12px;
-                font-size: 14px;
+            .btn-guardar-top {
+                width: 100%;
+                background-color: #28a745 !important;
+                color: white;
+                margin-top: 10px;
             }
         }
     </style>
@@ -236,17 +323,22 @@
             
         <div class="centrar-pantalla">
     <!--BUSCAR POR SD-->
+        <details class="buscador-acordeon">
+            <summary>🔍 Buscar SD y Folios Recientes</summary>
+            <div class="centrar-pantalla">
                 <h3>Buscar por SD</h3>
                 <input type="text" id="buscarId" placeholder="SD del corte">
+                <div class="botones-busqueda-row">
                     <button onclick="buscar()">Buscar</button>  
                     <button type="button" onclick="limpiarSeleccion()">Limpiar</button>
-                    <br>
-                    <br>
-                    <h3 style="font-size: 16px;">Últimos 5 folios registrados</h3>
-                        <ul id="lista-folios"></ul>
-                    <br>
-                    <br>
-                   <button type="submit" form="modificar-form">Guardar</button>
+                </div>
+                
+                <h3 style="font-size: 16px;">Últimos 10 folios</h3>
+                <ul id="lista-folios"></ul>
+                
+                <button type="submit" form="modificar-form" class="btn-guardar-top">💾 Guardar Cambios</button>
+            </div>
+        </details>
         </div>
 
         <div class="form-container">
@@ -650,6 +742,9 @@
             document.getElementById("cluster").value = datos.cluster || "";
             $('#cluster').val(datos.cluster).trigger('change');
             document.getElementById("olt").value = datos.olt || "";
+            if (window.innerWidth < 768) {
+            document.querySelector('.buscador-acordeon').removeAttribute('open');
+            }
             document.getElementById("clientes").value = datos.clientes || "";
             document.getElementById("falla_r").value = datos.falla_r || "";
             document.getElementById("fecha-texto").value = datos.fecha || "";
@@ -779,12 +874,11 @@ async function cargarUltimosFolios() {
 
 
         </div>
-        <div class="centrar-pantalla botones-copiar-mobile">
-            <h3 style="font-size: 16px; width: 100%; text-align: center;">COPIAR SCRIPT'S</h3>
-            <button onclick="copiarSeccion('seccion-eta')">INICIAL</button>
-            <button onclick="copiarSeccion('seccion-sitio')">LLEGADA</button>
-            <button onclick="copiarSeccion('seccion-fallo')">FALLO</button>
-            <button onclick="copiarSeccion('seccion-final')">FINAL</button>
+        <div class="botones-copiar-mobile">
+            <button onclick="copiarSeccion('seccion-eta', this)">📋 INI</button>
+            <button onclick="copiarSeccion('seccion-sitio', this)">📋 LLEG</button>
+            <button onclick="copiarSeccion('seccion-fallo', this)">📋 FALLO</button>
+            <button onclick="copiarSeccion('seccion-final', this)">📋 FIN</button>
         </div>
     </div>
 
@@ -1203,45 +1297,52 @@ async function cargarUltimosFolios() {
         // Llamar a updatePreview al cargar la página para inicializar la vista previa
         updatePreview();
 
-        function copiarSeccion(id) {
-    var elemento = document.getElementById(id);
+        function copiarSeccion(id, btn) {
+            var elemento = document.getElementById(id);
+            if (!elemento) return;
 
-    if (!elemento) {
-        alert("Sección no encontrada");
-        return;
-    }
+            var tempTextarea = document.createElement("textarea");
+            tempTextarea.value = elemento.innerText;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextarea);
 
-    // Crear textarea temporal
-    var tempTextarea = document.createElement("textarea");
-    tempTextarea.value = elemento.innerText; // copiar solo texto plano
-    document.body.appendChild(tempTextarea);
+            // Feedback visual inmediato
+            var textoOriginal = btn.innerHTML;
+            btn.innerHTML = "✅ ¡COPIADO!";
+            btn.style.filter = "brightness(1.2)"; // Se ilumina un poco
 
-    tempTextarea.select();
-    document.execCommand("copy");
+            setTimeout(function() {
+                btn.innerHTML = textoOriginal;
+                btn.style.filter = "none";
+            }, 1200);
+        }
+        function openTab(evt, tabId) {
+            // 1. Ocultar todos los bloques
+            var blocks = document.getElementsByClassName("block");
+            for (var i = 0; i < blocks.length; i++) {
+                blocks[i].classList.remove("active");
+            }
 
-    document.body.removeChild(tempTextarea);
-   // alert("Sección copiada al portapapeles.");
-}
-function openTab(evt, tabId) {
-    // 1. Ocultar todos los bloques
-    var blocks = document.getElementsByClassName("block");
-    for (var i = 0; i < blocks.length; i++) {
-        blocks[i].classList.remove("active");
-    }
+            // 2. Quitar la clase active de todos los botones
+            var buttons = document.getElementsByClassName("tab-button");
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove("active");
+            }
 
-    // 2. Quitar la clase active de todos los botones
-    var buttons = document.getElementsByClassName("tab-button");
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].classList.remove("active");
-    }
+            // 3. Mostrar el bloque actual y marcar botón activo
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
 
-    // 3. Mostrar el bloque actual y marcar el botón como activo
-    document.getElementById(tabId).classList.add("active");
-    evt.currentTarget.classList.add("active");
-    
-    // 4. Scroll al inicio para que no se quede a media pantalla
-    window.scrollTo(0, 0);
-}
+            // 4. OPCIONAL: En lugar de ir hasta arriba (0,0), 
+            // hace que la pantalla se ajuste suavemente al inicio del formulario
+            // si el usuario ya hizo mucho scroll hacia abajo.
+            const formPos = document.getElementById("modificar-form").getBoundingClientRect().top + window.pageYOffset;
+            if (window.pageYOffset > formPos) {
+                window.scrollTo({ top: formPos - 10, behavior: 'smooth' });
+            }
+        }
     </script>
 
 </body>
