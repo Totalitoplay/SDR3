@@ -1,1086 +1,1262 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCRIPT 1</title>
-    <!-- CSS de Select2 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scripts FO — Gestión de Cortes</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --bg2: #ffffff;
+    --bg3: #eef0f4;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #111827;
+    --text2: #4b5563;
+    --text3: #9ca3af;
+    --accent: #2563eb;
+    --accent-dim: rgba(37,99,235,0.10);
+    --green: #059669;
+    --green-dim: rgba(5,150,105,0.10);
+    --red: #dc2626;
+    --red-dim: rgba(220,38,38,0.10);
+    --amber: #d97706;
+    --amber-dim: rgba(217,119,6,0.10);
+    --purple: #7c3aed;
+    --purple-dim: rgba(124,58,237,0.10);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
 
-    <style>
-        #lista-folios li {
-            list-style: none;
-            margin-bottom: 5px;
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        #lista-folios li a {
-            color: #007bff;
-            text-decoration: underline;
-            cursor: pointer;
-        }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
-        #lista-folios li a:hover {
-            color: #0056b3;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 25px;
-		
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 150px 1fr 1fr .1fr; /* Primera columna pequeña, las otras dos iguales */
-            gap: 20px;
-            max-width: 1500px;
-            margin: auto;
-		
-        }
-        .form-container {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            max-height: 1500px; /* Ajusta la altura máxima según sea necesario */
-            overflow-y: auto;  /* Permite el desplazamiento vertical */
-        }
-        .centrar-pantalla {
-            display: flex;
-            border: 1px solid #ddd;
-            flex-direction: column;  /* Para que los elementos se apilen verticalmente */
-            justify-content: center; /* Centrado vertical */
-            height: 100vh;
-            background-color: #cacacaab; /* Solo para que se vea el fondo */
-        }
-        .form-group {
-            margin-bottom: 10px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
- 		overflow-y: auto;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        .form-container .block {
-            margin-bottom: 20px; /* Espacio entre bloques */
-        }
-        .form-container .block:last-of-type {
-            margin-bottom: 0; /* El último bloque no necesita margen inferior */
-        }
-        .text-preview {
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            font-family: monospace;
-            white-space: pre-wrap; /* Mantiene los espacios en blanco */
-            font-size: 16px;
-		    max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
-            overflow-y: auto;  /* Permite el desplazamiento vertical */
-        }
-        .select2-container {
-            width: 100% !important;
-        }
+  /* TOPBAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--accent); }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .status-text { color: var(--text3); font-size: 11px; }
 
-    </style>
+  /* MAIN LAYOUT */
+  .main {
+    display: grid;
+    grid-template-columns: 200px 1fr 340px;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+  }
 
-</head>
-<body>    
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+    overflow-y: auto;
+  }
 
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
 
-    <div class="container">
-        <!-- Contenedor del formulario -->
-            
-        <div class="centrar-pantalla">
-    <!--BUSCAR POR SD-->
-                <h3>Buscar por SD</h3>
-                <input type="text" id="buscarId" placeholder="SD del corte">
-                    <button onclick="buscar()">Buscar</button>  
-                    <button type="button" onclick="limpiarSeleccion()">Limpiar</button>
-                    <br>
-                    <br>
-                    <h3 style="font-size: 16px;">Últimos 10 folios registrados</h3>
-                        <ul id="lista-folios"></ul>
-                    <br>
-                    <br>
-                   <button type="submit" form="modificar-form">Guardar</button>
-        </div>
+  .search-wrap { position: relative; }
+  .search-wrap input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 8px 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--text3); }
 
-        <div class="form-container">
-            <h2>Modificar Información</h2>
+  .btn {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .btn-accent {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-accent:hover { opacity: 0.85; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+  }
+  .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+  .btn-save {
+    background: var(--green-dim);
+    border-color: var(--green);
+    color: var(--green);
+    margin-top: auto;
+  }
+  .btn-save:hover { background: rgba(62,207,142,0.22); }
 
-        <!--<label for="fecha">Selecciona una fecha:</label>
-        <input type="date" id="fecha" name="fecha">
-        
-        <input type="text" id="fecha-texto" name="fecha-texto" readonly>-->
+  .folios-list { display: flex; flex-direction: column; gap: 2px; }
+  .folio-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .folio-row:hover { background: var(--bg3); }
+  .folio-id {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .folio-del {
+    color: var(--text3);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0 2px;
+    transition: color 0.12s;
+  }
+  .folio-del:hover { color: var(--red); }
 
-            <form id="modificar-form">
-                
+  /* FORM AREA */
+  .form-area {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
+  }
 
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 11px 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text3);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .tab-btn:hover { color: var(--text2); background: var(--bg3); }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); background: var(--bg); }
 
-                <!-- Primer Bloque -->
-                <div class="block">
-                    <h3>ETA</h3>
-                    <div class="form-group">
-                        <label for="folio">FOLIO:</label>
-                        <input type="text" id="folio_" name="folio_" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="eta">ETA:</label>
-                        <input type="text" id="eta" name="eta" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="proveedor">PROVEEDOR:</label>
-                        <input type="text" id="proveedor" name="proveedor" onblur="this.value = this.value.trim()">
-                    </div>
-                </div>
+  .tab-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-eta { background: var(--amber); }
+  .dot-sitio { background: var(--accent); }
+  .dot-fallo { background: var(--red); }
+  .dot-final { background: var(--green); }
 
-                <!-- Segundo Bloque -->
-                <div class="block">
-                    <h3>SCRIPT SITIO</h3>
-                    <div class="form-group">
-                        <label for="sd">SD:</label>
-                        <input type="text" id="sd" name="sd" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="punto">Sitio/punto de medición:</label>
-                        <input type="text" id="punto" name="punto" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="coordenadas">Coordenadas:</label>
-                        <input type="text" id="coordenadas" name="coordenadas" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="proveedor2">Proveedor:</label>
-                        <input type="text" id="proveedor2" name="proveedor2" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="distrito">Distrito:</label>
-                        <input type="text" id="distrito" name="distrito" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="nombre">Nombre:</label>
- 			            <select id="nombre" name="nombre">         			
-                                        <!---SELECT DE TECNICOS-->
-                        </select>
-                    </div>
-                    <!-- JavaScript de Select2 -->
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+  .tab-panel { 
+    display: none; 
+    padding: 20px; 
+    overflow-y: auto; 
+    flex: 1; 
+  }
+  #modificar-form {
+    max-width: 800px; /* Lo subimos de 550px a 800px para que sean más largos */
+    width: 100%;
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column;
+  }
+  .tab-panel.active { display: block; }
 
-                    <script>
-                        // Inicializa Select2
-                    
-                    </script>
-                    
-                </div>
-                <!-- Tercer Bloque -->
-                <div class="block">
-                    <h3>SCRIPT FALLO</h3>
-                    <div class="form-group">
-                        <label for="folio3_">Folio:</label>
-                        <input type="text" id="folio3_" name="folio3_" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="causa">Causa del daño:</label>
-                        <input type="text" id="causa" name="causa" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="accion">Acción correctiva:</label>
-                        <input type="text" id="accion" name="accion" onblur="this.value = this.value.trim()">
-                    </div>
-                     <div class="form-group">
-                        <label for="etr">ETR:</label>
-                        <input type="text" id="etr" name="etr" onblur="this.value = this.value.trim()">
-                    </div>                   
-                    <div class="form-group">
-                        <label for="calibre">Capacidad de FO</label>
-                        <input type="text" id="calibre" name="calibre" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="coordenadas3">Coordenadas:</label>
-                        <input type="text" id="coordenadas3" name="coordenadas3" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="qr">Numero QR:</label>
-                        <input type="text" id="qr" name="qr" onblur="this.value = this.value.trim()">
-                    </div>
-                     <div class="form-group">
-                        <label for="materiales">Materiales a utilizar:</label>
-                        <input type="text" id="materiales" name="materiales" onblur="this.value = this.value.trim()">
-                    </div>                   
-                </div>
+  .section-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
 
-                <!-- Cuarto Bloque -->
-                <div class="block">
-                    <h3>SCRIPT FINAL</h3>
-                    <div class="form-group">
-                        <label for="folio4">FOLIO:</label>
-                        <input type="text" id="folio4" name="folio4" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="ciudad">CIUDAD:</label>
-                        <input type="text" id="ciudad" name="ciudad" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="estado">ESTADO:</label>
-                        <input type="text" id="estado" name="estado" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="cluster">CLUSTER:</label>
-                          <select id="cluster" name="cluster" onchange="llenarNumero()">
-                                <option value="">Selecciona una opción</option>
-                                <option value="ALDAMA">ALDAMA</option>
-                                <option value="AMPLIACION ALDAMA">AMPLIACION ALDAMA</option>
-                                <option value="AMPLIACION ALDAMA 2">AMPLIACION ALDAMA 2</option>
-                                <option value="AMPLIACION ALDAMA 3">AMPLIACION ALDAMA 3</option>
-                                <option value="AMPLIACION ALDAMA 4">AMPLIACION ALDAMA 4</option>                                   
-                                <option value="AMPLIACION ALDAMA 5">AMPLIACION ALDAMA 5</option>
-                                <option value="BUENOS AIRES">BUENOS AIRES</option>
-                                <option value="BUENOS AIRES_A">BUENOS AIRES_A</option>
-                                <option value="AMPLIACION BUENOS AIRES">AMPLIACION BUENOS AIRES</option>
-                                <option value="AMPLIACION BUENOS AIRES_A">AMPLIACION BUENOS AIRES_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_2_A">AMPLIACION BUENOS AIRES_2_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_3_A">AMPLIACION BUENOS AIRES_3_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_4_A">AMPLIACION BUENOS AIRES_4_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_5_A">AMPLIACION BUENOS AIRES_5_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_6_A">AMPLIACION BUENOS AIRES_6_A</option>
-                                <option value="BUENOS AIRES 2">BUENOS AIRES 2</option>
-                                <option value="CARLOS AMAYA">CARLOS AMAYA</option>
-                                <option value="EL VERGEL">EL VERGEL</option>
-                                <option value="GOMEZ MORIN">GOMEZ MORIN</option>
-                                <option value="AMPLIACION GOMEZ MORIN">AMPLIACION GOMEZ MORIN</option>
-                                <option value="LOMAS DE MORELOS">LOMAS DE MORELOS</option>
-                                <option value="AMPLIACION LOMAS DE MORELOS 2">AMPLIACION LOMAS DE MORELOS 3</option>
-                                <option value="AMPLIACION LOMAS DE MORELOS 3">AMPLIACION LOMAS DE MORELOS 3</option>
-                                <option value="LOS CIPRESES">LOS CIPRESES</option>
-                                <option value="MAYORCA">MAYORCA</option>
-                                <option value="NOGALES">NOGALES</option>
-                                <option value="OASIS">OASIS</option>
-                                <option value="SANTO DOMINGO">SANTO DOMINGO</option>
-                                <option value="THOMPSON">THOMPSON</option>
-                                <option value="THOMPSON_A">THOMPSON_A</option>
-                                <option value="TIERRA NUEVA">TIERRA NUEVA</option>
-                                <option value="TIERRA NUEVA_A">TIERRA NUEVA</option>
-                                <option value="AMPLIACION TIERRA NUEVA">AMPLIACION TIERRA NUEVA</option>
-                                <option value="AMPLIACION TIERRA NUEVA 2">AMPLIACION TIERRA NUEVA 2</option>
-                                <option value="AMPLIACION TIERRA NUEVA 3">AMPLIACION TIERRA NUEVA 3</option>
-                                <option value="AMPLIACION TIERRA NUEVA 4">AMPLIACION TIERRA NUEVA 4</option>
-                                <option value="AMPLIACION TIERRA NUEVA 5">AMPLIACION TIERRA NUEVA 5</option>
-                            </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="olt">OLT:</label>
-                        <select id="olt" name="olt" onchange="updatePreview()">
-                            <option value="">Selecciona un Cluster primero</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="clientes">CLIENTES AFECTADOS:</label>
-                        <input type="text" id="clientes" name="clientes" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="clientes">FALLA REPORTADA:</label>
-                        <input type="text" id="falla_r" name="falla_r" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha">Selecciona una fecha:</label>
-                        <input type="date" id="fecha" name="fecha"  >
-                        <input type="hidden" id="fecha-texto" name="fecha-texto" readonly onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="hr_desp">FECHA_Y_HR_DE_ASG_DESP:</label>
-                        <input type="text" id="hr_desp" name="hr_desp" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="hr_prov">FECHA_Y_HR_DE_ASG_PROV:</label>
-                        <input type="text" id="hr_prov" name="hr_prov" onblur="this.value = this.value.trim()">
-                    </div>                    
-                    <div class="form-group">
-                        <label for="hr_llegada">HR_DE_LLEGADA_A_LA_ZONA:</label>
-                        <input type="text" id="hr_llegada" name="hr_llegada" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="hr_med">HR_DE_LA_1er_MEDICION:</label>
-                        <input type="text" id="hr_med" name="hr_med" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="ubicacion_1er_2do">UBICACIÓN_DE_1N_2N:</label>
-                        <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="qr_2">QR DE SEGUNDO NIVEL:</label>
-                        <input type="text" id="qr_2" name="qr_2" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="causa_dano">CAUSA DE DAÑO:</label>
-                        <input type="text" id="causa_dano" name="causa_dano" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="ubicacion_dano">UBICACIÓN_DEL_DAÑO:</label>
-                        <input type="text" id="ubicacion_dano" name="ubicacion_dano" onblur="this.value = this.value.trim()">
-                    </div>                   
-                    <div class="form-group">
-                        <label for="coordenadas_dano">COORDENADAS:</label>
-                        <input type="text" id="coordenadas_dano" name="coordenadas_dano" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="desc_act">DESCRIP_DE_ACTIVIDADES:</label>
-                        <input type="text" id="desc_act" name="desc_act" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="potencia_inicial">POTENCIA_INICIAL:</label>
-                        <input type="text" id="potencia_inicial" name="potencia_inicial" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="potencia_final">POTENCIA_FINAL:</label>
-                        <input type="text" id="potencia_final" name="potencia_final" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="trabajos_realizados">TRABAJOS_REALIZADOS:</label>
-                        <input type="text" id="trabajos_realizados" name="trabajos_realizados" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="hr_final">FECHA_HR_FINAL_DE_REPARACION::</label>
-                        <input type="text" id="hr_final" name="hr_final" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="atiende_nom_tec">ATIENDE_NOM_TEC:</label>
-                        <input type="text" id="atiende_nom_tec" name="atiende_nom_tec" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="proveedor4">PROVEEDOR:</label>
-                        <input type="text" id="proveedor4" name="proveedor4" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="supervisor">SUPERVISOR DISTRITO:</label>
-                        <select id="supervisor" name="supervisor">
-                            <option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
-                            <option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="justificacion_sla">PAUSA HORA INICIAL Y FINAL:</label>
-                        <input type="text" id="justificacion_sla" name="justificacion_sla" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="motivo_pausa">MOTIVO DE PAUSA:</label>
-                        <input type="text" id="m_pausa" name="m_pausa" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="tiempo_pausa">TIEMPO TOTAL DE PAUSA:</label>
-                        <input type="text" id="t_pausa" name="t_pausa" onblur="this.value = this.value.trim()">
-                    </div>                    
-                    <div class="form-group">
-                        <label for="material_utilizado">MATERIAL UTILIZADO:</label>
-                        <input type="text" id="material_utilizado" name="material_utilizado" onblur="this.value = this.value.trim()">
-                    </div>
-                </div>
+ .field-grid { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+  }
+  .field-grid.cols3, 
+  .field-grid.col1 { 
+    display: flex;
+    flex-direction: column;
+  }
+  .field-grid.col1 { grid-template-columns: 1fr; }
+  .field-span2 { 
+    grid-column: auto; 
+  }
 
+  .field {
+    margin-bottom: 8px;
+  }
+  .field input, .field select {
+    padding: 6px 10px;
+  }
+  .field:last-child { margin-bottom: 0; }
 
-                         <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script>
-        // Tu configuración de Firebase (reemplaza con la tuya)
-        const firebaseConfig = {
-            apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
-            authDomain: "scripts-2c739.firebaseapp.com",
-            projectId: "scripts-2c739",
-            storageBucket: "scripts-2c739.firebasestorage.app",
-            messagingSenderId: "1054970007452",
-            appId: "1:1054970007452:web:1d283693bb8377192c0259",
-            measurementId: "G-08TE213QDH"
-        };
-        // Inicializar Firebase
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.firestore();
-        // Referencia al formulario
-            const form = document.getElementById("modificar-form");
+  .field label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 
-        form.addEventListener("submit", async function(e) {
-            e.preventDefault();
+  .sync-tag {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--green-dim);
+    color: var(--green);
+    letter-spacing: 0.05em;
+  }
 
-            const folio = document.getElementById("folio_").value.trim();
-            const eta = document.getElementById("eta").value;
-            const proveedor = document.getElementById("proveedor").value;
+  .field input,
+  .field select {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 14px 16px; /* Reducimos ligeramente el padding vertical */
+    font-family: var(--font-mono);
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .field input:focus,
+  .field select:focus { border-color: var(--accent); }
+  .field input::placeholder { color: var(--text3); }
+  .field input[readonly] {
+    color: var(--text3);
+    cursor: not-allowed;
+    background: var(--bg3);
+  }
+  .field select option { 
+    background: var(--bg2); 
+  }
 
-            const punto = document.getElementById("punto").value;
-            const coordenadas = document.getElementById("coordenadas").value;
-            const proveedor2 = document.getElementById("proveedor2").value;
-            const distrito = document.getElementById("distrito").value;
-            const nombre = document.getElementById("nombre").value; //REVISAR LABEL DE NOMBRE IDC
+  .field-note {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: -8px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
 
-            const causa = document.getElementById("causa").value;
-            const accion = document.getElementById("accion").value;
-            const etr = document.getElementById("etr").value;
-            const calibre = document.getElementById("calibre").value;
-            const coordenadas3 = document.getElementById("coordenadas3").value;
-            const qr = document.getElementById("qr").value;
-            const materiales = document.getElementById("materiales").value;
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 12px 0;
+  }
 
-            const ciudad = document.getElementById("ciudad").value;
-            const estado = document.getElementById("estado").value;
-            const cluster = document.getElementById("cluster").value;
-            const olt = document.getElementById("olt").value;
-            const clientes = document.getElementById("clientes").value;
-            const falla_r = document.getElementById("falla_r").value;
-            const fecha = document.getElementById("fecha-texto").value;
-            const hr_desp = document.getElementById("hr_desp").value;
-            const hr_prov = document.getElementById("hr_prov").value;
-            const hr_llegada = document.getElementById("hr_llegada").value;
-            const hr_med = document.getElementById("hr_med").value;
-            const ubicacion_1er_2do = document.getElementById("ubicacion_1er_2do").value;
-            const qr_2 = document.getElementById("qr_2").value;
-            const causa_dano = document.getElementById("causa_dano").value;
-            const ubicacion_dano = document.getElementById("ubicacion_dano").value;
-            const desc_act = document.getElementById("desc_act").value;
-            const potencia_inicial = document.getElementById("potencia_inicial").value;
-            const potencia_final = document.getElementById("potencia_final").value;
-            const coordenadas_dano = document.getElementById("coordenadas_dano").value;
-            const trabajos_realizados = document.getElementById("trabajos_realizados").value;
-            const hr_final = document.getElementById("hr_final").value;
-            const atiende_nom_tec = document.getElementById("atiende_nom_tec").value;
-            const proveedor4 = document.getElementById("proveedor4").value;
-            const supervisor = document.getElementById("supervisor").value;
-            const justificacion_sla = document.getElementById("justificacion_sla").value;
-            const m_pausa = document.getElementById("m_pausa").value;
-            const t_pausa = document.getElementById("t_pausa").value;
-            const material_utilizado = document.getElementById("material_utilizado").value;
-
-
-            if (!folio) return alert("Debes ingresar un SD");
-
-            try {
-                await db.collection("usuarios").doc(folio).set({folio, eta, proveedor, punto, coordenadas, proveedor2, distrito, nombre,
-                                                                causa, accion, etr, calibre, coordenadas3, qr, materiales,
-                                                                ciudad, estado, cluster, olt, clientes, falla_r, hr_desp, hr_prov,
-                                                                hr_llegada, hr_med, ubicacion_1er_2do, qr_2, 
-                                                                causa_dano, ubicacion_dano, coordenadas_dano, desc_act, potencia_inicial, potencia_final, trabajos_realizados, hr_final,
-                                                                atiende_nom_tec, proveedor4, supervisor,
-                                                                justificacion_sla, m_pausa, t_pausa, material_utilizado, timestamp: firebase.firestore.FieldValue.serverTimestamp()});
-                                                                
-                alert("Datos guardados con folio: " + folio);
-                 cargarUltimosFolios(); 
-                //form.reset();
-            } catch (error) {
-                console.error("Error al guardar:", error);
-            }
-        });
-
-        async function buscar() {
-      const id = document.getElementById("buscarId").value.trim();
-      //const resultado = document.getElementById("resultado");
-
-      if (!id) return alert("Ingresa un ID válido.");
-
-      try {
-        const doc = await db.collection("usuarios").doc(id).get();
-
-        if (doc.exists) {
-          const datos = doc.data();
-            document.getElementById("folio_").value = datos.folio || "";
-            document.getElementById("eta").value = datos.eta || "";
-            document.getElementById("proveedor").value = datos.proveedor || "";
-
-            document.getElementById("punto").value = datos.punto || "";
-            document.getElementById("coordenadas").value = datos.coordenadas || "";
-            document.getElementById("proveedor2").value = datos.proveedor2 || "";
-            document.getElementById("distrito").value = datos.distrito || "";
-            document.getElementById("nombre").value = datos.nombre || ""; //REVISAR LABEL DE NOMBRE IDC
-            $('#nombre').val(datos.nombre).trigger('change');
-            document.getElementById("causa").value = datos.causa || "";
-            document.getElementById("accion").value = datos.accion || "";
-            document.getElementById("etr").value = datos.etr || "";
-            document.getElementById("calibre").value = datos.calibre || "";
-            document.getElementById("coordenadas3").value = datos.coordenadas3 || "";
-            document.getElementById("qr").value = datos.qr || "";
-            document.getElementById("materiales").value = datos.materiales || "";
-
-            document.getElementById("ciudad").value = datos.ciudad || "";
-            document.getElementById("estado").value = datos.estado || "";
-            document.getElementById("cluster").value = datos.cluster || "";
-            $('#cluster').val(datos.cluster).trigger('change');
-            document.getElementById("olt").value = datos.olt || "";
-            document.getElementById("clientes").value = datos.clientes || "";
-            document.getElementById("falla_r").value = datos.falla_r || "";
-            document.getElementById("fecha-texto").value = datos.fecha || "";
-            document.getElementById("hr_desp").value = datos.hr_desp || "";
-            document.getElementById("hr_prov").value = datos.hr_prov || "";
-            document.getElementById("hr_llegada").value = datos.hr_llegada || "";
-            document.getElementById("hr_med").value = datos.hr_med || "";
-            document.getElementById("ubicacion_1er_2do").value = datos.ubicacion_1er_2do || "";
-            document.getElementById("qr_2").value = datos.qr_2 || "";
-            document.getElementById("causa_dano").value = datos.causa_dano || "";
-            document.getElementById("ubicacion_dano").value = datos.ubicacion_dano || "";
-            document.getElementById("coordenadas_dano").value = datos.coordenadas_dano || "";
-            document.getElementById("desc_act").value = datos.desc_act || "";
-            document.getElementById("potencia_inicial").value = datos.potencia_inicial || "";
-            document.getElementById("potencia_final").value = datos.potencia_final || "";
-            document.getElementById("trabajos_realizados").value = datos.trabajos_realizados || "";
-            document.getElementById("hr_final").value = datos.hr_final || "";
-            document.getElementById("atiende_nom_tec").value = datos.atiende_nom_tec || "";
-            document.getElementById("proveedor4").value = datos.proveedor4 || "";
-            document.getElementById("supervisor").value = datos.supervisor || "";
-            document.getElementById("justificacion_sla").value = datos.justificacion_sla || "";
-            document.getElementById("m_pausa").value = datos.m_pausa || "";
-            document.getElementById("t_pausa").value = datos.t_pausa || "";
-            document.getElementById("material_utilizado").value = datos.material_utilizado || "";
-          //resultado.innerText = "Datos cargados.";
-          updatePreview();
-        } else {
-         // resultado.innerText = "Documento no encontrado.";
-         alert("SD NO EXISTE");
-        }
-      } catch (error) {
-        //resultado.innerText = "Error al buscar.";
-        alert("ERROR AL BUSCAR");
-      }
+  /* SELECT2 dark override */
+  .select2-container {
+    width: 100% !important;
+  }
+  .select2-container--default .select2-selection--single {
+    width: 100% !important;
+    height: 46px !important; /* Ajusta este valor al alto que desees */
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 46px !important; /* Igual al alto del contenedor */
+      padding-left: 14px !important; /* Espacio normal a la izquierda */
+      padding-right: 30px !important; /* Espacio para la flecha */
+      font-size: 14px !important;
+      color: var(--text);
+      display: block; /* Para que el alineado funcione mejor */
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 46px !important;
+    align-items: center;
+    top: 0;
+    right: 8px;
+  }
+  .select2-dropdown {
+    align-items: center;
+    padding: 8px !important;
+    font-size: 13px;
+  }
+  .select2-container--default .select2-results__option {
+    align-items: center;
+     color: var(--text2); 
+     font-size: 13px !important;
+    padding: 10px 14px !important;
     }
-    //----------------------------CARGAR 1O ULTIMOS FOLIOS---------------------------------}
-async function cargarUltimosFolios() {
-  const lista = document.getElementById("lista-folios");
-  lista.innerHTML = "<li>Cargando...</li>";
+  .select2-container--default .select2-results__option--highlighted { 
+    align-items: center;
+    background: var(--accent-dim); 
+    color: var(--accent);
+   }
+  .select2-search--dropdown .select2-search__field {
+    align-items: center;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  /* PREVIEW */
+  .preview-area {
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Asegura que ocupe todo el alto */
+    overflow: hidden; 
+  }
+
+  .preview-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .preview-title {
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .live-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--green-dim);
+    color: var(--green);
+    letter-spacing: 0.05em;
+  }
+
+  .preview-scripts {
+    padding: 16px;
+    overflow-y: auto; /* Activa el scroll vertical */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: calc(100vh - 60px); /* Ajuste dinámico según el alto de la pantalla */
+  }
+
+  .script-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.15s;
+    flex-shrink: 0; /* IMPORTANTE: evita que las tarjetas se achiquen */
+    background: #ffffff;
+  }
+  .script-card:hover { border-color: var(--border2); }
+
+  .script-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .script-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .label-eta { color: var(--amber); }
+  .label-sitio { color: var(--accent); }
+  .label-fallo { color: var(--red); }
+  .label-final { color: var(--green); }
+
+  .copy-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.12s;
+    letter-spacing: 0.05em;
+  }
+  .copy-btn:hover { background: var(--bg2); color: var(--text); border-color: var(--text3); }
+  .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+
+  .script-body {
+    padding: 12px 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.6; /* Un interlineado más natural */
+    color: var(--text2);
+    word-break: break-word; /* Evita que el texto se salga de la tarjeta horizontalmente */
+    white-space: pre-wrap;  /* Respeta los saltos de línea del script */
+  }
+  .sf { color: var(--text3); }
+  .sv { color: var(--text); font-weight: 500; }
+  .sv-empty { color: var(--text3); font-style: italic; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #fff;
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: var(--font-mono);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.2s;
+    pointer-events: none;
+    z-index: 999;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">Scripts<span>FO</span></div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-text" id="status-text">Conectando...</span>
+    </div>
+  </div>
+  <div style="color:var(--text3);font-size:11px;" id="folio-indicator">Sin folio activo</div>
+</div>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <p class="sidebar-section-label">Buscar SD</p>
+      <div class="search-wrap" style="margin-bottom:8px;">
+        <input type="text" id="buscarId" placeholder="Ej. SD-20481">
+      </div>
+      <button class="btn btn-accent" onclick="buscar()" style="margin-bottom:6px;">Buscar</button>
+      <button class="btn btn-ghost" onclick="limpiarSeleccion()">Limpiar todo</button>
+    </div>
+
+    <div>
+      <p class="sidebar-section-label">Últimos registros</p>
+      <div class="folios-list" id="lista-folios">
+        <div style="color:var(--text3);font-size:11px;">Cargando...</div>
+      </div>
+    </div>
+
+    <button class="btn btn-save" type="submit" form="modificar-form">Guardar registro</button>
+  </div>
+
+  <!-- FORM AREA -->
+  <div class="form-area">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('eta',this)">
+        <span class="tab-dot dot-eta"></span>ETA
+      </button>
+      <button class="tab-btn" onclick="switchTab('sitio',this)">
+        <span class="tab-dot dot-sitio"></span>Sitio
+      </button>
+      <button class="tab-btn" onclick="switchTab('fallo',this)">
+        <span class="tab-dot dot-fallo"></span>Fallo
+      </button>
+      <button class="tab-btn" onclick="switchTab('final',this)">
+        <span class="tab-dot dot-final"></span>Final
+      </button>
+    </div>
+
+    <form id="modificar-form" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+
+      <!-- TAB: ETA -->
+      <div class="tab-panel active" id="panel-eta">
+        <div class="section-title">Script ETA — Inicial</div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Folio / SD</label>
+            <input type="text" id="folio_" name="folio_" placeholder="SD-XXXXX" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>ETA</label>
+            <input type="text" id="eta" name="eta" placeholder="Hora estimada de llegada" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="proveedor" name="proveedor" value="GTB" onblur="this.value=this.value.trim()">
+          </div>
+        </div>
+        <hr class="divider">
+        <p class="field-note">Al seleccionar la fecha se llenará automáticamente: HR_DESP, HR_PROV, HR_LLEGADA, HR_MED y HR_FINAL.</p>
+        <input type="hidden" id="fecha-texto" name="fecha-texto">
+      </div>
+
+      <!-- TAB: SITIO -->
+      <div class="tab-panel" id="panel-sitio">
+        <div class="section-title">Script Sitio — Llegada</div>
+        <div class="field-grid">
+          <div class="field">
+            <label>SD <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="sd" name="sd" readonly>
+          </div>
+          <div class="field">
+            <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="proveedor2" name="proveedor2" readonly>
+          </div>
+          <div class="field field-span2">
+            <label>Sitio / Punto de medición</label>
+            <input type="text" id="punto" name="punto" placeholder="Descripción del punto" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Coordenadas</label>
+            <input type="text" id="coordenadas" name="coordenadas" placeholder="Lat, Long" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Distrito <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="distrito" name="distrito" value="JUAREZ" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Nombre del técnico</label>
+            <select id="nombre" name="nombre"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: FALLO -->
+      <div class="tab-panel" id="panel-fallo">
+        <div class="section-title">Script Fallo</div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Folio <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="folio3_" name="folio3_" readonly>
+          </div>
+          <div class="field">
+            <label>ETR</label>
+            <input type="text" id="etr" name="etr" placeholder="Tiempo estimado de restauración" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Causa del daño <span class="sync-tag">auto-sync → final</span></label>
+            <input type="text" id="causa" name="causa" placeholder="Descripción de la causa" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Acción correctiva</label>
+            <input type="text" id="accion" name="accion" placeholder="Acción tomada" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Capacidad de FO</label>
+            <input type="text" id="calibre" name="calibre" placeholder="Ej. 12 hilos" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Número QR <span class="sync-tag">auto-sync → final</span></label>
+            <input type="text" id="qr" name="qr" placeholder="QR del empalme" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Coordenadas del daño <span class="sync-tag">auto-sync → final</span></label>
+            <input type="text" id="coordenadas3" name="coordenadas3" placeholder="Lat, Long" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Materiales a utilizar <span class="sync-tag">auto-sync → final</span></label>
+            <input type="text" id="materiales" name="materiales" placeholder="Lista de materiales" onblur="this.value=this.value.trim()">
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: FINAL -->
+      <div class="tab-panel" id="panel-final">
+        <div class="section-title">Script Final — Cierre</div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Folio <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="folio4" name="folio4" readonly>
+          </div>
+          <div class="field">
+            <label>Ciudad <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="ciudad" name="ciudad" readonly>
+          </div>
+          <div class="field">
+            <label>Estado</label>
+            <input type="text" id="estado" name="estado" value="CHIHUAHUA" onblur="this.value=this.value.trim()">
+          </div>   
+          <div class="field">
+            <label>Selecciona fecha del corte</label>
+            <input type="date" id="fecha" name="fecha">
+          </div>
+          <div class="field">
+            <label>OLT</label>
+            <select id="olt" name="olt">
+              <option value="">— Selecciona OLT —</option>
+              <option value="ALDAMA_JUA">ALDAMA_JUA</option>
+              <option value="ALDAMA_2_JUA">ALDAMA_2_JUA</option>
+              <option value="BUENOS_AIRES_JUA">BUENOS_AIRES_JUA</option>
+              <option value="BUENOS_AIRES_2_JUA">BUENOS_AIRES_2_JUA</option>
+              <option value="CARLOS_AMAYA_JUA">CARLOS_AMAYA_JUA</option>
+              <option value="VERGEL_JUA">VERGEL_JUA</option>
+              <option value="CIPRESES_JUA">CIPRESES_JUA</option>
+              <option value="MAYORCA_JUA">MAYORCA_JUA</option>
+              <option value="NOGALES_JUA">NOGALES_JUA</option>
+              <option value="OASIS_JUA">OASIS_JUA</option>
+              <option value="SANTO_DOMINGO_JUA">SANTO_DOMINGO_JUA</option>
+              <option value="GOMEZ_MORIN_JUA">GOMEZ_MORIN_JUA</option>
+              <option value="LOMAS_DE_MORELOS_JUA">LOMAS_DE_MORELOS_JUA</option>
+              <option value="THOMPSON_JUA">THOMPSON_JUA</option>
+              <option value="THOMPSON_2_JUA">THOMPSON_2_JUA</option>
+              <option value="HACIENDA_DE_LAS_TORRES_JUA">HACIENDA_DE_LAS_TORRES_JUA</option>
+              <option value="HACIENDA_DE_LAS_TORRES_2_JUA">HACIENDA_DE_LAS_TORRES_2_JUA</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Cluster</label>
+            <select id="cluster" name="cluster">
+              <option value="">Selecciona OLT primero</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Clientes afectados</label>
+            <input type="text" id="clientes" name="clientes" placeholder="Número de clientes" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Falla reportada</label>
+            <input type="text" id="falla_r" name="falla_r" placeholder="Descripción de la falla" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Fecha y HR asg. DESP</label>
+            <input type="text" id="hr_desp" name="hr_desp" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Fecha y HR asg. PROV</label>
+            <input type="text" id="hr_prov" name="hr_prov" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>HR llegada a la zona</label>
+            <input type="text" id="hr_llegada" name="hr_llegada" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>HR 1ª medición</label>
+            <input type="text" id="hr_med" name="hr_med" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Ubicación 1N / 2N</label>
+            <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>QR segundo nivel <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="qr_2" name="qr_2" readonly>
+          </div>
+          <div class="field">
+            <label>Causa del daño <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="causa_dano" name="causa_dano" readonly>
+          </div>
+          <div class="field field-span2">
+            <label>Ubicación del daño</label>
+            <input type="text" id="ubicacion_dano" name="ubicacion_dano" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Coordenadas del daño <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="coordenadas_dano" name="coordenadas_dano" readonly>
+          </div>
+          <div class="field field-span2">
+            <label>Descripción de actividades</label>
+            <input type="text" id="desc_act" name="desc_act" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Potencia inicial</label>
+            <input type="text" id="potencia_inicial" name="potencia_inicial" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Potencia final</label>
+            <input type="text" id="potencia_final" name="potencia_final" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Trabajos realizados</label>
+            <input type="text" id="trabajos_realizados" name="trabajos_realizados" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Fecha y HR final de reparación</label>
+            <input type="text" id="hr_final" name="hr_final" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Atiende nom. técnico <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="atiende_nom_tec" name="atiende_nom_tec" readonly>
+          </div>
+          <div class="field">
+            <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="proveedor4" name="proveedor4" readonly>
+          </div>
+          <div class="field">
+            <label>Supervisor distrito</label>
+            <select id="supervisor" name="supervisor">
+              <option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
+              <option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
+            </select>
+          </div>
+          <div class="field field-span2">
+            <label>Pausa hora inicial y final</label>
+            <input type="text" id="justificacion_sla" name="justificacion_sla" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Motivo de pausa</label>
+            <input type="text" id="m_pausa" name="m_pausa" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Tiempo total de pausa</label>
+            <input type="text" id="t_pausa" name="t_pausa" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field field-span2">
+            <label>Material utilizado <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="material_utilizado" name="material_utilizado" readonly>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-area">
+    <div class="preview-header">
+      <span class="preview-title">Vista previa</span>
+      <span class="live-badge">LIVE</span>
+    </div>
+    <div class="preview-scripts">
+
+      <div class="script-card">
+        <div class="script-card-header">
+          <span class="script-label label-eta"><span class="tab-dot dot-eta"></span>ETA</span>
+          <button class="copy-btn" onclick="copiarSeccion('seccion-eta', this)">Copiar</button>
+        </div>
+        <div class="script-body" id="seccion-eta-display"></div>
+        <div id="seccion-eta" style="display:none;"></div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-header">
+          <span class="script-label label-sitio"><span class="tab-dot dot-sitio"></span>Sitio</span>
+          <button class="copy-btn" onclick="copiarSeccion('seccion-sitio', this)">Copiar</button>
+        </div>
+        <div class="script-body" id="seccion-sitio-display"></div>
+        <div id="seccion-sitio" style="display:none;"></div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-header">
+          <span class="script-label label-fallo"><span class="tab-dot dot-fallo"></span>Fallo</span>
+          <button class="copy-btn" onclick="copiarSeccion('seccion-fallo', this)">Copiar</button>
+        </div>
+        <div class="script-body" id="seccion-fallo-display"></div>
+        <div id="seccion-fallo" style="display:none;"></div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-header">
+          <span class="script-label label-final"><span class="tab-dot dot-final"></span>Final</span>
+          <button class="copy-btn" onclick="copiarSeccion('seccion-final', this)">Copiar</button>
+        </div>
+        <div class="script-body" id="seccion-final-display"></div>
+        <div id="seccion-final" style="display:none;"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<!-- jQuery + Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+
+<script>
+// ─── Firebase ───────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
+  authDomain: "scripts-2c739.firebaseapp.com",
+  projectId: "scripts-2c739",
+  storageBucket: "scripts-2c739.firebasestorage.app",
+  messagingSenderId: "1054970007452",
+  appId: "1:1054970007452:web:1d283693bb8377192c0259"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ─── Status indicator ───────────────────────────────────
+document.getElementById('status-dot').style.background = 'var(--green)';
+document.getElementById('status-text').textContent = 'Firebase conectado';
+
+// ─── Toast ──────────────────────────────────────────────
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── Tabs ───────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── OLT map ────────────────────────────────────────────
+const OLT_TO_CLUSTERS = {
+  "ALDAMA_JUA": ["ALDAMA", "AMPLIACION ALDAMA", "AMPLIACION ALDAMA 2", "AMPLIACION ALDAMA 3", "AMPLIACION ALDAMA 4", "AMPLIACION ALDAMA 5"],
+  "ALDAMA_2_JUA": ["ALDAMA", "AMPLIACION ALDAMA", "AMPLIACION ALDAMA 2", "AMPLIACION ALDAMA 3", "AMPLIACION ALDAMA 4", "AMPLIACION ALDAMA 5"],
+  "BUENOS_AIRES_JUA": ["BUENOS AIRES", "BUENOS AIRES_A", "BUENOS AIRES 2", "AMPLIACION BUENOS AIRES", "AMPLIACION BUENOS AIRES_A", "AMPLIACION BUENOS AIRES_2_A", "AMPLIACION BUENOS AIRES_3_A", "AMPLIACION BUENOS AIRES_4_A", "AMPLIACION BUENOS AIRES_5_A", "AMPLIACION BUENOS AIRES_6_A"],
+  "BUENOS_AIRES_2_JUA": ["BUENOS AIRES", "BUENOS AIRES_A", "BUENOS AIRES 2", "AMPLIACION BUENOS AIRES", "AMPLIACION BUENOS AIRES_A", "AMPLIACION BUENOS AIRES_2_A", "AMPLIACION BUENOS AIRES_3_A", "AMPLIACION BUENOS AIRES_4_A", "AMPLIACION BUENOS AIRES_5_A", "AMPLIACION BUENOS AIRES_6_A"],
+  "CARLOS_AMAYA_JUA": ["CARLOS AMAYA"],
+  "VERGEL_JUA": ["EL VERGEL"],
+  "CIPRESES_JUA": ["LOS CIPRESES"],
+  "MAYORCA_JUA": ["MAYORCA"],
+  "NOGALES_JUA": ["NOGALES"],
+  "OASIS_JUA": ["OASIS"],
+  "SANTO_DOMINGO_JUA": ["SANTO DOMINGO"],
+  "GOMEZ_MORIN_JUA": ["GOMEZ MORIN", "AMPLIACION GOMEZ MORIN"],
+  "LOMAS_DE_MORELOS_JUA": ["LOMAS DE MORELOS", "AMPLIACION LOMAS DE MORELOS 2", "AMPLIACION LOMAS DE MORELOS 3"],
+  "THOMPSON_JUA": ["THOMPSON", "THOMPSON_A"],
+  "THOMPSON_2_JUA": ["THOMPSON", "THOMPSON_A"],
+  "HACIENDA_DE_LAS_TORRES_JUA": ["TIERRA NUEVA", "TIERRA NUEVA_A", "AMPLIACION TIERRA NUEVA", "AMPLIACION TIERRA NUEVA 2", "AMPLIACION TIERRA NUEVA 3", "AMPLIACION TIERRA NUEVA 4", "AMPLIACION TIERRA NUEVA 5"],
+  "HACIENDA_DE_LAS_TORRES_2_JUA": ["THOMPSON_A", "TIERRA NUEVA", "TIERRA NUEVA_A", "AMPLIACION TIERRA NUEVA", "AMPLIACION TIERRA NUEVA 2", "AMPLIACION TIERRA NUEVA 3", "AMPLIACION TIERRA NUEVA 4", "AMPLIACION TIERRA NUEVA 5"]
+};
+
+function filtrarClustersPorOLT() {
+  const oltVal = document.getElementById("olt").value;
+  const clusterSelect = document.getElementById("cluster");
+  
+  // Limpiar el select de Cluster
+  clusterSelect.innerHTML = '<option value="">— Selecciona Cluster —</option>';
+  
+  const clustersAsociados = OLT_TO_CLUSTERS[oltVal] || [];
+  
+  clustersAsociados.forEach(c => {
+    const el = document.createElement("option");
+    el.value = c;
+    el.textContent = c;
+    clusterSelect.appendChild(el);
+  });
+
+  // Si solo hay un cluster posible, seleccionarlo automáticamente
+  if (clustersAsociados.length === 1) {
+    clusterSelect.value = clustersAsociados[0];
+  }
+
+  // Notificar a Select2 del cambio de contenido
+  $(clusterSelect).trigger('change');
+  
+  // Actualizar la vista previa
+  updatePreview();
+}
+
+// ─── Fecha autofill ─────────────────────────────────────
+document.getElementById('fecha').addEventListener('input', function() {
+  const v = this.value;
+  document.getElementById('fecha-texto').value = v;
+  ['hr_llegada','hr_desp','hr_prov','hr_med','hr_final'].forEach(id => {
+    document.getElementById(id).value = v;
+  });
+  updatePreview();
+});
+
+// ─── Select2 init ───────────────────────────────────────
+$(document).ready(function() {
+  // Inicializar técnico
+  $('#nombre').select2({ placeholder: 'Selecciona técnico', allowClear: true, dropdownParent: $('#panel-sitio') });
+  $('#nombre').on('change', updatePreview);
+
+  // Inicializar OLT (Ahora es el que manda)
+  $('#olt').select2({ placeholder: 'Busca o selecciona OLT', allowClear: true, dropdownParent: $('#panel-final') });
+  $('#olt').on('select2:select', filtrarClustersPorOLT);
+  $('#olt').on('select2:clear', function() {
+    document.getElementById('cluster').innerHTML = '<option value="">Selecciona OLT primero</option>';
+    updatePreview();
+  });
+
+  // Inicializar Cluster (Ahora es el filtrado)
+  $('#cluster').select2({ placeholder: 'Selecciona Cluster', allowClear: true, dropdownParent: $('#panel-final') });
+  $('#cluster').on('change', updatePreview);
+});
+
+// ─── Cargar técnicos desde txt ──────────────────────────
+async function cargarTecnicos() {
+  try {
+    const r = await fetch('./tecnicos.txt');
+    if (!r.ok) return;
+    const lines = (await r.text()).split('\n');
+    const sel = document.getElementById('nombre');
+    lines.forEach(l => {
+      const v = l.trim();
+      if (v) {
+        const o = document.createElement('option');
+        o.value = v; o.textContent = v;
+        sel.appendChild(o);
+      }
+    });
+  } catch(e) { /* sin archivo local */ }
+}
+cargarTecnicos();
+
+// ─── Update Preview ─────────────────────────────────────
+function g(id) { return (document.getElementById(id)?.value || '').trim(); }
+
+function renderLine(label, val) {
+  const hasVal = val && val.length > 0;
+  return `<div><span class="sf">${label}: </span><span class="${hasVal ? 'sv' : 'sv-empty'}">${hasVal ? '*' + val + '*' : '—'}</span></div>`;
+}
+
+function updatePreview() {
+  // Sync fields
+  const folio = g('folio_');
+  document.getElementById('folio3_').value = folio;
+  document.getElementById('folio4').value = folio;
+  document.getElementById('sd').value = folio;
+
+  const proveedor = g('proveedor');
+  document.getElementById('proveedor2').value = proveedor;
+  document.getElementById('proveedor4').value = proveedor;
+
+  const distrito = g('distrito');
+  document.getElementById('ciudad').value = distrito;
+
+  const nombre = g('nombre');
+  document.getElementById('atiende_nom_tec').value = nombre;
+
+  const causa = g('causa');
+  document.getElementById('causa_dano').value = causa;
+
+  const coord3 = g('coordenadas3');
+  document.getElementById('coordenadas_dano').value = coord3;
+
+  const qr = g('qr');
+  document.getElementById('qr_2').value = qr;
+
+  const materiales = g('materiales');
+  document.getElementById('material_utilizado').value = materiales;
+
+  // Update folio indicator
+  document.getElementById('folio-indicator').textContent = folio ? 'Folio activo: ' + folio : 'Sin folio activo';
+
+  // Re-read after sync
+  const eta = g('eta'), olt = g('olt'), cluster = g('cluster');
+  const punto = g('punto'), coordenadas = g('coordenadas');
+  const accion = g('accion'), etr = g('etr'), calibre = g('calibre');
+  const ciudad = g('ciudad'), estado = g('estado');
+  const clientes = g('clientes'), falla_r = g('falla_r');
+  const hr_desp = g('hr_desp'), hr_prov = g('hr_prov');
+  const hr_llegada = g('hr_llegada'), hr_med = g('hr_med');
+  const ubicacion_1er_2do = g('ubicacion_1er_2do'), qr_2 = g('qr_2');
+  const causa_dano = g('causa_dano'), ubicacion_dano = g('ubicacion_dano');
+  const coordenadas_dano = g('coordenadas_dano'), desc_act = g('desc_act');
+  const potencia_inicial = g('potencia_inicial'), potencia_final = g('potencia_final');
+  const trabajos_realizados = g('trabajos_realizados'), hr_final = g('hr_final');
+  const atiende_nom_tec = g('atiende_nom_tec'), proveedor4 = g('proveedor4');
+  const supervisor = g('supervisor'), justificacion_sla = g('justificacion_sla');
+  const m_pausa = g('m_pausa'), t_pausa = g('t_pausa'), material_utilizado = g('material_utilizado');
+  const coordenadas3 = g('coordenadas3');
+
+  // Plain text for clipboard
+  const etaTxt = `FOLIO: *${folio}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*`;
+  const sitioTxt = `SD: *${folio}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*`;
+  const falloTxt = `Folio: *${folio}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*`;
+  const finalTxt = `FOLIO: *${folio}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${falla_r}*\nFECHA_Y_HR_DE_ASG_DESP: *${hr_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${hr_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICION: *${hr_med}*\nUBICACIÓN_DE_1N_2N: *${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${desc_act}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS: *${trabajos_realizados}*\nFECHA_HR_FINAL_DE_REPARACION: *${hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA: *${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*`;
+
+  document.getElementById('seccion-eta').textContent = etaTxt;
+  document.getElementById('seccion-sitio').textContent = sitioTxt;
+  document.getElementById('seccion-fallo').textContent = falloTxt;
+  document.getElementById('seccion-final').textContent = finalTxt;
+
+  // Render visual previews
+  document.getElementById('seccion-eta-display').innerHTML =
+    renderLine('FOLIO', folio) + renderLine('ETA', eta) + renderLine('PROVEEDOR', proveedor);
+
+  document.getElementById('seccion-sitio-display').innerHTML =
+    renderLine('SD', folio) + renderLine('Sitio', punto) +
+    renderLine('Coordenadas', coordenadas) + renderLine('Proveedor', proveedor) +
+    renderLine('Distrito', distrito) + renderLine('Nombre', nombre);
+
+  document.getElementById('seccion-fallo-display').innerHTML =
+    renderLine('Folio', folio) + renderLine('Causa del daño', causa) +
+    renderLine('Acción', accion) + renderLine('ETR', etr) +
+    renderLine('Calibre FO', calibre) + renderLine('Coordenadas', coordenadas3) +
+    renderLine('QR', qr) + renderLine('Materiales', materiales);
+
+  document.getElementById('seccion-final-display').innerHTML =
+    renderLine('FOLIO', folio) + renderLine('CIUDAD', ciudad) +
+    renderLine('ESTADO', estado) + renderLine('CLUSTER', cluster) +
+    renderLine('OLT', olt) + renderLine('CLIENTES', clientes) +
+    renderLine('FALLA', falla_r) + renderLine('HR_DESP', hr_desp) +
+    renderLine('HR_PROV', hr_prov) + renderLine('HR_LLEGADA', hr_llegada) +
+    renderLine('HR_MED', hr_med) + renderLine('UBICACIÓN 1N/2N', ubicacion_1er_2do) +
+    renderLine('QR 2do NIVEL', qr_2) + renderLine('CAUSA DAÑO', causa_dano) +
+    renderLine('UBICACIÓN DAÑO', ubicacion_dano) + renderLine('COORDENADAS', coordenadas_dano) +
+    renderLine('DESC ACT', desc_act) + renderLine('POT INICIAL', potencia_inicial) +
+    renderLine('POT FINAL', potencia_final) + renderLine('TRABAJOS', trabajos_realizados) +
+    renderLine('HR FINAL', hr_final) + renderLine('TÉCNICO', atiende_nom_tec) +
+    renderLine('PROVEEDOR', proveedor4) + renderLine('SUPERVISOR', supervisor) +
+    renderLine('PAUSA', justificacion_sla) + renderLine('MOT PAUSA', m_pausa) +
+    renderLine('T PAUSA', t_pausa) + renderLine('MATERIAL', material_utilizado);
+}
+
+// ─── Copiar sección ─────────────────────────────────────
+function copiarSeccion(id, btn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    btn.textContent = '✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = el.textContent;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ─── Guardar en Firebase ────────────────────────────────
+document.getElementById('modificar-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const folio = g('folio_');
+  if (!folio) { showToast('Debes ingresar un SD', true); return; }
+  if (!g('cluster')) { showToast('Selecciona un cluster', true); return; }
+
+  const data = {
+    folio, eta: g('eta'), proveedor: g('proveedor'),
+    punto: g('punto'), coordenadas: g('coordenadas'), proveedor2: g('proveedor2'),
+    distrito: g('distrito'), nombre: g('nombre'),
+    causa: g('causa'), accion: g('accion'), etr: g('etr'), calibre: g('calibre'),
+    coordenadas3: g('coordenadas3'), qr: g('qr'), materiales: g('materiales'),
+    ciudad: g('ciudad'), estado: g('estado'), cluster: g('cluster'), olt: g('olt'),
+    clientes: g('clientes'), falla_r: g('falla_r'), fecha: g('fecha-texto'),
+    hr_desp: g('hr_desp'), hr_prov: g('hr_prov'), hr_llegada: g('hr_llegada'),
+    hr_med: g('hr_med'), ubicacion_1er_2do: g('ubicacion_1er_2do'), qr_2: g('qr_2'),
+    causa_dano: g('causa_dano'), ubicacion_dano: g('ubicacion_dano'),
+    coordenadas_dano: g('coordenadas_dano'), desc_act: g('desc_act'),
+    potencia_inicial: g('potencia_inicial'), potencia_final: g('potencia_final'),
+    trabajos_realizados: g('trabajos_realizados'), hr_final: g('hr_final'),
+    atiende_nom_tec: g('atiende_nom_tec'), proveedor4: g('proveedor4'),
+    supervisor: g('supervisor'), justificacion_sla: g('justificacion_sla'),
+    m_pausa: g('m_pausa'), t_pausa: g('t_pausa'), material_utilizado: g('material_utilizado'),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
 
   try {
-    const querySnapshot = await db.collection("usuarios")
-      .orderBy("timestamp", "desc")
-      .limit(10)
-      .get();
+    await db.collection("usuarios").doc(folio).set(data);
+    showToast('Guardado: ' + folio);
+    cargarUltimosFolios();
+  } catch(err) {
+    console.error(err);
+    showToast('Error al guardar', true);
+  }
+});
 
-    lista.innerHTML = "";
-
-    querySnapshot.forEach((doc) => {
-      const datos = doc.data();
-      const folio = datos.folio || doc.id;
-
-      const li = document.createElement("li");
-
-      const link = document.createElement("a");
-      link.textContent = folio;
-      link.style.marginRight = "10px";
-      link.style.color = "#007bff";
-      link.style.textDecoration = "underline";
-      link.style.cursor = "pointer";
-      link.onclick = () => {
-        document.getElementById("buscarId").value = folio;
-        buscar();
-      };
-
-      const btnEliminar = document.createElement("button");
-      btnEliminar.textContent = "🗑️";
-      btnEliminar.title = "Eliminar este folio";
-      btnEliminar.style.color = "red";
-      btnEliminar.style.border = "none";
-      btnEliminar.style.background = "none";
-      btnEliminar.style.cursor = "pointer";
-      btnEliminar.onclick = async () => {
-        if (confirm(`¿Eliminar el folio "${folio}"?`)) {
-          try {
-            await db.collection("usuarios").doc(folio).delete();
-            alert(`Folio "${folio}" eliminado`);
-            cargarUltimosFolios(); // 🔄 actualizar lista
-          } catch (err) {
-            alert("Error al eliminar");
-            console.error(err);
-          }
-        }
-      };
-
-      li.appendChild(link);
-      li.appendChild(btnEliminar);
-      lista.appendChild(li);
+// ─── Buscar ─────────────────────────────────────────────
+async function buscar() {
+  const id = document.getElementById("buscarId").value.trim();
+  if (!id) { showToast('Ingresa un SD válido', true); return; }
+  try {
+    const doc = await db.collection("usuarios").doc(id).get();
+    if (!doc.exists) { showToast('SD no encontrado', true); return; }
+    const d = doc.data();
+    const fields = ['folio_','eta','proveedor','punto','coordenadas','proveedor2','distrito',
+      'causa','accion','etr','calibre','coordenadas3','qr','materiales',
+      'ciudad','estado','cluster','olt','clientes','falla_r','hr_desp','hr_prov',
+      'hr_llegada','hr_med','ubicacion_1er_2do','qr_2','causa_dano','ubicacion_dano',
+      'coordenadas_dano','desc_act','potencia_inicial','potencia_final','trabajos_realizados',
+      'hr_final','atiende_nom_tec','proveedor4','supervisor','justificacion_sla',
+      'm_pausa','t_pausa','material_utilizado'];
+    const keyMap = { folio_: 'folio', fecha_texto: 'fecha' };
+    fields.forEach(id => {
+      const key = keyMap[id] || id;
+      const el = document.getElementById(id);
+      if (el) el.value = d[key] || '';
     });
-
-    if (querySnapshot.empty) {
-      lista.innerHTML = "<li>No hay registros</li>";
-    }
-
-  } catch (error) {
-    console.error("Error al cargar folios:", error);
-    lista.innerHTML = "<li>Error al cargar</li>";
+    document.getElementById('fecha-texto').value = d.fecha || '';
+    $('#nombre').val(d.nombre || '').trigger('change');
+    $('#cluster').val(d.cluster || '').trigger('change');
+    // Restore OLT after cluster populates
+    setTimeout(() => {
+      llenarNumero();
+      document.getElementById('olt').value = d.olt || '';
+      updatePreview();
+    }, 100);
+    showToast('Cargado: ' + id);
+  } catch(err) {
+    showToast('Error al buscar', true);
   }
 }
 
-
-  // Ejecutar al cargar la página
-  window.addEventListener("DOMContentLoaded", cargarUltimosFolios);
-
-  //----------------------BORRAR FOLIOS------------------------------
-  function limpiarSeleccion() {
-        document.getElementById("buscarId").value = "";
-
-        // Si usas clases o efectos activos, puedes limpiarlos aquí:
-        document.querySelectorAll("#lista-folios li").forEach(el => el.classList.remove("activo"));
-        document.getElementById("modificar-form").reset();
-        	document.getElementById('proveedor').value = "GTB";
-	        document.getElementById('distrito').value = "JUAREZ";
-	        document.getElementById('estado').value = "CHIHUAHUA";
-        updatePreview();
-    }
-    
-
-    </script>
-
-    </form>
-        </div>
-
-        <!-- Área de vista previa -->
-        <div class="text-preview" id="resultado">
-            <!-- La vista previa se actualizará automáticamente -->
-
-
-        </div>
-        <div class="centrar-pantalla" >
-            <h3 style="font-size: 16px;">COPIAR SCRIPT'S</h3>
-            <button onclick="copiarSeccion('seccion-eta')">INICIAL</button>
-            <br><br>
-            <button onclick="copiarSeccion('seccion-sitio')">LLEGADA</button>
-            <br><br>
-            <button onclick="copiarSeccion('seccion-fallo')">FALLO</button>
-            <br><br>
-            <button onclick="copiarSeccion('seccion-final')">FINAL</button>
-        </div>
-    </div>
-
-    <script>
-//-----------------------------LLENADO DE MDRS
-        async function cargarArchivoAutomatico1() {
-            // Ruta del archivo .txt (en el mismo directorio del proyecto)
-            const archivoRuta1 = './mdr.txt';
-
-            // Usamos fetch para obtener el contenido del archivo
-            try {
-                const respuesta = await fetch(archivoRuta1);
-
-                // Comprobar que el archivo se cargó correctamente
-                if (!respuesta.ok) {
-                    throw new Error('No se pudo cargar el archivo.');
-                }
-
-                // Leer el contenido del archivo como texto
-                const contenido = await respuesta.text();
-
-                // Dividir el contenido por líneas
-                const lineas = contenido.split('\n');
-
-                // Obtener el select
-                //const select = document.getElementById('atendio_desp');
-
-                // Añadir las líneas como opciones
-                lineas.forEach(linea => {
-                    const opcion = linea.trim();
-                    if (opcion) {
-                        const nuevaOpcion = document.createElement('option');
-                        nuevaOpcion.value = opcion;
-                        nuevaOpcion.textContent = opcion;
-                        select.appendChild(nuevaOpcion);
-                    }
-                });
-            } catch (error) {
-               // console.error('Error al cargar el archivo:', error);
-                //alert('Hubo un problema al cargar los mdr.');
-            }
-        }
-
-        // Llamar a la función al cargar la página
-        cargarArchivoAutomatico1();
-
-
-//------------------------------------------------------------------------- LLENADO DE TECNICOS
-
-
-       async function cargarArchivoAutomatico() {
-            // Ruta del archivo .txt (en el mismo directorio del proyecto)
-            const archivoRuta = './tecnicos.txt';
-
-            // Usamos fetch para obtener el contenido del archivo
-            try {
-                const respuesta = await fetch(archivoRuta);
-
-                // Comprobar que el archivo se cargó correctamente
-                if (!respuesta.ok) {
-                    throw new Error('No se pudo cargar el archivo.');
-                }
-
-                // Leer el contenido del archivo como texto
-                const contenido = await respuesta.text();
-
-                // Dividir el contenido por líneas
-                const lineas = contenido.split('\n');
-
-                // Obtener el select
-                const select = document.getElementById('nombre');
-
-                // Añadir las líneas como opciones
-                lineas.forEach(linea => {
-                    const opcion = linea.trim();
-                    if (opcion) {
-                        const nuevaOpcion = document.createElement('option');
-                        nuevaOpcion.value = opcion;
-                        nuevaOpcion.textContent = opcion;
-                        select.appendChild(nuevaOpcion);
-                    }
-                });
-            } catch (error) {
-                console.error('Error al cargar el archivo:', error);
-               // alert('Hubo un problema al cargar los tecnicos.');
-            }
-        }
-
-        // Llamar a la función al cargar la página
-        cargarArchivoAutomatico();
-
-// LLENADO AUTOMATICO Y FUNCION DE SELECT CON BUSQUEDA CON SCRIPT2
-
-	//NOMBRE DE TECNICO
- 	$(document).ready(function() {
-            $('#nombre').select2({
-                placeholder: 'Selecciona una opción',
-                allowClear: true,
-          });
-
- 	$('#nombre').on('change', function() {
-                // Obtener el texto de la opción seleccionada
-                var nombre = $(this).val();
-
-		// Obtener el texto de la opción seleccionada
-            
-
-                // Actualizar el contenido de la vista previa
-                updatePreview();
-            });
-
-            // Llamar al evento change al cargar la página para mostrar el texto por defecto
-            $('#nombre').trigger('change');
-            
-
-            // NUEVO: Inicializa búsqueda en Cluster
-    $('#cluster').select2({
-        placeholder: 'Escribe para buscar cluster...',
-        allowClear: true
-    });
-
-    // EVENTO PARA CLUSTER: Importante usar 'select2:select' para que dispare el auto-llenado
-    $('#cluster').on('select2:select', function (e) {
-        llenarNumero(); // Esto dispara tu lógica de OLT
-    });
-        });
-
-	    
-
-
-
- // AUTO LLENADO DE OLT SEGUN CLUSTER
-
-        var numeros = {
-            // ALDAMA
-            "ALDAMA": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA 2": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA 3": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA 4": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA 5": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-
-            // BUENOS AIRES
-            "BUENOS AIRES": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "BUENOS AIRES_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_2_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_3_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_4_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_5_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_6_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-
-            
-            // OTROS CLUSTERS
-            "CARLOS AMAYA": ["CARLOS_AMAYA_JUA"],
-            "EL VERGEL": ["VERGEL_JUA"],
-            "LOS CIPRESES": ["CIPRESES_JUA"],
-            "MAYORCA": ["MAYORCA_JUA"],
-            "NOGALES": ["NOGALES_JUA"],
-            "OASIS": ["OASIS_JUA"],
-            "SANTO DOMINGO": ["SANTO_DOMINGO_JUA"],
-            
-            // GOMEZ MORIN
-            "GOMEZ MORIN": ["GOMEZ_MORIN_JUA"],
-            "AMPLIACION GOMEZ MORIN": ["GOMEZ_MORIN_JUA"],
-
-            // LOMAS DE MORELOS
-            "LOMAS DE MORELOS": ["LOMAS_DE_MORELOS_JUA"],
-            "AMPLIACION LOMAS DE MORELOS 2": ["LOMAS_DE_MORELOS_JUA"],
-            "AMPLIACION LOMAS DE MORELOS 3": ["LOMAS_DE_MORELOS_JUA"],
-
-            // THOMPSON
-            "THOMPSON": ["THOMPSON_JUA", "THOMPSON_2_JUA"],
-            "THOMPSON_A": ["HACIENDA_DE_LAS_TORRES_2_JUA","THOMPSON_JUA","THOMPSON_2_JUA"],
-
-            // TIERRA NUEVA (Aquí habilitamos la doble opción)
-            "TIERRA NUEVA": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "TIERRA NUEVA_A": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA 2": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA 3": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA 4": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA 5": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"]
-        };
-
-        function llenarNumero() {
-            var seleccion = document.getElementById("cluster").value;
-            var oltSelect = document.getElementById("olt");
-            
-            // Limpiar opciones anteriores
-            oltSelect.innerHTML = "";
-
-            if (numeros.hasOwnProperty(seleccion)) {
-                var opciones = numeros[seleccion];
-
-                opciones.forEach(function(oltNombre) {
-                    var el = document.createElement("option");
-                    el.textContent = oltNombre;
-                    el.value = oltNombre;
-                    oltSelect.appendChild(el);
-                });
-
-                // Si solo hay una opción, seleccionarla automáticamente
-                if (opciones.length === 1) {
-                    oltSelect.value = opciones[0];
-                }
-            } else {
-                var porDefecto = document.createElement("option");
-                porDefecto.textContent = "Sin OLT asociada";
-                porDefecto.value = "";
-                oltSelect.appendChild(porDefecto);
-            }
-            
-            updatePreview();
-        }
-
-
-        // Selecciona los elementos de entrada
-        const fechaInput = document.getElementById('fecha');
-        const fechaTextoInput = document.getElementById('fecha-texto');
-
-        // Añade un evento para actualizar el valor del campo de texto
-        fechaInput.addEventListener('input', function() {
-            const fechaSeleccionada = this.value;
-            fechaTextoInput.value = fechaSeleccionada || 'No se ha seleccionado ninguna fecha.';
-            document.getElementById('hr_llegada').value = fechaSeleccionada;
-            document.getElementById('hr_desp').value = fechaSeleccionada;
-            document.getElementById('hr_prov').value = fechaSeleccionada;
-            document.getElementById('hr_med').value = fechaSeleccionada;
-            document.getElementById('hr_final').value = fechaSeleccionada;
-
-            updatePreview();
-        });
-
-
-	document.getElementById('proveedor').value = "GTB";
-	document.getElementById('distrito').value = "JUAREZ";
-	document.getElementById('estado').value = "CHIHUAHUA";
-
-	
-        function updatePreview() {
-	
-
-
-
-            // Obtener el valor del FOLIO del primer bloque
-            var folio_ = document.getElementById('folio_').value.trim();
-
-            // Sincronizar el valor de los otros campos FOLIO
-            document.getElementById('folio3_').value = folio_;
-            document.getElementById('folio4').value = folio_;
-            document.getElementById('sd').value = folio_; // Suponiendo que SD debe ser igual al folio
-
-
-      	// Obtener el valor del PROVEEDOR del primer bloque
-            var proveedor= document.getElementById('proveedor').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('proveedor2').value = proveedor;
-            document.getElementById('proveedor4').value = proveedor;
-
-
-	// Obtener el valor del DISTRITO del SEGUNDO bloque
-            var distrito=document.getElementById('distrito').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('ciudad').value = distrito;
-
-	// Obtener el valor del NOMBRE del SEGUNDO bloque
-            var nombre=document.getElementById('nombre').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('atiende_nom_tec').value = nombre;
-
-
-	// Obtener el valor de CAUSA DE DAÑO del TERCER bloque
-            var causa=document.getElementById('causa').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('causa_dano').value = causa;
-
-	// Obtener el valor de CORDENADAS DAÑO del TERCER bloque
-            var coordenadas3=document.getElementById('coordenadas3').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('coordenadas_dano').value = coordenadas3;
-
-
-	// Obtener el valor de NUMERO QR del TERCER bloque
-            var qr=document.getElementById('qr').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('qr_2').value = qr;
-
-
-    // Obtener el valor de MATERIALES del TERCER bloque
-            var materiales=document.getElementById('materiales').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('material_utilizado').value = materiales;
-
-    // Obtener el valor de COORDENADAS FALLO del TERCER bloque
-            var coordenadas3 = document.getElementById('coordenadas3').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('coordenadas_dano').value = coordenadas3;
-
-
-
-
-            // Obtener los valores de los campos del primer bloque
-            var eta = document.getElementById('eta').value.trim();
-            var proveedor = document.getElementById('proveedor').value.trim();
-
-            // Obtener los valores de los campos del segundo bloque
-            var punto = document.getElementById('punto').value;
-            var coordenadas = document.getElementById('coordenadas').value.trim();
-            var proveedor2 = document.getElementById('proveedor2').value.trim();
-            var distrito = document.getElementById('distrito').value.trim();
-	        var nombre = document.getElementById('nombre').value.trim();
-
-            // Obtener los valores de los campos del tercer bloque
-            var causa = document.getElementById('causa').value.trim();
-            var accion = document.getElementById('accion').value.trim();
-            var calibre = document.getElementById('calibre').value.trim();
-            var coordenadas3 = document.getElementById('coordenadas3').value.trim();
-            var etr = document.getElementById('etr').value.trim();
-            var qr = document.getElementById('qr').value.trim();
-            var materiales = document.getElementById('materiales').value.trim();
-
-            // Obtener los valores de los campos del cuarto bloque
-            var ciudad = document.getElementById('ciudad').value.trim();
-            var estado = document.getElementById('estado').value.trim();
-            var cluster = document.getElementById('cluster').value.trim();
-            var olt = document.getElementById('olt').value.trim();
-            var clientes = document.getElementById('clientes').value.trim();
-            var falla_r = document.getElementById('falla_r').value.trim();
-            var hr_desp = document.getElementById('hr_desp').value.trim();
-            var hr_prov = document.getElementById('hr_prov').value.trim();
-            var hr_llegada = document.getElementById('hr_llegada').value.trim();
-            var hr_med = document.getElementById('hr_med').value.trim();
-            var ubicacion_1er_2do = document.getElementById('ubicacion_1er_2do').value.trim();
-            var qr_2 = document.getElementById('qr_2').value.trim();
-            var ubicacion_dano = document.getElementById('ubicacion_dano').value.trim();
-            var coordenadas_dano = document.getElementById('coordenadas_dano').value.trim();
-            var desc_act = document.getElementById('desc_act').value.trim();
-            var potencia_inicial= document.getElementById('potencia_inicial').value.trim();
-            var potencia_final = document.getElementById('potencia_final').value.trim();
-            var trabajos_realizados = document.getElementById('trabajos_realizados').value.trim();
-            var hr_final = document.getElementById('hr_final').value.trim();
-            var causa_dano = document.getElementById('causa_dano').value.trim();
-            var atiende_nom_tec = document.getElementById('atiende_nom_tec').value.trim();
-            var proveedor4 = document.getElementById('proveedor4').value.trim();
-            var supervisor = document.getElementById('supervisor').value.trim();
-            var justificacion_sla = document.getElementById('justificacion_sla').value.trim();
-            var m_pausa = document.getElementById('m_pausa').value.trim();
-            var t_pausa = document.getElementById('t_pausa').value.trim();
-            var material_utilizado = document.getElementById('material_utilizado').value.trim();
-
-            // Actualizar el contenido del div de vista previa
-            var resultado = document.getElementById('resultado');
-
-            resultado.innerHTML = `
-                <b>SCRIPT ETA:</b><div id="seccion-eta">FOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*</div>
-
-                <b>SCRIPT SITIO:</b><div id="seccion-sitio" style="white-space: pre-wrap;">SD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*</div>
-
-                <b>SCRIPT FALLO:</b><div id="seccion-fallo" style="white-space: pre-wrap;">Folio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*</div>
-
-                <b>SCRIPT FINAL:</b><div id="seccion-final" style="white-space: pre-wrap;">FOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${falla_r}*\nFECHA_Y_HR_DE_ASG_DESP: *${hr_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${hr_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICION: *${hr_med}*\nUBICACIÓN_DE_1N_2N: *${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${desc_act}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS: *${trabajos_realizados}*\nFECHA_HR_FINAL_DE_REPARACION: *${hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA: *${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*</div>`;
-
-           /* resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n
-            \n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n
-            \n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*\n
-           
-            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nOT: *${ot}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nENLACES AFECTADOS: *${enlaces}*\nFALLA_REPORTADA: *${falla_r}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nUBICACIÓN_DE_1N_2N*${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nDIRECCION_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DEL DAÑO: *${coordenadas_dano}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nPOTENCIA_FINAL: *${potencia_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*`;
-        */}
-
-        // Agregar eventos para actualizar la vista previa
-        document.getElementById('folio_').addEventListener('input', updatePreview);
-        document.getElementById('eta').addEventListener('input', updatePreview);
-        document.getElementById('proveedor').addEventListener('input', updatePreview);
-        document.getElementById('punto').addEventListener('input', updatePreview);
-        document.getElementById('coordenadas').addEventListener('input', updatePreview);
-        document.getElementById('proveedor2').addEventListener('input', updatePreview);
-        document.getElementById('distrito').addEventListener('input', updatePreview);
-        document.getElementById('nombre').addEventListener('input', updatePreview);
-        document.getElementById('causa').addEventListener('input', updatePreview);
-        document.getElementById('accion').addEventListener('input', updatePreview);
-        document.getElementById('calibre').addEventListener('input', updatePreview);
-        document.getElementById('coordenadas3').addEventListener('input', updatePreview);
-        document.getElementById('qr').addEventListener('input', updatePreview);
-        document.getElementById('etr').addEventListener('input', updatePreview);
-        document.getElementById('ciudad').addEventListener('input', updatePreview);
-        document.getElementById('estado').addEventListener('input', updatePreview);
-        document.getElementById('cluster').addEventListener('input', updatePreview);
-        document.getElementById('olt').addEventListener('input', updatePreview);
-        document.getElementById('clientes').addEventListener('input', updatePreview);
-        document.getElementById('falla_r').addEventListener('input', updatePreview);
-        document.getElementById('hr_llegada').addEventListener('input', updatePreview);
-        document.getElementById('ubicacion_1er_2do').addEventListener('input', updatePreview);
-        document.getElementById('ubicacion_dano').addEventListener('input', updatePreview);
-        document.getElementById('coordenadas_dano').addEventListener('input', updatePreview);
-        document.getElementById('causa_dano').addEventListener('input', updatePreview);
-        document.getElementById('potencia_final').addEventListener('input', updatePreview);
-        document.getElementById('trabajos_realizados').addEventListener('input', updatePreview);
-        document.getElementById('qr_2').addEventListener('input', updatePreview);
-        document.getElementById('atiende_nom_tec').addEventListener('input', updatePreview);
-        document.getElementById('proveedor4').addEventListener('input', updatePreview);
-        document.getElementById('supervisor').addEventListener('input', updatePreview);
-        document.getElementById('material_utilizado').addEventListener('input', updatePreview);
-        document.getElementById('justificacion_sla').addEventListener('input', updatePreview);
-        document.getElementById('materiales').addEventListener('input', updatePreview);
-        document.getElementById('m_pausa').addEventListener('input', updatePreview);
-        document.getElementById('t_pausa').addEventListener('input', updatePreview);
-        document.getElementById('hr_desp').addEventListener('input', updatePreview);
-        document.getElementById('hr_prov').addEventListener('input', updatePreview);
-        document.getElementById('hr_med').addEventListener('input', updatePreview);
-        document.getElementById('desc_act').addEventListener('input', updatePreview);
-        document.getElementById('potencia_inicial').addEventListener('input', updatePreview);
-        document.getElementById('hr_final').addEventListener('input', updatePreview);
-
-        // Llamar a updatePreview al cargar la página para inicializar la vista previa
-        updatePreview();
-
-        function copiarSeccion(id) {
-    var elemento = document.getElementById(id);
-
-    if (!elemento) {
-        alert("Sección no encontrada");
-        return;
-    }
-
-    // Crear textarea temporal
-    var tempTextarea = document.createElement("textarea");
-    tempTextarea.value = elemento.innerText; // copiar solo texto plano
-    document.body.appendChild(tempTextarea);
-
-    tempTextarea.select();
-    document.execCommand("copy");
-
-    document.body.removeChild(tempTextarea);
-   // alert("Sección copiada al portapapeles.");
+// ─── Limpiar ─────────────────────────────────────────────
+function limpiarSeleccion() {
+  document.getElementById('buscarId').value = '';
+  document.getElementById('modificar-form').reset();
+  $('#nombre').val(null).trigger('change');
+  $('#cluster').val(null).trigger('change');
+  document.getElementById('olt').innerHTML = '<option value="">Selecciona cluster primero</option>';
+  document.getElementById('proveedor').value = 'GTB';
+  document.getElementById('distrito').value = 'JUAREZ';
+  document.getElementById('estado').value = 'CHIHUAHUA';
+  updatePreview();
 }
 
-    </script>
+// ─── Últimos 10 folios ───────────────────────────────────
+async function cargarUltimosFolios() {
+  const lista = document.getElementById("lista-folios");
+  lista.innerHTML = '<div style="color:var(--text3);font-size:11px;">Cargando...</div>';
+  try {
+    const snap = await db.collection("usuarios").orderBy("timestamp","desc").limit(10).get();
+    lista.innerHTML = '';
+    if (snap.empty) {
+      lista.innerHTML = '<div style="color:var(--text3);font-size:11px;">Sin registros</div>';
+      return;
+    }
+    snap.forEach(doc => {
+      const folio = doc.data().folio || doc.id;
+      const row = document.createElement('div');
+      row.className = 'folio-row';
+      row.innerHTML = `<span class="folio-id">${folio}</span><span class="folio-del" title="Eliminar">✕</span>`;
+      row.querySelector('.folio-id').onclick = () => {
+        document.getElementById('buscarId').value = folio;
+        buscar();
+      };
+      row.querySelector('.folio-del').onclick = async (e) => {
+        e.stopPropagation();
+        if (!confirm(`¿Eliminar el folio "${folio}"?`)) return;
+        try {
+          await db.collection("usuarios").doc(folio).delete();
+          showToast('Eliminado: ' + folio);
+          cargarUltimosFolios();
+        } catch(err) { showToast('Error al eliminar', true); }
+      };
+      lista.appendChild(row);
+    });
+  } catch(err) {
+    lista.innerHTML = '<div style="color:var(--text3);font-size:11px;">Error al cargar</div>';
+  }
+}
 
+// ─── Eventos input → updatePreview ──────────────────────
+document.querySelectorAll('#modificar-form input, #modificar-form select').forEach(el => {
+  el.addEventListener('input', updatePreview);
+});
+
+// ─── Init ────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  cargarUltimosFolios();
+  updatePreview();
+});
+</script>
 </body>
 </html>
