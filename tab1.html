@@ -1168,34 +1168,59 @@ document.getElementById('modificar-form').addEventListener('submit', async funct
 async function buscar() {
   const id = document.getElementById("buscarId").value.trim();
   if (!id) { showToast('Ingresa un SD válido', true); return; }
+
   try {
     const doc = await db.collection("usuarios").doc(id).get();
-    if (!doc.exists) { showToast('SD no encontrado', true); return; }
+    if (!doc.exists) { 
+      showToast('SD no encontrado', true); 
+      return; 
+    }
+
     const d = doc.data();
-    const fields = ['folio_','eta','proveedor','punto','coordenadas','proveedor2','distrito',
+    
+    // 1. Llenamos los campos de texto normales primero
+    const fields = [
+      'folio_','eta','proveedor','punto','coordenadas','proveedor2','distrito',
       'causa','accion','etr','calibre','coordenadas3','qr','materiales',
-      'ciudad','estado','cluster','olt','clientes','falla_r','hr_desp','hr_prov',
+      'ciudad','estado','clientes','falla_r','hr_desp','hr_prov',
       'hr_llegada','hr_med','ubicacion_1er_2do','qr_2','causa_dano','ubicacion_dano',
       'coordenadas_dano','desc_act','potencia_inicial','potencia_final','trabajos_realizados',
       'hr_final','atiende_nom_tec','proveedor4','supervisor','justificacion_sla',
-      'm_pausa','t_pausa','material_utilizado'];
-    const keyMap = { folio_: 'folio', fecha_texto: 'fecha' };
+      'm_pausa','t_pausa','material_utilizado'
+    ];
+
     fields.forEach(id => {
-      const key = keyMap[id] || id;
       const el = document.getElementById(id);
-      if (el) el.value = d[key] || '';
+      if (el) el.value = d[id === 'folio_' ? 'folio' : id] || '';
     });
+
     document.getElementById('fecha-texto').value = d.fecha || '';
+
+    // 2. Cargamos el Técnico en Select2
     $('#nombre').val(d.nombre || '').trigger('change');
-    $('#cluster').val(d.cluster || '').trigger('change');
-    // Restore OLT after cluster populates
-    setTimeout(() => {
-      llenarNumero();
-      document.getElementById('olt').value = d.olt || '';
+
+    // 3. Cargamos la OLT primero
+    if (d.olt) {
+      $('#olt').val(d.olt).trigger('change');
+      
+      // IMPORTANTE: Ejecutamos el filtro para que se cree la lista de Clusters
+      filtrarClustersPorOLT();
+
+      // 4. Esperamos un instante a que el DOM se actualice y cargamos el Cluster
+      setTimeout(() => {
+        if (d.cluster) {
+          $('#cluster').val(d.cluster).trigger('change');
+        }
+        updatePreview(); // Actualizamos la vista previa al final de todo
+      }, 150); 
+    } else {
       updatePreview();
-    }, 100);
+    }
+
     showToast('Cargado: ' + id);
+
   } catch(err) {
+    console.error(err);
     showToast('Error al buscar', true);
   }
 }
