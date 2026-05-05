@@ -931,9 +931,7 @@ function filtrarClustersPorOLT() {
   const oltVal = document.getElementById("olt").value;
   const clusterSelect = document.getElementById("cluster");
   
-  // Limpiar el select de Cluster
   clusterSelect.innerHTML = '<option value="">— Selecciona Cluster —</option>';
-  
   const clustersAsociados = OLT_TO_CLUSTERS[oltVal] || [];
   
   clustersAsociados.forEach(c => {
@@ -943,15 +941,12 @@ function filtrarClustersPorOLT() {
     clusterSelect.appendChild(el);
   });
 
-  // Si solo hay un cluster posible, seleccionarlo automáticamente
   if (clustersAsociados.length === 1) {
     clusterSelect.value = clustersAsociados[0];
   }
 
-  // Notificar a Select2 del cambio de contenido
-  $(clusterSelect).trigger('change');
-  
-  // Actualizar la vista previa
+  // ESTO ES CLAVE: Notifica a Select2 y al sistema de guardado
+  $(clusterSelect).trigger('change'); 
   updatePreview();
 }
 
@@ -1004,7 +999,11 @@ async function cargarTecnicos() {
 cargarTecnicos();
 
 // ─── Update Preview ─────────────────────────────────────
-function g(id) { return (document.getElementById(id)?.value || '').trim(); }
+function g(id) { 
+  const el = document.getElementById(id);
+  if (!el) return '';
+  return el.value ? el.value.trim() : ''; 
+}
 
 function renderLine(label, val) {
   const hasVal = val && val.length > 0;
