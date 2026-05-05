@@ -1128,10 +1128,13 @@ function copiarSeccion(id, btn) {
 // ─── Guardar en Firebase ────────────────────────────────
 document.getElementById('modificar-form').addEventListener('submit', async function(e) {
   e.preventDefault();
+  
   const folio = g('folio_');
-  if (!folio) { showToast('Debes ingresar un SD', true); return; }
-  if (!g('cluster')) { showToast('Selecciona un cluster', true); return; }
-
+  
+  if (!folio) { 
+    showToast('Debes ingresar un SD', true); return; 
+  }
+  
   const data = {
     folio, eta: g('eta'), proveedor: g('proveedor'),
     punto: g('punto'), coordenadas: g('coordenadas'), proveedor2: g('proveedor2'),
