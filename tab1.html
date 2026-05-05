@@ -489,43 +489,40 @@
   .sv-empty { color: var(--text3); font-style: italic; }
 
   /* Toast */
-.toast {
-  position: fixed;
-  top: 30px; /* Movida a la parte superior para mayor visibilidad */
-  right: 30px;
-  background: #ffffff;
-  color: #1e293b;
-  padding: 18px 25px;
-  border-radius: 12px;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  .toast {
+    position: fixed;
+    top: -100px; /* Inicia fuera de la pantalla (arriba) */
+    left: 50%; /* Se posiciona al centro horizontal */
+    transform: translateX(-50%); /* Ajuste exacto para centrado perfecto */
+    
+    background: #ffffff;
+    color: #1e293b;
+    padding: 16px 32px;
+    border-radius: 50px; /* Forma de píldora más elegante */
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 4px solid #059669; /* Borde abajo para el efecto de caída */
+    
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote suave */
+    z-index: 10000;
+    pointer-events: none;
+    min-width: 300px;
+    justify-content: center;
+  }
   
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  
-  border-left: 6px solid #059669; /* Borde verde de éxito */
-  
-  opacity: 0;
-  transform: translateX(100px); /* Viene desde la derecha */
-  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  pointer-events: none;
-  z-index: 10000;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Variante de Error */
-.toast.error {
-  border-left-color: #dc2626;
-  color: #991b1b;
-}
-
+  /* Estado cuando se muestra */
+  .toast.show {
+    top: 30px; /* Baja hasta 30px de la parte superior */
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -909,28 +906,22 @@ document.getElementById('status-text').textContent = 'Firebase conectado';
 function showToast(msg, isError = false) {
   const t = document.getElementById('toast');
   
-  // Cambiar el mensaje
-  t.textContent = msg;
+  // Usar innerHTML por si quieres agregar un icono rápido
+  t.innerHTML = isError ? `<span>✕</span> ${msg}` : `<span>✓</span> ${msg}`;
   
-  // Aplicar clases
   if (isError) {
     t.classList.add('error');
+    t.style.borderBottomColor = '#dc2626'; // Rojo si es error
   } else {
     t.classList.remove('error');
+    t.style.borderBottomColor = '#059669'; // Verde si es éxito
   }
   
-  // Mostrar con animación
   t.classList.add('show');
-  
-  // Vibración ligera en dispositivos móviles (si el navegador lo permite)
-  if (window.navigator.vibrate) {
-    window.navigator.vibrate(isError ? [100, 50, 100] : 50);
-  }
 
-  // Desaparecer después de 3.5 segundos
   setTimeout(() => {
     t.classList.remove('show');
-  }, 3500);
+  }, 3000);
 }
 
 // ─── Tabs ───────────────────────────────────────────────
