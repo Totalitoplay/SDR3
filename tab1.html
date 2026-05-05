@@ -489,26 +489,42 @@
   .sv-empty { color: var(--text3); font-style: italic; }
 
   /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #fff;
-    border: 1px solid var(--green);
-    color: var(--green);
-    padding: 10px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    font-family: var(--font-mono);
-    opacity: 0;
-    transform: translateY(8px);
-    transition: all 0.2s;
-    pointer-events: none;
-    z-index: 999;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
-  .toast.error { border-color: var(--red); color: var(--red); }
+.toast {
+  position: fixed;
+  top: 30px; /* Movida a la parte superior para mayor visibilidad */
+  right: 30px;
+  background: #ffffff;
+  color: #1e293b;
+  padding: 18px 25px;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  border-left: 6px solid #059669; /* Borde verde de éxito */
+  
+  opacity: 0;
+  transform: translateX(100px); /* Viene desde la derecha */
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  pointer-events: none;
+  z-index: 10000;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Variante de Error */
+.toast.error {
+  border-left-color: #dc2626;
+  color: #991b1b;
+}
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; }
@@ -892,10 +908,29 @@ document.getElementById('status-text').textContent = 'Firebase conectado';
 // ─── Toast ──────────────────────────────────────────────
 function showToast(msg, isError = false) {
   const t = document.getElementById('toast');
+  
+  // Cambiar el mensaje
   t.textContent = msg;
-  t.className = 'toast' + (isError ? ' error' : '');
+  
+  // Aplicar clases
+  if (isError) {
+    t.classList.add('error');
+  } else {
+    t.classList.remove('error');
+  }
+  
+  // Mostrar con animación
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  
+  // Vibración ligera en dispositivos móviles (si el navegador lo permite)
+  if (window.navigator.vibrate) {
+    window.navigator.vibrate(isError ? [100, 50, 100] : 50);
+  }
+
+  // Desaparecer después de 3.5 segundos
+  setTimeout(() => {
+    t.classList.remove('show');
+  }, 3500);
 }
 
 // ─── Tabs ───────────────────────────────────────────────
