@@ -77,11 +77,11 @@
 
   /* MAIN LAYOUT */
   .main {
-    display: grid;
-    grid-template-columns: 200px 1fr 340px;
-    gap: 0;
+    display: flex;
+    justify-content: center; /* Centra el bloque de trabajo */
     flex: 1;
     overflow: hidden;
+    background: var(--bg);
   }
 
   /* SIDEBAR */
@@ -178,10 +178,14 @@
 
   /* FORM AREA */
   .form-area {
+    width: 550px; 
+    min-width: 550px; /* Bloquea el ancho mínimo */
+    max-width: 550px; /* Bloquea el ancho máximo */
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    background: var(--bg);
   }
 
   .tabs {
@@ -384,12 +388,12 @@
 
   /* PREVIEW */
   .preview-area {
+    width: 650px;
+    min-width: 650px; /* Evita que se encoja al cambiar de pestaña */
+    max-width: 650px; 
     background: var(--bg2);
-    border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    height: 100%; /* Asegura que ocupe todo el alto */
-    overflow: hidden; 
   }
 
   .preview-header {
