@@ -531,6 +531,30 @@
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* ZONA DE DROP PARA FOTOS */
+  .drop-zone {
+    border: 2px dashed var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 24px 20px;
+    text-align: center;
+    background: var(--bg2);
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .drop-zone:hover {
+    background: var(--bg3);
+    border-color: var(--text3);
+  }
+  .drop-zone.dragover {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
 </style>
 </head>
 <body>
@@ -831,7 +855,14 @@
           <hr class="divider">
         <div class="section-title">Evidencia Fotográfica</div>
         <div class="field">
+         <div class="field">
           <label>Subir imágenes</label>
+          <div id="drop-zone" class="drop-zone">
+            <span>Arrastra las fotos aquí o haz clic para seleccionar</span>
+            <input type="file" id="input-fotos" accept="image/*" multiple style="display: none;">
+          </div>
+        </div>
+        <div id="galeria-fotos" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;"></div>
           <!-- accept="image/*" asegura que desde el celular abra la cámara o la galería -->
           <input type="file" id="input-fotos" accept="image/*" multiple style="padding: 10px;">
         </div>
@@ -1395,46 +1426,80 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
   // ─── Subir Fotos a Firebase Storage ─────────────────────
-  document.getElementById('input-fotos').addEventListener('change', async function(e) {
-    const folio = g('folio_');
-    
-    if (!folio) {
-      showToast('Ingresa un Folio / SD antes de subir evidencia', true);
-      this.value = ''; // Limpia el input
-      return;
+// ─── Drag & Drop para Fotos en Firebase Storage ─────────
+const dropZone = document.getElementById('drop-zone');
+const inputFotos = document.getElementById('input-fotos');
+
+// Abrir el explorador de archivos si hacen clic en el cuadro
+if (dropZone) {
+  dropZone.addEventListener('click', () => inputFotos.click());
+
+  // Evitar que el navegador abra la imagen por defecto
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, false);
+  });
+
+  // Efectos visuales al arrastrar por encima
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+  });
+
+  // Procesar cuando sueltan el archivo
+  dropZone.addEventListener('drop', (e) => {
+    const archivos = e.dataTransfer.files;
+    procesarYSubirArchivos(archivos);
+  }, false);
+}
+
+// Procesar cuando seleccionan con clic tradicional
+if (inputFotos) {
+  inputFotos.addEventListener('change', function(e) {
+    procesarYSubirArchivos(e.target.files);
+    this.value = ''; // Limpiar el input oculto
+  });
+}
+
+// Función central que sube las fotos (usada por clic y por drop)
+async function procesarYSubirArchivos(archivos) {
+  const folio = g('folio_');
+  
+  if (!folio) {
+    showToast('Ingresa un Folio / SD antes de subir evidencia', true);
+    return;
+  }
+
+  if (archivos.length === 0) return;
+
+  const statusText = document.getElementById('status-text');
+  const statusDot = document.getElementById('status-dot');
+  
+  statusDot.style.background = 'var(--amber)';
+  statusText.textContent = `Subiendo ${archivos.length} foto(s)...`;
+
+  try {
+    const urlsNuevas = [];
+
+    for (let i = 0; i < archivos.length; i++) {
+      const archivo = archivos[i];
+      // Solo aceptamos imágenes
+      if (!archivo.type.startsWith('image/')) continue;
+
+      const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${archivo.name}`);
+      await ref.put(archivo);
+      const url = await ref.getDownloadURL();
+      urlsNuevas.push(url);
+      
+      mostrarFotoEnGaleria(url);
     }
 
-    const archivos = e.target.files;
-    if (archivos.length === 0) return;
-
-    const statusText = document.getElementById('status-text');
-    const statusDot = document.getElementById('status-dot');
-    
-    statusDot.style.background = 'var(--amber)';
-    statusText.textContent = `Subiendo ${archivos.length} foto(s)...`;
-
-    try {
-      const urlsNuevas = [];
-
-      // Recorremos cada foto seleccionada
-      for (let i = 0; i < archivos.length; i++) {
-        const archivo = archivos[i];
-        
-        // Creamos la ruta en la nube: evidencias/SD-XXXXX/161234_foto.jpg
-        const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${archivo.name}`);
-        
-        // Subimos el archivo
-        await ref.put(archivo);
-        
-        // Obtenemos el link para poder verlo
-        const url = await ref.getDownloadURL();
-        urlsNuevas.push(url);
-        
-        // La dibujamos en la pantalla
-        mostrarFotoEnGaleria(url);
-      }
-
-      // Guardamos los links en el Folio dentro de Firestore sin borrar lo que ya estaba
+    if (urlsNuevas.length > 0) {
       await db.collection("usuarios").doc(folio).set({
         fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas)
       }, { merge: true });
@@ -1442,16 +1507,32 @@ window.addEventListener('DOMContentLoaded', () => {
       statusDot.style.background = 'var(--green)';
       statusText.textContent = 'Evidencia guardada';
       showToast('Fotos subidas correctamente');
-
-    } catch (error) {
-      console.error("Error al subir fotos:", error);
-      statusDot.style.background = 'var(--red)';
-      statusText.textContent = 'Error al subir';
-      showToast('Hubo un error al subir las imágenes', true);
     }
-    
-    this.value = ''; // Limpiamos el botón para poder subir más después
-  });
+
+  } catch (error) {
+    console.error("Error al subir fotos:", error);
+    statusDot.style.background = 'var(--red)';
+    statusText.textContent = 'Error al subir';
+    showToast('Hubo un error al subir las imágenes', true);
+  }
+}
+
+// Dibuja la miniatura en la galería
+function mostrarFotoEnGaleria(url) {
+  const galeria = document.getElementById('galeria-fotos');
+  if (!galeria) return;
+  const img = document.createElement('img');
+  img.src = url;
+  img.style.width = '70px';
+  img.style.height = '70px';
+  img.style.objectFit = 'cover';
+  img.style.borderRadius = 'var(--radius-sm)';
+  img.style.border = '1px solid var(--border)';
+  img.style.cursor = 'pointer';
+  
+  img.onclick = () => window.open(url, '_blank');
+  galeria.appendChild(img);
+}
 
   // Dibuja la miniatura en la galería
   function mostrarFotoEnGaleria(url) {
