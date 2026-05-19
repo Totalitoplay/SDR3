@@ -1337,7 +1337,13 @@ async function cargarUltimosFolios() {
 document.querySelectorAll('#modificar-form input, #modificar-form select').forEach(el => {
   el.addEventListener('input', updatePreview);
 });
-
+// ─── Autoguardado al llenar "Clientes afectados" ────────
+document.getElementById('clientes').addEventListener('change', function() {
+  // Solo hace el autoguardado si escribiste algo en el campo
+  if (this.value.trim() !== '') {
+    guardarRegistro(true);
+  }
+});
 // ─── Init ────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   cargarUltimosFolios();
