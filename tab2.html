@@ -1517,23 +1517,6 @@ async function procesarYSubirArchivos(archivos) {
   }
 }
 
-// Dibuja la miniatura en la galería
-function mostrarFotoEnGaleria(url) {
-  const galeria = document.getElementById('galeria-fotos');
-  if (!galeria) return;
-  const img = document.createElement('img');
-  img.src = url;
-  img.style.width = '70px';
-  img.style.height = '70px';
-  img.style.objectFit = 'cover';
-  img.style.borderRadius = 'var(--radius-sm)';
-  img.style.border = '1px solid var(--border)';
-  img.style.cursor = 'pointer';
-  
-  img.onclick = () => window.open(url, '_blank');
-  galeria.appendChild(img);
-}
-
   // Dibuja la miniatura en la galería
   function mostrarFotoEnGaleria(url) {
     const galeria = document.getElementById('galeria-fotos');
