@@ -219,6 +219,7 @@
             <th>Cluster</th>
             <th>Causa de Daño</th>
             <th>Clientes Afec.</th>
+            <th>Evidencia</th>
           </tr>
         </thead>
         <tbody id="tabla-body">
@@ -261,6 +262,8 @@ function showToast(msg, isError = false) {
 }
 
 // ─── Cargar Datos a la Tabla ────────────────────────────
+
+// ─── Cargar Datos a la Tabla ────────────────────────────
 async function cargarDatos() {
   const tbody = document.getElementById('tabla-body');
   const btn = document.getElementById('btn-descargar');
@@ -271,7 +274,7 @@ async function cargarDatos() {
     const snap = await db.collection("usuarios").orderBy("timestamp", "desc").get();
     
     if (snap.empty) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay folios registrados en el sistema.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay folios registrados en el sistema.</td></tr>';
       contador.textContent = '0 registros encontrados';
       return;
     }
@@ -282,7 +285,7 @@ async function cargarDatos() {
     snap.forEach(doc => {
       const d = doc.data();
       
-      // Armamos el objeto estandarizado para la tabla y el excel
+      // 1. Armamos el objeto estandarizado para la tabla y el excel
       const registro = {
         folio: d.folio || 'N/A',
         fecha: d.fecha || 'N/A',
@@ -294,7 +297,16 @@ async function cargarDatos() {
       
       datosAcumulados.push(registro);
 
-      // Creamos la fila para la tabla visual
+      // 2. Lógica para procesar las fotos
+      let fotosHtml = '<span style="color: var(--text3); font-size: 11px;">Sin fotos</span>';
+      if (d.fotos && d.fotos.length > 0) {
+        // Creamos un pequeño link clickeable por cada foto encontrada
+        fotosHtml = d.fotos.map((url, i) => {
+          return `<a href="${url}" target="_blank" style="display: inline-block; background: var(--bg3); color: var(--accent); padding: 4px 8px; border-radius: 4px; text-decoration: none; font-weight: 600; margin: 2px; font-size: 11px; border: 1px solid var(--border);">📷 F${i + 1}</a>`;
+        }).join('');
+      }
+
+      // 3. Creamos la fila visual en HTML
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="font-weight: 500; color: var(--accent);">${registro.folio}</td>
@@ -303,6 +315,7 @@ async function cargarDatos() {
         <td>${registro.cluster}</td>
         <td>${registro.causa}</td>
         <td>${registro.clientes}</td>
+        <td>${fotosHtml}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -314,11 +327,10 @@ async function cargarDatos() {
 
   } catch (error) {
     console.error(error);
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state" style="color: #dc2626;">Error al conectar con la base de datos. Verifica tu conexión.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state" style="color: #dc2626;">Error al conectar con la base de datos. Verifica tu conexión.</td></tr>';
     contador.textContent = 'Error de conexión';
   }
 }
-
 // ─── Exportar a Excel (CSV) ─────────────────────────────
 function descargarExcel() {
   if (datosAcumulados.length === 0) {
