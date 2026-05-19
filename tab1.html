@@ -930,6 +930,10 @@ function showToast(msg, isError = false) {
 
 // ─── Tabs ───────────────────────────────────────────────
 function switchTab(name, btn) {
+  // 1. Intentar hacer un autoguardado silencioso antes de cambiar
+  guardarRegistro(true);
+
+  // 2. Cambiar visualmente la pestaña
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
@@ -1155,13 +1159,16 @@ function copiarSeccion(id, btn) {
 }
 
 // ─── Guardar en Firebase ────────────────────────────────
-document.getElementById('modificar-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  
+// ─── Función Maestra de Guardado en Firebase ────────────
+async function guardarRegistro(esAutoguardado = false) {
   const folio = g('folio_');
   
+  // Si no hay folio y es autoguardado (cambio de pestaña), cancelamos en silencio.
   if (!folio) { 
-    showToast('Debes ingresar un SD', true); return; 
+    if (!esAutoguardado) { // Solo avisamos si fue un clic manual en el botón
+      showToast('Debes ingresar un SD', true); 
+    }
+    return; 
   }
   
   const data = {
@@ -1186,12 +1193,26 @@ document.getElementById('modificar-form').addEventListener('submit', async funct
 
   try {
     await db.collection("usuarios").doc(folio).set(data);
-    showToast('Guardado: ' + folio);
-    cargarUltimosFolios();
+    
+    // Mostramos un mensaje distinto si fue automático o manual
+    if (esAutoguardado) {
+      showToast('Autoguardado: ' + folio);
+    } else {
+      showToast('Guardado manual: ' + folio);
+    }
+    
+    cargarUltimosFolios(); // Refresca la lista de la barra lateral
   } catch(err) {
     console.error(err);
     showToast('Error al guardar', true);
   }
+}
+
+// ─── Evento del botón Guardar / tecla Enter ─────────────
+document.getElementById('modificar-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  // Llamamos a la función indicando que NO es autoguardado (false)
+  await guardarRegistro(false);
 });
 
 // ─── Buscar ─────────────────────────────────────────────
