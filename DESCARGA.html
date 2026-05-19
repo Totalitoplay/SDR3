@@ -286,13 +286,14 @@ async function cargarDatos() {
       const d = doc.data();
       
       // 1. Armamos el objeto estandarizado para la tabla y el excel
-      const registro = {
+    const registro = {
         folio: d.folio || 'N/A',
         fecha: d.fecha || 'N/A',
         distrito: d.distrito || 'N/A',
         cluster: d.cluster || 'N/A',
         causa: d.causa || 'N/A',
-        clientes: d.clientes || 'N/A'
+        clientes: d.clientes || 'N/A',
+        fotos: d.fotos || [] // <-- AGREGA ESTA LÍNEA
       };
       
       datosAcumulados.push(registro);
@@ -332,11 +333,57 @@ async function cargarDatos() {
   }
 }
 // ─── Exportar a Excel (CSV) ─────────────────────────────
+// ─── Exportar a Excel (CSV) con Links de Fotos ───────────
 function descargarExcel() {
   if (datosAcumulados.length === 0) {
     showToast('No hay datos para exportar', true);
     return;
   }
+
+  showToast('Generando Excel...');
+
+  // 1. Encabezados (Agregamos la columna de Links de Evidencia)
+  const encabezados = ['Folio', 'Fecha', 'Distrito', 'Cluster', 'Causa de Daño', 'Clientes Afectados', 'Links de Evidencia'];
+  let lineasCSV = [encabezados.map(item => `"${item}"`).join(',')];
+
+  // 2. Mapear los datos guardados en memoria
+  datosAcumulados.forEach(d => {
+    
+    // Si el folio tiene fotos, las unimos separadas por espacios
+    // Si tiene más de una, saldrán todos los links dentro de la misma celda
+    const linksFotos = d.fotos && d.fotos.length > 0 ? d.fotos.join('   ') : 'Sin fotos';
+
+    const fila = [
+      d.folio, 
+      d.fecha, 
+      d.distrito, 
+      d.cluster, 
+      d.causa, 
+      d.clientes, 
+      linksFotos // <-- Agregamos los links al final de la fila
+    ];
+    
+    lineasCSV.push(fila.map(item => `"${item}"`).join(','));
+  });
+
+  const formatoCSV = lineasCSV.join('\n');
+
+  // 3. BOM (\uFEFF) para forzar UTF-8 en Excel
+  const blob = new Blob(["\uFEFF" + formatoCSV], { type: 'text/csv;charset=utf-8;' });
+
+  // 4. Descargar archivo
+  const fechaHoy = new Date().toLocaleDateString('es-MX').replace(/\//g, '-');
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', `Acumulado_Cortes_${fechaHoy}.csv`);
+  link.style.display = 'none';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 
   showToast('Generando Excel...');
 
