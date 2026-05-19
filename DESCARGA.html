@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scripts FO — Reportes y Acumulados</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --bg2: #ffffff;
+    --bg3: #eef0f4;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #111827;
+    --text2: #4b5563;
+    --text3: #9ca3af;
+    --accent: #2563eb;
+    --green: #059669;
+    --green-dim: rgba(5,150,105,0.10);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+  .logo {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--green); } /* Cambié el color a verde para diferenciar el módulo */
+
+  /* CONTENIDO PRINCIPAL */
+  .main-content {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg2);
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .title-section h1 {
+    font-family: var(--font-head);
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .title-section p {
+    color: var(--text2);
+    font-size: 12px;
+  }
+
+  .btn {
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-excel {
+    background: var(--green);
+    color: #fff;
+  }
+  .btn-excel:hover { opacity: 0.9; box-shadow: 0 4px 12px var(--green-dim); }
+  .btn-excel:disabled { background: var(--text3); cursor: not-allowed; }
+
+  /* TABLA DE DATOS */
+  .table-container {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .table-scroll {
+    overflow-y: auto;
+    flex: 1;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+  thead {
+    background: var(--bg3);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  th {
+    padding: 12px 16px;
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 12px;
+  }
+  tbody tr:hover { background: var(--bg); }
+  .empty-state {
+    padding: 40px;
+    text-align: center;
+    color: var(--text3);
+    font-size: 14px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    color: #1e293b;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 4px solid var(--green);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 10000;
+    pointer-events: none;
+  }
+  .toast.show { top: 30px; opacity: 1; }
+  .toast.error { border-bottom-color: #dc2626; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Scripts<span>FO</span> | Módulo de Reportes</div>
+  <div style="color:var(--text3);font-size:11px;" id="contador-registros">Cargando base de datos...</div>
+</div>
+
+<div class="main-content">
+  <div class="header-actions">
+    <div class="title-section">
+      <h1>Historial de Cortes Acumulados</h1>
+      <p>Vista general de todos los folios guardados en la nube.</p>
+    </div>
+    <button class="btn btn-excel" id="btn-descargar" onclick="descargarExcel()" disabled>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Descargar Excel (.csv)
+    </button>
+  </div>
+
+  <div class="table-container">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Folio / SD</th>
+            <th>Fecha</th>
+            <th>Distrito</th>
+            <th>Cluster</th>
+            <th>Causa de Daño</th>
+            <th>Clientes Afec.</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-body">
+          <tr><td colspan="6" class="empty-state">Conectando con Firebase...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ─── Firebase Config ────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
+  authDomain: "scripts-2c739.firebaseapp.com",
+  projectId: "scripts-2c739",
+  storageBucket: "scripts-2c739.firebasestorage.app",
+  messagingSenderId: "1054970007452",
+  appId: "1:1054970007452:web:1d283693bb8377192c0259"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Variable global para guardar los datos y no hacer doble consulta a Firebase
+let datosAcumulados = [];
+
+// ─── Toast Funcionalidad ────────────────────────────────
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.innerHTML = isError ? `<span>✕</span> ${msg}` : `<span>✓</span> ${msg}`;
+  if (isError) t.classList.add('error'); else t.classList.remove('error');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── Cargar Datos a la Tabla ────────────────────────────
+async function cargarDatos() {
+  const tbody = document.getElementById('tabla-body');
+  const btn = document.getElementById('btn-descargar');
+  const contador = document.getElementById('contador-registros');
+  
+  try {
+    // Obtenemos todos los registros ordenados del más nuevo al más viejo
+    const snap = await db.collection("usuarios").orderBy("timestamp", "desc").get();
+    
+    if (snap.empty) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay folios registrados en el sistema.</td></tr>';
+      contador.textContent = '0 registros encontrados';
+      return;
+    }
+
+    tbody.innerHTML = ''; // Limpiamos el mensaje de carga
+    datosAcumulados = []; // Reiniciamos el arreglo
+
+    snap.forEach(doc => {
+      const d = doc.data();
+      
+      // Armamos el objeto estandarizado para la tabla y el excel
+      const registro = {
+        folio: d.folio || 'N/A',
+        fecha: d.fecha || 'N/A',
+        distrito: d.distrito || 'N/A',
+        cluster: d.cluster || 'N/A',
+        causa: d.causa || 'N/A',
+        clientes: d.clientes || 'N/A'
+      };
+      
+      datosAcumulados.push(registro);
+
+      // Creamos la fila para la tabla visual
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-weight: 500; color: var(--accent);">${registro.folio}</td>
+        <td>${registro.fecha}</td>
+        <td>${registro.distrito}</td>
+        <td>${registro.cluster}</td>
+        <td>${registro.causa}</td>
+        <td>${registro.clientes}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Habilitar botón y actualizar contador
+    btn.disabled = false;
+    contador.textContent = `${datosAcumulados.length} folios sincronizados`;
+    showToast('Base de datos sincronizada');
+
+  } catch (error) {
+    console.error(error);
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state" style="color: #dc2626;">Error al conectar con la base de datos. Verifica tu conexión.</td></tr>';
+    contador.textContent = 'Error de conexión';
+  }
+}
+
+// ─── Exportar a Excel (CSV) ─────────────────────────────
+function descargarExcel() {
+  if (datosAcumulados.length === 0) {
+    showToast('No hay datos para exportar', true);
+    return;
+  }
+
+  showToast('Generando Excel...');
+
+  // 1. Encabezados
+  const encabezados = ['Folio', 'Fecha', 'Distrito', 'Cluster', 'Causa de Daño', 'Clientes Afectados'];
+  let lineasCSV = [encabezados.map(item => `"${item}"`).join(',')];
+
+  // 2. Mapear los datos guardados en memoria
+  datosAcumulados.forEach(d => {
+    const fila = [d.folio, d.fecha, d.distrito, d.cluster, d.causa, d.clientes];
+    lineasCSV.push(fila.map(item => `"${item}"`).join(','));
+  });
+
+  const formatoCSV = lineasCSV.join('\n');
+
+  // 3. BOM (\uFEFF) para forzar UTF-8 en Excel
+  const blob = new Blob(["\uFEFF" + formatoCSV], { type: 'text/csv;charset=utf-8;' });
+
+  // 4. Descargar archivo
+  const fechaHoy = new Date().toLocaleDateString('es-MX').replace(/\//g, '-');
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', `Acumulado_Cortes_${fechaHoy}.csv`);
+  link.style.display = 'none';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// ─── Iniciar ────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', cargarDatos);
+
+</script>
+</body>
+</html>
