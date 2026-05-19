@@ -16,6 +16,7 @@
     --text2: #4b5563;
     --text3: #9ca3af;
     --accent: #2563eb;
+    --accent-dim: rgba(37,99,235,0.10); /* FIX: faltaba esta variable, se usaba en foto-chip:hover */
     --green: #059669;
     --green-dim: rgba(5,150,105,0.10);
     --radius: 10px;
@@ -36,7 +37,6 @@
     flex-direction: column;
   }
 
-  /* TOPBAR */
   .topbar {
     display: flex;
     align-items: center;
@@ -55,7 +55,6 @@
   }
   .logo span { color: var(--green); }
 
-  /* CONTENIDO PRINCIPAL */
   .main-content {
     padding: 30px;
     max-width: 1200px;
@@ -84,17 +83,9 @@
     color: var(--text);
     margin-bottom: 4px;
   }
-  .title-section p {
-    color: var(--text2);
-    font-size: 12px;
-  }
+  .title-section p { color: var(--text2); font-size: 12px; }
 
-  /* CONTROLES DE LA DERECHA (Buscador y Excel) */
-  .actions-right {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
+  .actions-right { display: flex; gap: 12px; align-items: center; }
 
   .search-input {
     padding: 10px 14px;
@@ -103,7 +94,7 @@
     font-family: var(--font-mono);
     font-size: 12px;
     outline: none;
-    width: 250px;
+    width: 280px;
     transition: border-color 0.15s;
     background: var(--bg);
   }
@@ -123,14 +114,10 @@
     align-items: center;
     gap: 8px;
   }
-  .btn-excel {
-    background: var(--green);
-    color: #fff;
-  }
+  .btn-excel { background: var(--green); color: #fff; }
   .btn-excel:hover { opacity: 0.9; box-shadow: 0 4px 12px var(--green-dim); }
   .btn-excel:disabled { background: var(--text3); cursor: not-allowed; box-shadow: none; }
 
-  /* TABLA DE DATOS */
   .table-container {
     background: var(--bg2);
     border: 1px solid var(--border);
@@ -141,21 +128,10 @@
     flex-direction: column;
     box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   }
-  .table-scroll {
-    overflow-y: auto;
-    flex: 1;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-  }
-  thead {
-    background: var(--bg3);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
+  .table-scroll { overflow-y: auto; flex: 1; }
+
+  table { width: 100%; border-collapse: collapse; text-align: left; }
+  thead { background: var(--bg3); position: sticky; top: 0; z-index: 10; }
   th {
     padding: 12px 16px;
     font-family: var(--font-head);
@@ -166,7 +142,11 @@
     letter-spacing: 0.05em;
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
   }
+  th:hover { background: var(--border); }
+
   td {
     padding: 12px 16px;
     border-bottom: 1px solid var(--border);
@@ -176,7 +156,7 @@
   }
   tbody tr { transition: background 0.1s; }
   tbody tr:hover { background: var(--bg); }
-  
+
   .empty-state {
     padding: 40px;
     text-align: center;
@@ -184,13 +164,7 @@
     font-size: 14px;
   }
 
-  /* ESTILOS COMPACTOS PARA LAS FOTOS */
-  .fotos-container {
-    display: flex;
-    flex-wrap: wrap; /* Permite que pasen a la siguiente línea si son muchas, pero juntas */
-    gap: 6px;
-    align-items: center;
-  }
+  .fotos-container { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
   .foto-chip {
     background: var(--bg2);
     color: var(--accent);
@@ -205,12 +179,9 @@
     align-items: center;
     white-space: nowrap;
   }
-  .foto-chip:hover {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-  }
+  /* FIX: --accent-dim ya existe, el hover ahora funciona */
+  .foto-chip:hover { background: var(--accent-dim); border-color: var(--accent); }
 
-  /* TOAST */
   .toast {
     position: fixed;
     top: -100px;
@@ -220,10 +191,10 @@
     color: #1e293b;
     padding: 16px 32px;
     border-radius: 50px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-mono);
     font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -236,7 +207,6 @@
   .toast.show { top: 30px; opacity: 1; }
   .toast.error { border-bottom-color: #dc2626; }
 
-  /* SCROLLBAR */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -255,12 +225,17 @@
       <h1>Historial de Cortes Acumulados</h1>
       <p>Vista general de todos los folios guardados en la nube.</p>
     </div>
-    
     <div class="actions-right">
-      <input type="text" id="inputBusqueda" class="search-input" placeholder="Buscar por Folio / SD..." onkeyup="filtrarTabla()">
-      
+      <!-- FIX: placeholder actualizado — busca por folio, distrito o causa -->
+      <input type="text" id="inputBusqueda" class="search-input"
+             placeholder="Buscar por folio, distrito o causa..."
+             oninput="filtrarTabla()">
       <button class="btn btn-excel" id="btn-descargar" onclick="descargarExcel()" disabled>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
         Descargar CSV
       </button>
     </div>
@@ -271,15 +246,16 @@
       <table id="tablaReportes">
         <thead>
           <tr>
-            <th style="width: 12%;">Folio / SD</th>
-            <th style="width: 10%;">Fecha</th>
-            <th style="width: 12%;">Distrito</th>
-            <th style="width: 15%;">Cluster</th>
-            <th style="width: 15%;">Causa de Daño</th>
-            <th style="width: 20%;">Clientes Afec.</th>
-            <th style="width: 16%;">Evidencia</th>
+            <th style="width:12%;">Folio / SD</th>
+            <th style="width:10%;">Fecha</th>
+            <th style="width:12%;">Distrito</th>
+            <th style="width:15%;">Cluster</th>
+            <th style="width:15%;">Causa de Daño</th>
+            <th style="width:20%;">Clientes Afec.</th>
+            <th style="width:16%;">Evidencia</th>
           </tr>
         </thead>
+        <!-- FIX: tbody separado para que filtrarTabla() itere solo filas de datos -->
         <tbody id="tabla-body">
           <tr><td colspan="7" class="empty-state">Conectando con Firebase...</td></tr>
         </tbody>
@@ -294,7 +270,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ─── Firebase Config ────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
   authDomain: "scripts-2c739.firebaseapp.com",
@@ -308,7 +283,7 @@ const db = firebase.firestore();
 
 let datosAcumulados = [];
 
-// ─── Toast Funcionalidad ────────────────────────────────
+// ─── Toast ────────────────────────────────────────────────
 function showToast(msg, isError = false) {
   const t = document.getElementById('toast');
   t.innerHTML = isError ? `<span>✕</span> ${msg}` : `<span>✓</span> ${msg}`;
@@ -317,15 +292,15 @@ function showToast(msg, isError = false) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ─── Cargar Datos a la Tabla ────────────────────────────
+// ─── Cargar datos ─────────────────────────────────────────
 async function cargarDatos() {
-  const tbody = document.getElementById('tabla-body');
-  const btn = document.getElementById('btn-descargar');
+  const tbody    = document.getElementById('tabla-body');
+  const btn      = document.getElementById('btn-descargar');
   const contador = document.getElementById('contador-registros');
-  
+
   try {
     const snap = await db.collection("usuarios").orderBy("timestamp", "desc").get();
-    
+
     if (snap.empty) {
       tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay folios registrados en el sistema.</td></tr>';
       contador.textContent = '0 registros encontrados';
@@ -337,40 +312,33 @@ async function cargarDatos() {
 
     snap.forEach(doc => {
       const d = doc.data();
-      
       const registro = {
-        folio: d.folio || 'N/A',
-        fecha: d.fecha || 'N/A',
+        folio:    d.folio    || 'N/A',
+        fecha:    d.fecha    || 'N/A',
         distrito: d.distrito || 'N/A',
-        cluster: d.cluster || 'N/A',
-        causa: d.causa || 'N/A',
+        cluster:  d.cluster  || 'N/A',
+        causa:    d.causa    || 'N/A',
         clientes: d.clientes || 'N/A',
-        fotos: d.fotos || []
+        fotos:    d.fotos    || []
       };
-      
       datosAcumulados.push(registro);
 
-      // --- NUEVO FORMATO DE FOTOS COMPACTAS ---
-      let fotosHtml = '<span style="color: var(--text3); font-size: 11px; font-style: italic;">Sin fotos</span>';
-      
+      let fotosHtml = '<span style="color:var(--text3);font-size:11px;font-style:italic;">Sin fotos</span>';
       if (d.fotos && d.fotos.length > 0) {
-        // Creamos los chips
-        const chips = d.fotos.map((url, i) => {
-          return `<a href="${url}" target="_blank" class="foto-chip" title="Ver foto ${i + 1}">📷 ${i + 1}</a>`;
-        }).join('');
-        
-        // Los envolvemos en el contenedor flexible
+        const chips = d.fotos.map((url, i) =>
+          `<a href="${url}" target="_blank" class="foto-chip" title="Ver foto ${i+1}">📷 ${i+1}</a>`
+        ).join('');
         fotosHtml = `<div class="fotos-container">${chips}</div>`;
       }
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="font-weight: 600; color: var(--accent);">${registro.folio}</td>
+        <td style="font-weight:600;color:var(--accent);">${registro.folio}</td>
         <td>${registro.fecha}</td>
         <td>${registro.distrito}</td>
         <td>${registro.cluster}</td>
         <td>${registro.causa}</td>
-        <td style="color: var(--text2);">${registro.clientes}</td>
+        <td style="color:var(--text2);">${registro.clientes}</td>
         <td>${fotosHtml}</td>
       `;
       tbody.appendChild(tr);
@@ -379,71 +347,77 @@ async function cargarDatos() {
     btn.disabled = false;
     contador.textContent = `${datosAcumulados.length} folios sincronizados`;
 
-  } catch (error) {
+  } catch(error) {
     console.error(error);
-    tbody.innerHTML = '<tr><td colspan="7" class="empty-state" style="color: #dc2626;">Error al conectar con la base de datos. Verifica tu conexión.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state" style="color:#dc2626;">Error al conectar con la base de datos.</td></tr>';
     contador.textContent = 'Error de conexión';
+    showToast('Error al cargar datos', true);
   }
 }
 
-// ─── Función del Buscador en Vivo ───────────────────────
+// ─── Buscador ─────────────────────────────────────────────
+// FIX: itera solo las filas del tbody (no del thead), y busca en
+// folio (col 0), distrito (col 2) y causa (col 4)
 function filtrarTabla() {
-  const input = document.getElementById("inputBusqueda");
-  const filtro = input.value.toUpperCase();
-  const tabla = document.getElementById("tablaReportes");
-  const tr = tabla.getElementsByTagName("tr");
+  const filtro = document.getElementById("inputBusqueda").value.toUpperCase().trim();
+  // FIX: seleccionamos las tr directamente del tbody, no del table completo
+  const filas = document.querySelectorAll("#tabla-body tr");
 
-  // Recorremos todas las filas (saltamos la cabecera que es i=0 en thead)
-  for (let i = 1; i < tr.length; i++) {
-    const tdFolio = tr[i].getElementsByTagName("td")[0]; // La columna 0 es el Folio
-    
-    if (tdFolio) {
-      // Ignorar si es la fila de "Conectando..."
-      if (tdFolio.classList.contains('empty-state')) continue; 
-      
-      const textoCelda = tdFolio.textContent || tdFolio.innerText;
-      
-      // Si el texto coincide con la búsqueda, lo mostramos, si no, lo ocultamos
-      if (textoCelda.toUpperCase().indexOf(filtro) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
+  filas.forEach(tr => {
+    // Ignorar la fila de estado vacío
+    if (tr.querySelector('.empty-state')) return;
+
+    const tds = tr.getElementsByTagName("td");
+    // Busca en folio (0), distrito (2) y causa (4)
+    const textoFolio    = (tds[0]?.textContent || '').toUpperCase();
+    const textoDistrito = (tds[2]?.textContent || '').toUpperCase();
+    const textoCausa    = (tds[4]?.textContent || '').toUpperCase();
+
+    const coincide = textoFolio.includes(filtro) ||
+                     textoDistrito.includes(filtro) ||
+                     textoCausa.includes(filtro);
+
+    tr.style.display = coincide ? '' : 'none';
+  });
+}
+
+// ─── Descargar CSV ────────────────────────────────────────
+function descargarExcel() {
+  if (datosAcumulados.length === 0) {
+    showToast('No hay datos para exportar', true);
+    return;
+  }
+
+  try {
+    showToast('Generando CSV...');
+    const encabezados = ['Folio','Fecha','Distrito','Cluster','Causa de Daño','Clientes Afectados','Links de Evidencia'];
+    const lineas = [encabezados.map(h => `"${h}"`).join(',')];
+
+    datosAcumulados.forEach(d => {
+      const links = d.fotos.length > 0 ? d.fotos.join('   ') : 'Sin fotos';
+      const fila  = [d.folio, d.fecha, d.distrito, d.cluster, d.causa, d.clientes, links];
+      lineas.push(fila.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+    });
+
+    const csv  = lineas.join('\n');
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const fecha = new Date().toLocaleDateString('es-MX').replace(/\//g, '-');
+    const link  = document.createElement('a');
+    link.href     = URL.createObjectURL(blob);
+    link.download = `Acumulado_Cortes_${fecha}.csv`;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href); // FIX: liberar memoria del objeto URL
+  } catch(err) {
+    console.error(err);
+    showToast('Error al generar el CSV', true);
   }
 }
 
-// ─── Exportar a Excel (CSV) con Links de Fotos ───────────
-function descargarExcel() {
-  if (datosAcumulados.length === 0) return;
-  showToast('Generando Excel...');
-
-  const encabezados = ['Folio', 'Fecha', 'Distrito', 'Cluster', 'Causa de Daño', 'Clientes Afectados', 'Links de Evidencia'];
-  let lineasCSV = [encabezados.map(item => `"${item}"`).join(',')];
-
-  datosAcumulados.forEach(d => {
-    const linksFotos = d.fotos && d.fotos.length > 0 ? d.fotos.join('   ') : 'Sin fotos';
-    const fila = [ d.folio, d.fecha, d.distrito, d.cluster, d.causa, d.clientes, linksFotos ];
-    lineasCSV.push(fila.map(item => `"${item}"`).join(','));
-  });
-
-  const formatoCSV = lineasCSV.join('\n');
-  const blob = new Blob(["\uFEFF" + formatoCSV], { type: 'text/csv;charset=utf-8;' });
-  
-  const fechaHoy = new Date().toLocaleDateString('es-MX').replace(/\//g, '-');
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `Acumulado_Cortes_${fechaHoy}.csv`;
-  link.style.display = 'none';
-  
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-// ─── Iniciar ────────────────────────────────────────────
+// ─── Init ─────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', cargarDatos);
-
 </script>
 </body>
 </html>
