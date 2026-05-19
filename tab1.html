@@ -1163,12 +1163,22 @@ function copiarSeccion(id, btn) {
 async function guardarRegistro(esAutoguardado = false) {
   const folio = g('folio_');
   
-  // Si no hay folio y es autoguardado (cambio de pestaña), cancelamos en silencio.
+  // Si no hay folio y es autoguardado, cancelamos en silencio.
   if (!folio) { 
-    if (!esAutoguardado) { // Solo avisamos si fue un clic manual en el botón
+    if (!esAutoguardado) { 
       showToast('Debes ingresar un SD', true); 
     }
     return; 
+  }
+
+  // Elementos de la barra superior para el mensaje sutil
+  const statusText = document.getElementById('status-text');
+  const statusDot = document.getElementById('status-dot');
+
+  // Si es autoguardado, ponemos el texto en modo "Guardando..."
+  if (esAutoguardado) {
+    statusDot.style.background = 'var(--amber)';
+    statusText.textContent = 'Guardando...';
   }
   
   const data = {
@@ -1194,17 +1204,29 @@ async function guardarRegistro(esAutoguardado = false) {
   try {
     await db.collection("usuarios").doc(folio).set(data);
     
-    // Mostramos un mensaje distinto si fue automático o manual
+    // Obtenemos la hora actual (ej. "11:34")
+    const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+
     if (esAutoguardado) {
-      showToast('Autoguardado: ' + folio);
+      // Indicador sutil arriba a la izquierda
+      statusDot.style.background = 'var(--green)';
+      statusText.textContent = 'Guardado a las ' + hora;
     } else {
+      // El toast normal solo si el usuario hizo clic manual en "Guardar registro"
       showToast('Guardado manual: ' + folio);
+      statusDot.style.background = 'var(--green)';
+      statusText.textContent = 'Guardado a las ' + hora;
     }
     
-    cargarUltimosFolios(); // Refresca la lista de la barra lateral
+    cargarUltimosFolios(); 
   } catch(err) {
     console.error(err);
-    showToast('Error al guardar', true);
+    if (esAutoguardado) {
+      statusDot.style.background = 'var(--red)';
+      statusText.textContent = 'Error al autoguardar';
+    } else {
+      showToast('Error al guardar', true);
+    }
   }
 }
 
