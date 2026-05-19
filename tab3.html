@@ -1,1349 +1,1155 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCRIPT 1</title>
-    <!-- CSS de Select2 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SCRIPT 1 — Mobile</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@700;600&display=swap" rel="stylesheet">
 
-    <style>
-        #lista-folios li {
-            list-style: none;
-            margin-bottom: 5px;
-        }
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --bg2: #ffffff;
+      --bg3: #eef0f4;
+      --border: rgba(0,0,0,0.08);
+      --border2: rgba(0,0,0,0.14);
+      --text: #111827;
+      --text2: #4b5563;
+      --text3: #9ca3af;
+      --accent: #2563eb;
+      --accent-dim: rgba(37,99,235,0.10);
+      --green: #059669;
+      --green-dim: rgba(5,150,105,0.10);
+      --red: #dc2626;
+      --red-dim: rgba(220,38,38,0.10);
+      --amber: #d97706;
+      --radius: 10px;
+      --radius-sm: 6px;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --tab-bar-h: 48px;
+      --copy-bar-h: 56px;
+    }
 
-        #lista-folios li a {
-            color: #007bff;
-            text-decoration: underline;
-            cursor: pointer;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        #lista-folios li a:hover {
-            color: #0056b3;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 25px;
-		
-        }
-        .container {
-            display: grid;
-            grid-template-columns: 150px 1fr 1fr .1fr; /* Primera columna pequeña, las otras dos iguales */
-            gap: 20px;
-            max-width: 1500px;
-            margin: auto;
-		
-        }
-        .form-container {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            max-height: 1500px; /* Ajusta la altura máxima según sea necesario */
-            overflow-y: auto;  /* Permite el desplazamiento vertical */
-        }
-        .centrar-pantalla {
-            display: flex;
-            border: 1px solid #ddd;
-            flex-direction: column;  /* Para que los elementos se apilen verticalmente */
-            justify-content: center; /* Centrado vertical */
-            height: 100vh;
-            background-color: #cacacaab; /* Solo para que se vea el fondo */
-        }
-        .form-group {
-            margin-bottom: 10px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
- 		overflow-y: auto;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        .form-container .block {
-            margin-bottom: 20px; /* Espacio entre bloques */
-        }
-        .form-container .block:last-of-type {
-            margin-bottom: 0; /* El último bloque no necesita margen inferior */
-        }
-        .text-preview {
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            font-family: monospace;
-            white-space: pre-wrap; /* Mantiene los espacios en blanco */
-            font-size: 16px;
-		    max-height: 1200px; /* Ajusta la altura máxima según sea necesario */
-            overflow-y: auto;  /* Permite el desplazamiento vertical */
-        }
-        .select2-container {
-            width: 100% !important;
-        }
-        /* --- Mantener tus estilos base y añadir estos --- */
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      overflow: hidden; /* sin scroll en body, scroll solo en el panel activo */
+    }
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 10px; /* Reducido para móvil */
-            background-color: #f4f4f4;
-        }
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      height: 44px;
+    }
+    .logo { font-family: var(--font-head); font-weight: 700; font-size: 15px; }
+    .logo span { color: var(--accent); }
+    .status-wrap { display: flex; align-items: center; gap: 6px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    .status-text { color: var(--text3); font-size: 10px; }
 
-        .container {
-            display: grid;
-            /* Por defecto en Desktop: 4 columnas */
-            grid-template-columns: 150px 1fr 1fr 180px; 
-            gap: 15px;
-            max-width: 100%;
-        }
+    /* ── LAYOUT PRINCIPAL ── */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 44px);
+      height: calc(100dvh - 44px);
+    }
 
-        /* --- ADAPTACIÓN MÓVIL (Media Query) --- */
-        @media (max-width: 768px) {
-            .container {
-                display: flex;
-                flex-direction: column; /* Apilar todo */
-            }
+    /* ── BUSCADOR ACORDEÓN ── */
+    .buscador-wrap {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .buscador-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      list-style: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .buscador-summary::-webkit-details-marker { display: none; }
+    .buscador-summary .chevron {
+      font-size: 10px;
+      transition: transform 0.2s;
+    }
+    details[open] .chevron { transform: rotate(180deg); }
 
-            .centrar-pantalla {
-                height: auto; /* Ya no ocupa toda la pantalla vertical */
-                order: 1;    /* El buscador arriba */
-                padding: 15px;
-                margin-bottom: 10px;
-            }
+    .buscador-body {
+      padding: 12px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .buscador-body input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      background: var(--bg3);
+      color: var(--text);
+      outline: none;
+    }
+    .buscador-body input:focus { border-color: var(--accent); background: var(--bg2); }
 
-            .form-container {
-                min-height: 60vh; /* Mantiene una altura mínima para que la página no "baile" */
-                display: flex;
-                flex-direction: column;
-            }
+    .row-btns { display: flex; gap: 8px; }
+    .btn {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      transition: all 0.15s;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-ghost  { background: transparent; color: var(--text2); }
+    .btn-save   { background: var(--green-dim); color: var(--green); border-color: var(--green); }
 
-            .text-preview {
-                order: 3;    /* La vista previa abajo */
-                font-size: 14px;
-                max-height: 400px;
-            }
+    /* Lista de folios recientes */
+    .folios-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 4px;
+    }
+    .folio-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+    .folio-chip-id { color: var(--accent); font-weight: 600; cursor: pointer; }
+    .folio-chip-del { color: var(--text3); cursor: pointer; font-size: 13px; }
+    .folio-chip-del:hover { color: var(--red); }
 
-            /* Botones de copia: los haremos más grandes y juntos */
-            div[style*="centrar-pantalla"] { 
-                order: 4;
-                flex-direction: row !important;
-                flex-wrap: wrap;
-                gap: 10px;
-                justify-content: space-around;
-                padding-bottom: 50px;
-            }
+    /* ── TABS DE SECCIÓN ── */
+    .tabs-nav {
+      display: flex;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      height: var(--tab-bar-h);
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
 
-            div[style*="centrar-pantalla"] button {
-                flex: 1 1 40%; /* 2 botones por fila */
-                padding: 15px;
-                font-weight: bold;
-            }
+    .tab-btn {
+      flex: 1;
+      min-width: 70px;
+      padding: 0 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.15s;
+    }
+    .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); background: var(--bg); }
+    .tab-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .dot-eta   { background: var(--amber); }
+    .dot-sitio { background: var(--accent); }
+    .dot-fallo { background: var(--red); }
+    .dot-final { background: var(--green); }
 
-            /* Inputs más grandes para dedos */
-            input, select, button {
-                min-height: 45px;
-                font-size: 16px !important; /* Evita que iOS haga zoom automático */
-            }
-        }
+    /* ── PANEL DE FORMULARIO ── */
+    .panels-wrap {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .tab-panel {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 16px calc(var(--copy-bar-h) + 16px); /* espacio para la barra de copiar */
+    }
+    .tab-panel.active { display: block; }
 
-        /* Estilo para la lista de folios en móvil */
-        #lista-folios {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 0;
-        }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
 
-        #lista-folios li {
-            background: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-        }
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+    }
+    .sync-tag {
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: var(--green-dim);
+      color: var(--green);
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 16px; /* 16px evita zoom automático en iOS */
+      color: var(--text);
+      background: var(--bg2);
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+    }
+    .field input:focus,
+    .field select:focus { border-color: var(--accent); }
+    .field input::placeholder { color: var(--text3); }
+    .field input[readonly] { background: var(--bg3); color: var(--text3); }
 
-                /* Contenedor de las pestañas */
-        .tabs-nav {
-            position: sticky;
-            top: 0; /* Se queda pegado arriba para que siempre puedas cambiar de menú */
-            background: white;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+    /* ── BARRA DE COPIAR (sticky bottom) ── */
+    .copy-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--copy-bar-h);
+      display: flex;
+      gap: 4px;
+      padding: 8px 10px;
+      background: var(--bg2);
+      border-top: 2px solid var(--border2);
+      z-index: 1000;
+    }
+    .copy-bar button {
+      flex: 1;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .copy-bar button:active { transform: scale(0.94); }
+    .copy-bar .c-eta   { background: var(--amber); }
+    .copy-bar .c-sitio { background: var(--accent); }
+    .copy-bar .c-fallo { background: var(--red); }
+    .copy-bar .c-final { background: var(--green); }
+    .copy-bar button.copied { filter: brightness(1.3); }
 
-        .tab-button {
-            flex: 1;
-            padding: 12px 5px;
-            border: none;
-            background: none;
-            font-size: 13px;
-            font-weight: bold;
-            color: #666;
-            cursor: pointer;
-            white-space: nowrap;
-            border-bottom: 3px solid transparent;
-            transition: 0.3s;
-        }
+    /* ── EVIDENCIA FOTOGRÁFICA ── */
+    .drop-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+      color: var(--text3);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg3);
+    }
+    .drop-zone.dragover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+    .galeria { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .galeria img {
+      width: 72px; height: 72px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
 
-        .tab-button.active {
-            color: #007bff;
-            border-bottom: 3px solid #007bff;
-            background: #f0f7ff;
-        }
+    /* ── SELECT2 OVERRIDE ── */
+    .select2-container { width: 100% !important; }
+    .select2-container--default .select2-selection--single {
+      height: 48px !important;
+      border: 1px solid var(--border2) !important;
+      border-radius: var(--radius-sm) !important;
+      display: flex; align-items: center;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 48px !important;
+      font-size: 16px !important;
+      padding-left: 14px !important;
+      padding-right: 30px !important;
+      color: var(--text);
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 48px !important; top: 0; right: 8px;
+    }
+    .select2-results__option { font-size: 14px !important; padding: 12px 14px !important; }
+    .select2-container--default .select2-results__option--highlighted {
+      background: var(--accent-dim) !important; color: var(--accent) !important;
+    }
 
-        /* Manejo de visibilidad de bloques */
-        .block {
-            display: none; /* Ocultar todos por defecto */
-            animation: fadeIn 0.3s;
-        }
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
-        .block.active {
-            display: block; /* Solo mostrar el activo */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Ajuste móvil para botones de copiar */
-        @media (max-width: 768px) {
-            .botones-copiar-mobile {
-                display: flex !important;
-                gap: 4px;
-                padding: 8px;
-                background: #fff;
-                border-top: 2px solid #007bff;
-                position: sticky;
-                bottom: 0;
-                z-index: 1001;
-            }
-
-            .botones-copiar-mobile button {
-                flex: 1;
-                padding: 10px 2px;
-                font-size: 10px;
-                font-weight: bold;
-                border: none;
-                border-radius: 6px;
-                color: white;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            }
-
-            /* Colores por tipo de script */
-            .botones-copiar-mobile button:nth-child(1) { background-color: #5bc0de; } /* Celeste - Ini */
-            .botones-copiar-mobile button:nth-child(2) { background-color: #f0ad4e; } /* Naranja - Llegada */
-            .botones-copiar-mobile button:nth-child(3) { background-color: #d9534f; } /* Rojo - Fallo */
-            .botones-copiar-mobile button:nth-child(4) { background-color: #0275d8; } /* Azul - Final */
-
-            .botones-copiar-mobile button:active {
-                transform: scale(0.9);
-            }
-
-            @media (min-width: 769px) {
-                /* En PC mantenemos un tamaño normal */
-                .botones-copiar-mobile h3 { display: block; }
-                .botones-copiar-mobile button { font-size: 14px !important; padding: 15px !important; }
-            }
-        }
-        /* Estilo del Acordeón */
-        .buscador-acordeon {
-            background: #e9e9e9;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-        }
-
-        .buscador-acordeon summary {
-            padding: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            outline: none;
-            list-style: none;
-        }
-
-        .buscador-acordeon summary::-webkit-details-marker {
-            display: none; /* Quita la flecha fea de Chrome */
-        }
-
-        /* Compactar la lista de folios para que no ocupe tanto espacio */
-        #lista-folios {
-            display: flex;
-            flex-wrap: wrap; /* Se acomodan a lo ancho */
-            gap: 8px;
-            padding: 10px 0;
-        }
-
-        #lista-folios li {
-            font-size: 12px;
-            background: #fff;
-            padding: 5px 10px;
-            border-radius: 15px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Botones de búsqueda en una sola fila */
-        .botones-busqueda-row {
-            display: flex;
-            gap: 5px;
-            margin-top: 5px;
-        }
-
-        .botones-busqueda-row button {
-            flex: 1;
-        }
-
-        /* Ajustes para móviles */
-        @media (max-width: 768px) {
-            .centrar-pantalla {
-                height: auto !important; /* Quita el 100vh que tenías */
-                padding: 10px;
-            }
-            
-            .btn-guardar-top {
-                width: 100%;
-                background-color: #28a745 !important;
-                color: white;
-                margin-top: 10px;
-            }
-        }
-    </style>
-
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #1e293b;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 4px solid var(--green);
+      opacity: 0;
+      transition: all 0.45s cubic-bezier(0.175,0.885,0.32,1.275);
+      z-index: 9999;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { top: 20px; opacity: 1; }
+    .toast.error { border-bottom-color: var(--red); }
+  </style>
 </head>
-<body>    
+<body>
 
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">Scripts<span>FO</span></div>
+  <div class="status-wrap">
+    <div class="status-dot" id="status-dot"></div>
+    <span class="status-text" id="status-text">Conectando...</span>
+  </div>
+</div>
 
-    <div class="container">
-        <!-- Contenedor del formulario -->
-            
-        <div class="centrar-pantalla">
-    <!--BUSCAR POR SD-->
-        <details class="buscador-acordeon">
-            <summary>🔍 Buscar SD y Folios Recientes</summary>
-            <div class="centrar-pantalla">
-                <h3>Buscar por SD</h3>
-                <input type="text" id="buscarId" placeholder="SD del corte">
-                <div class="botones-busqueda-row">
-                    <button onclick="buscar()">Buscar</button>  
-                    <button type="button" onclick="limpiarSeleccion()">Limpiar</button>
-                </div>
-                
-                <h3 style="font-size: 16px;">Últimos 10 folios</h3>
-                <ul id="lista-folios"></ul>
-                
-                <button type="submit" form="modificar-form" class="btn-guardar-top">💾 Guardar Cambios</button>
-            </div>
-        </details>
+<div class="app">
+
+  <!-- BUSCADOR ACORDEÓN -->
+  <details class="buscador-wrap" id="buscador-details">
+    <summary class="buscador-summary">
+      <span>🔍 Buscar SD — <span id="folio-indicator" style="color:var(--accent)">Sin folio activo</span></span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="buscador-body">
+      <input type="text" id="buscarId" placeholder="Ej. SD-20481">
+      <div class="row-btns">
+        <button class="btn btn-accent" onclick="buscar()">Buscar</button>
+        <button class="btn btn-ghost"  onclick="limpiarSeleccion()">Limpiar</button>
+        <button class="btn btn-save"   onclick="guardarRegistro(false)">💾 Guardar</button>
+      </div>
+      <div class="folios-list" id="lista-folios">
+        <span style="color:var(--text3);font-size:11px;">Cargando...</span>
+      </div>
+    </div>
+  </details>
+
+  <!-- TABS NAV -->
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab('eta',this)">
+      <span class="tab-dot dot-eta"></span>ETA
+    </button>
+    <button class="tab-btn" onclick="switchTab('sitio',this)">
+      <span class="tab-dot dot-sitio"></span>Sitio
+    </button>
+    <button class="tab-btn" onclick="switchTab('fallo',this)">
+      <span class="tab-dot dot-fallo"></span>Fallo
+    </button>
+    <button class="tab-btn" onclick="switchTab('final',this)">
+      <span class="tab-dot dot-final"></span>Final
+    </button>
+    <button class="tab-btn" onclick="switchTab('preview',this)">
+      👁 Preview
+    </button>
+  </div>
+
+  <!-- PANELS -->
+  <div class="panels-wrap">
+    <form id="modificar-form">
+
+      <!-- ETA -->
+      <div class="tab-panel active" id="panel-eta">
+        <div class="section-title">Script ETA — Inicial</div>
+        <div class="field">
+          <label>Folio / SD</label>
+          <input type="text" id="folio_" name="folio_" placeholder="SD-XXXXX" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>ETA</label>
+          <input type="text" id="eta" name="eta" placeholder="Hora estimada de llegada" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="proveedor" name="proveedor" value="GTB" onblur="this.value=this.value.trim()">
+        </div>
+        <input type="hidden" id="fecha-texto" name="fecha-texto">
+      </div>
+
+      <!-- SITIO -->
+      <div class="tab-panel" id="panel-sitio">
+        <div class="section-title">Script Sitio — Llegada</div>
+        <div class="field">
+          <label>SD <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="sd" name="sd" readonly>
+        </div>
+        <div class="field">
+          <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="proveedor2" name="proveedor2" readonly>
+        </div>
+        <div class="field">
+          <label>Sitio / Punto de medición</label>
+          <input type="text" id="punto" name="punto" placeholder="Descripción del punto" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Coordenadas</label>
+          <input type="text" id="coordenadas" name="coordenadas" placeholder="Lat, Long" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Distrito <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="distrito" name="distrito" value="JUAREZ" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Nombre del técnico</label>
+          <select id="nombre" name="nombre"></select>
+        </div>
+      </div>
+
+      <!-- FALLO -->
+      <div class="tab-panel" id="panel-fallo">
+        <div class="section-title">Script Fallo</div>
+        <div class="field">
+          <label>Folio <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="folio3_" name="folio3_" readonly>
+        </div>
+        <div class="field">
+          <label>ETR</label>
+          <input type="text" id="etr" name="etr" placeholder="Tiempo estimado de restauración" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Causa del daño <span class="sync-tag">auto-sync → final</span></label>
+          <input type="text" id="causa" name="causa" placeholder="Descripción de la causa" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Acción correctiva</label>
+          <input type="text" id="accion" name="accion" placeholder="Acción tomada" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Capacidad de FO</label>
+          <input type="text" id="calibre" name="calibre" placeholder="Ej. 12 hilos" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Número QR <span class="sync-tag">auto-sync → final</span></label>
+          <input type="text" id="qr" name="qr" placeholder="QR del empalme" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Coordenadas del daño <span class="sync-tag">auto-sync → final</span></label>
+          <input type="text" id="coordenadas3" name="coordenadas3" placeholder="Lat, Long" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Materiales a utilizar <span class="sync-tag">auto-sync → final</span></label>
+          <input type="text" id="materiales" name="materiales" placeholder="Lista de materiales" onblur="this.value=this.value.trim()">
+        </div>
+      </div>
+
+      <!-- FINAL -->
+      <div class="tab-panel" id="panel-final">
+        <div class="section-title">Script Final — Cierre</div>
+        <div class="field">
+          <label>Folio <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="folio4" name="folio4" readonly>
+        </div>
+        <div class="field">
+          <label>Ciudad <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="ciudad" name="ciudad" readonly>
+        </div>
+        <div class="field">
+          <label>Estado</label>
+          <input type="text" id="estado" name="estado" value="CHIHUAHUA" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Fecha del corte</label>
+          <input type="date" id="fecha" name="fecha">
+        </div>
+        <div class="field">
+          <label>Cluster</label>
+          <select id="cluster" name="cluster">
+            <option value="">— Selecciona Cluster —</option>
+            <option value="ALDAMA">ALDAMA</option>
+            <option value="AMPLIACION ALDAMA">AMPLIACION ALDAMA</option>
+            <option value="AMPLIACION ALDAMA 2">AMPLIACION ALDAMA 2</option>
+            <option value="AMPLIACION ALDAMA 3">AMPLIACION ALDAMA 3</option>
+            <option value="AMPLIACION ALDAMA 4">AMPLIACION ALDAMA 4</option>
+            <option value="AMPLIACION ALDAMA 5">AMPLIACION ALDAMA 5</option>
+            <option value="BUENOS AIRES">BUENOS AIRES</option>
+            <option value="BUENOS AIRES_A">BUENOS AIRES_A</option>
+            <option value="BUENOS AIRES 2">BUENOS AIRES 2</option>
+            <option value="AMPLIACION BUENOS AIRES">AMPLIACION BUENOS AIRES</option>
+            <option value="AMPLIACION BUENOS AIRES_A">AMPLIACION BUENOS AIRES_A</option>
+            <option value="AMPLIACION BUENOS AIRES_2_A">AMPLIACION BUENOS AIRES_2_A</option>
+            <option value="AMPLIACION BUENOS AIRES_3_A">AMPLIACION BUENOS AIRES_3_A</option>
+            <option value="AMPLIACION BUENOS AIRES_4_A">AMPLIACION BUENOS AIRES_4_A</option>
+            <option value="AMPLIACION BUENOS AIRES_5_A">AMPLIACION BUENOS AIRES_5_A</option>
+            <option value="AMPLIACION BUENOS AIRES_6_A">AMPLIACION BUENOS AIRES_6_A</option>
+            <option value="CARLOS AMAYA">CARLOS AMAYA</option>
+            <option value="EL VERGEL">EL VERGEL</option>
+            <option value="GOMEZ MORIN">GOMEZ MORIN</option>
+            <option value="AMPLIACION GOMEZ MORIN">AMPLIACION GOMEZ MORIN</option>
+            <option value="LOMAS DE MORELOS">LOMAS DE MORELOS</option>
+            <option value="AMPLIACION LOMAS DE MORELOS 2">AMPLIACION LOMAS DE MORELOS 2</option>
+            <option value="AMPLIACION LOMAS DE MORELOS 3">AMPLIACION LOMAS DE MORELOS 3</option>
+            <option value="LOS CIPRESES">LOS CIPRESES</option>
+            <option value="MAYORCA">MAYORCA</option>
+            <option value="NOGALES">NOGALES</option>
+            <option value="OASIS">OASIS</option>
+            <option value="SANTO DOMINGO">SANTO DOMINGO</option>
+            <option value="THOMPSON">THOMPSON</option>
+            <option value="THOMPSON_A">THOMPSON_A</option>
+            <option value="TIERRA NUEVA">TIERRA NUEVA</option>
+            <option value="TIERRA NUEVA_A">TIERRA NUEVA_A</option>
+            <option value="AMPLIACION TIERRA NUEVA">AMPLIACION TIERRA NUEVA</option>
+            <option value="AMPLIACION TIERRA NUEVA 2">AMPLIACION TIERRA NUEVA 2</option>
+            <option value="AMPLIACION TIERRA NUEVA 3">AMPLIACION TIERRA NUEVA 3</option>
+            <option value="AMPLIACION TIERRA NUEVA 4">AMPLIACION TIERRA NUEVA 4</option>
+            <option value="AMPLIACION TIERRA NUEVA 5">AMPLIACION TIERRA NUEVA 5</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>OLT</label>
+          <select id="olt" name="olt">
+            <option value="">Selecciona Cluster primero</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Clientes afectados</label>
+          <input type="text" id="clientes" name="clientes" placeholder="Número de clientes" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Falla reportada</label>
+          <input type="text" id="falla_r" name="falla_r" placeholder="Descripción de la falla" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Fecha y HR asg. DESP</label>
+          <input type="text" id="hr_desp" name="hr_desp" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Fecha y HR asg. PROV</label>
+          <input type="text" id="hr_prov" name="hr_prov" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>HR llegada a la zona</label>
+          <input type="text" id="hr_llegada" name="hr_llegada" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>HR 1ª medición</label>
+          <input type="text" id="hr_med" name="hr_med" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Ubicación 1N / 2N</label>
+          <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>QR segundo nivel <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="qr_2" name="qr_2" readonly>
+        </div>
+        <div class="field">
+          <label>Causa del daño <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="causa_dano" name="causa_dano" readonly>
+        </div>
+        <div class="field">
+          <label>Ubicación del daño</label>
+          <input type="text" id="ubicacion_dano" name="ubicacion_dano" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Coordenadas del daño <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="coordenadas_dano" name="coordenadas_dano" readonly>
+        </div>
+        <div class="field">
+          <label>Descripción de actividades</label>
+          <input type="text" id="desc_act" name="desc_act" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Potencia inicial</label>
+          <input type="text" id="potencia_inicial" name="potencia_inicial" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Potencia final</label>
+          <input type="text" id="potencia_final" name="potencia_final" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Trabajos realizados</label>
+          <input type="text" id="trabajos_realizados" name="trabajos_realizados" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>HR final de reparación</label>
+          <input type="text" id="hr_final" name="hr_final" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Técnico <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="atiende_nom_tec" name="atiende_nom_tec" readonly>
+        </div>
+        <div class="field">
+          <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="proveedor4" name="proveedor4" readonly>
+        </div>
+        <div class="field">
+          <label>Supervisor distrito</label>
+          <select id="supervisor" name="supervisor">
+            <option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
+            <option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Pausa hora inicial y final</label>
+          <input type="text" id="justificacion_sla" name="justificacion_sla" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Motivo de pausa</label>
+          <input type="text" id="m_pausa" name="m_pausa" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Tiempo total de pausa</label>
+          <input type="text" id="t_pausa" name="t_pausa" onblur="this.value=this.value.trim()">
+        </div>
+        <div class="field">
+          <label>Material utilizado <span class="sync-tag">auto-sync</span></label>
+          <input type="text" id="material_utilizado" name="material_utilizado" readonly>
         </div>
 
-        <div class="form-container">
-            <h2>Modificar Información</h2>
+        <hr class="divider">
+        <div class="section-title">Evidencia Fotográfica</div>
+        <div class="field">
+          <label>Subir imágenes</label>
+          <div id="drop-zone" class="drop-zone">📷 Toca aquí para subir fotos</div>
+          <input type="file" id="input-fotos" accept="image/*" multiple style="display:none">
+        </div>
+        <div class="galeria" id="galeria-fotos"></div>
+      </div>
 
-        <!--<label for="fecha">Selecciona una fecha:</label>
-        <input type="date" id="fecha" name="fecha">
-        
-        <input type="text" id="fecha-texto" name="fecha-texto" readonly>-->
+      <!-- PREVIEW -->
+      <div class="tab-panel" id="panel-preview">
+        <div class="section-title">Vista previa de scripts</div>
+        <div id="preview-eta"   style="margin-bottom:16px;"></div>
+        <div id="preview-sitio" style="margin-bottom:16px;"></div>
+        <div id="preview-fallo" style="margin-bottom:16px;"></div>
+        <div id="preview-final" style="margin-bottom:16px;"></div>
+      </div>
 
-            <form id="modificar-form">
-                <div class="tabs-nav">
-                <button type="button" class="tab-button active" onclick="openTab(event, 'tab-eta')">ETA</button>
-                <button type="button" class="tab-button" onclick="openTab(event, 'tab-sitio')">SITIO</button>
-                <button type="button" class="tab-button" onclick="openTab(event, 'tab-fallo')">FALLO</button>
-                <button type="button" class="tab-button" onclick="openTab(event, 'tab-final')">FINAL</button>
-            </div>
+    </form>
 
+    <!-- Textos ocultos para el clipboard -->
+    <div id="seccion-eta"   style="display:none;"></div>
+    <div id="seccion-sitio" style="display:none;"></div>
+    <div id="seccion-fallo" style="display:none;"></div>
+    <div id="seccion-final" style="display:none;"></div>
+  </div>
 
-                <!-- Primer Bloque -->
-                <div id="tab-eta" class="block active">
-                    <h3>ETA</h3>
-                    <div class="form-group">
-                        <label for="folio">FOLIO:</label>
-                        <input type="text" id="folio_" name="folio_" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="eta">ETA:</label>
-                        <input type="text" id="eta" name="eta" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="proveedor">PROVEEDOR:</label>
-                        <input type="text" id="proveedor" name="proveedor" onblur="this.value = this.value.trim()">
-                    </div>
-                </div>
+  <!-- BARRA DE COPIAR FIJA ABAJO -->
+  <div class="copy-bar">
+    <button class="c-eta"   onclick="copiar('seccion-eta',   this)">📋 ETA</button>
+    <button class="c-sitio" onclick="copiar('seccion-sitio', this)">📋 SITIO</button>
+    <button class="c-fallo" onclick="copiar('seccion-fallo', this)">📋 FALLO</button>
+    <button class="c-final" onclick="copiar('seccion-final', this)">📋 FINAL</button>
+  </div>
 
-                <!-- Segundo Bloque -->
-                 <div id="tab-sitio" class="block">
-                    <h3>SCRIPT SITIO</h3>
-                    <div class="form-group">
-                        <label for="sd">SD:</label>
-                        <input type="text" id="sd" name="sd" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="punto">Sitio/punto de medición:</label>
-                        <input type="text" id="punto" name="punto" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="coordenadas">Coordenadas:</label>
-                        <input type="text" id="coordenadas" name="coordenadas" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="proveedor2">Proveedor:</label>
-                        <input type="text" id="proveedor2" name="proveedor2" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="distrito">Distrito:</label>
-                        <input type="text" id="distrito" name="distrito" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="nombre">Nombre:</label>
- 			            <select id="nombre" name="nombre">         			
-                                        <!---SELECT DE TECNICOS-->
-                        </select>
-                    </div>
-                    <!-- JavaScript de Select2 -->
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+</div><!-- /app -->
 
-                    <script>
-                        // Inicializa Select2
-                    
-                    </script>
-                    
-                </div>
-                <!-- Tercer Bloque -->
-                <div id="tab-fallo" class="block">
-                    <h3>SCRIPT FALLO</h3>
-                    <div class="form-group">
-                        <label for="folio3_">Folio:</label>
-                        <input type="text" id="folio3_" name="folio3_" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="causa">Causa del daño:</label>
-                        <input type="text" id="causa" name="causa" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="accion">Acción correctiva:</label>
-                        <input type="text" id="accion" name="accion" onblur="this.value = this.value.trim()">
-                    </div>
-                     <div class="form-group">
-                        <label for="etr">ETR:</label>
-                        <input type="text" id="etr" name="etr" onblur="this.value = this.value.trim()">
-                    </div>                   
-                    <div class="form-group">
-                        <label for="calibre">Capacidad de FO</label>
-                        <input type="text" id="calibre" name="calibre" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="coordenadas3">Coordenadas:</label>
-                        <input type="text" id="coordenadas3" name="coordenadas3" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="qr">Numero QR:</label>
-                        <input type="text" id="qr" name="qr" onblur="this.value = this.value.trim()">
-                    </div>
-                     <div class="form-group">
-                        <label for="materiales">Materiales a utilizar:</label>
-                        <input type="text" id="materiales" name="materiales" onblur="this.value = this.value.trim()">
-                    </div>                   
-                </div>
+<div class="toast" id="toast"></div>
 
-                <!-- Cuarto Bloque -->
-                <div id="tab-final" class="block">
-                    <h3>SCRIPT FINAL</h3>
-                    <div class="form-group">
-                        <label for="folio4">FOLIO:</label>
-                        <input type="text" id="folio4" name="folio4" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="ciudad">CIUDAD:</label>
-                        <input type="text" id="ciudad" name="ciudad" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="estado">ESTADO:</label>
-                        <input type="text" id="estado" name="estado" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="cluster">CLUSTER:</label>
-                          <select id="cluster" name="cluster" onchange="llenarNumero()">
-                                <option value="">Selecciona una opción</option>
-                                <option value="ALDAMA">ALDAMA</option>
-                                <option value="AMPLIACION ALDAMA">AMPLIACION ALDAMA</option>
-                                <option value="AMPLIACION ALDAMA 2">AMPLIACION ALDAMA 2</option>
-                                <option value="AMPLIACION ALDAMA 3">AMPLIACION ALDAMA 3</option>
-                                <option value="AMPLIACION ALDAMA 4">AMPLIACION ALDAMA 4</option>                                   
-                                <option value="AMPLIACION ALDAMA 5">AMPLIACION ALDAMA 5</option>
-                                <option value="BUENOS AIRES">BUENOS AIRES</option>
-                                <option value="BUENOS AIRES_A">BUENOS AIRES_A</option>
-                                <option value="AMPLIACION BUENOS AIRES">AMPLIACION BUENOS AIRES</option>
-                                <option value="AMPLIACION BUENOS AIRES_A">AMPLIACION BUENOS AIRES_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_2_A">AMPLIACION BUENOS AIRES_2_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_3_A">AMPLIACION BUENOS AIRES_3_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_4_A">AMPLIACION BUENOS AIRES_4_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_5_A">AMPLIACION BUENOS AIRES_5_A</option>
-                                <option value="AMPLIACION BUENOS AIRES_6_A">AMPLIACION BUENOS AIRES_6_A</option>
-                                <option value="BUENOS AIRES 2">BUENOS AIRES 2</option>
-                                <option value="CARLOS AMAYA">CARLOS AMAYA</option>
-                                <option value="EL VERGEL">EL VERGEL</option>
-                                <option value="GOMEZ MORIN">GOMEZ MORIN</option>
-                                <option value="AMPLIACION GOMEZ MORIN">AMPLIACION GOMEZ MORIN</option>
-                                <option value="LOMAS DE MORELOS">LOMAS DE MORELOS</option>
-                                <option value="AMPLIACION LOMAS DE MORELOS 2">AMPLIACION LOMAS DE MORELOS 3</option>
-                                <option value="AMPLIACION LOMAS DE MORELOS 3">AMPLIACION LOMAS DE MORELOS 3</option>
-                                <option value="LOS CIPRESES">LOS CIPRESES</option>
-                                <option value="MAYORCA">MAYORCA</option>
-                                <option value="NOGALES">NOGALES</option>
-                                <option value="OASIS">OASIS</option>
-                                <option value="SANTO DOMINGO">SANTO DOMINGO</option>
-                                <option value="THOMPSON">THOMPSON</option>
-                                <option value="THOMPSON_A">THOMPSON_A</option>
-                                <option value="TIERRA NUEVA">TIERRA NUEVA</option>
-                                <option value="TIERRA NUEVA_A">TIERRA NUEVA</option>
-                                <option value="AMPLIACION TIERRA NUEVA">AMPLIACION TIERRA NUEVA</option>
-                                <option value="AMPLIACION TIERRA NUEVA 2">AMPLIACION TIERRA NUEVA 2</option>
-                                <option value="AMPLIACION TIERRA NUEVA 3">AMPLIACION TIERRA NUEVA 3</option>
-                                <option value="AMPLIACION TIERRA NUEVA 4">AMPLIACION TIERRA NUEVA 4</option>
-                                <option value="AMPLIACION TIERRA NUEVA 5">AMPLIACION TIERRA NUEVA 5</option>
-                            </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="olt">OLT:</label>
-                        <select id="olt" name="olt" onchange="updatePreview()">
-                            <option value="">Selecciona un Cluster primero</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="clientes">CLIENTES AFECTADOS:</label>
-                        <input type="text" id="clientes" name="clientes" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="clientes">FALLA REPORTADA:</label>
-                        <input type="text" id="falla_r" name="falla_r" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha">Selecciona una fecha:</label>
-                        <input type="date" id="fecha" name="fecha"  >
-                        <input type="hidden" id="fecha-texto" name="fecha-texto" readonly onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="hr_desp">FECHA_Y_HR_DE_ASG_DESP:</label>
-                        <input type="text" id="hr_desp" name="hr_desp" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="hr_prov">FECHA_Y_HR_DE_ASG_PROV:</label>
-                        <input type="text" id="hr_prov" name="hr_prov" onblur="this.value = this.value.trim()">
-                    </div>                    
-                    <div class="form-group">
-                        <label for="hr_llegada">HR_DE_LLEGADA_A_LA_ZONA:</label>
-                        <input type="text" id="hr_llegada" name="hr_llegada" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="hr_med">HR_DE_LA_1er_MEDICION:</label>
-                        <input type="text" id="hr_med" name="hr_med" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="ubicacion_1er_2do">UBICACIÓN_DE_1N_2N:</label>
-                        <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="qr_2">QR DE SEGUNDO NIVEL:</label>
-                        <input type="text" id="qr_2" name="qr_2" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="causa_dano">CAUSA DE DAÑO:</label>
-                        <input type="text" id="causa_dano" name="causa_dano" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="ubicacion_dano">UBICACIÓN_DEL_DAÑO:</label>
-                        <input type="text" id="ubicacion_dano" name="ubicacion_dano" onblur="this.value = this.value.trim()">
-                    </div>                   
-                    <div class="form-group">
-                        <label for="coordenadas_dano">COORDENADAS:</label>
-                        <input type="text" id="coordenadas_dano" name="coordenadas_dano" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="desc_act">DESCRIP_DE_ACTIVIDADES:</label>
-                        <input type="text" id="desc_act" name="desc_act" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="potencia_inicial">POTENCIA_INICIAL:</label>
-                        <input type="text" id="potencia_inicial" name="potencia_inicial" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="potencia_final">POTENCIA_FINAL:</label>
-                        <input type="text" id="potencia_final" name="potencia_final" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="trabajos_realizados">TRABAJOS_REALIZADOS:</label>
-                        <input type="text" id="trabajos_realizados" name="trabajos_realizados" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="hr_final">FECHA_HR_FINAL_DE_REPARACION::</label>
-                        <input type="text" id="hr_final" name="hr_final" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="atiende_nom_tec">ATIENDE_NOM_TEC:</label>
-                        <input type="text" id="atiende_nom_tec" name="atiende_nom_tec" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="proveedor4">PROVEEDOR:</label>
-                        <input type="text" id="proveedor4" name="proveedor4" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="supervisor">SUPERVISOR DISTRITO:</label>
-                        <select id="supervisor" name="supervisor">
-                            <option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
-                            <option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="justificacion_sla">PAUSA HORA INICIAL Y FINAL:</label>
-                        <input type="text" id="justificacion_sla" name="justificacion_sla" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="motivo_pausa">MOTIVO DE PAUSA:</label>
-                        <input type="text" id="m_pausa" name="m_pausa" onblur="this.value = this.value.trim()">
-                    </div>
-                    <div class="form-group">
-                        <label for="tiempo_pausa">TIEMPO TOTAL DE PAUSA:</label>
-                        <input type="text" id="t_pausa" name="t_pausa" onblur="this.value = this.value.trim()">
-                    </div>                    
-                    <div class="form-group">
-                        <label for="material_utilizado">MATERIAL UTILIZADO:</label>
-                        <input type="text" id="material_utilizado" name="material_utilizado" onblur="this.value = this.value.trim()">
-                    </div>
-                </div>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+<!-- jQuery + Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
 
+<script>
+// ─── Firebase ─────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
+  authDomain: "scripts-2c739.firebaseapp.com",
+  projectId: "scripts-2c739",
+  storageBucket: "scripts-2c739.firebasestorage.app",
+  messagingSenderId: "1054970007452",
+  appId: "1:1054970007452:web:1d283693bb8377192c0259"
+};
+firebase.initializeApp(firebaseConfig);
+const db      = firebase.firestore();
+const storage = firebase.storage();
 
-                         <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script>
-        // Tu configuración de Firebase (reemplaza con la tuya)
-        const firebaseConfig = {
-            apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
-            authDomain: "scripts-2c739.firebaseapp.com",
-            projectId: "scripts-2c739",
-            storageBucket: "scripts-2c739.firebasestorage.app",
-            messagingSenderId: "1054970007452",
-            appId: "1:1054970007452:web:1d283693bb8377192c0259",
-            measurementId: "G-08TE213QDH"
-        };
-        // Inicializar Firebase
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.firestore();
-        // Referencia al formulario
-            const form = document.getElementById("modificar-form");
+document.getElementById('status-dot').style.background = 'var(--green)';
+document.getElementById('status-text').textContent = 'Conectado';
 
-        form.addEventListener("submit", async function(e) {
-            e.preventDefault();
+// ─── Toast ─────────────────────────────────────────────────
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.innerHTML = isError ? `<span>✕</span> ${msg}` : `<span>✓</span> ${msg}`;
+  t.style.borderBottomColor = isError ? 'var(--red)' : 'var(--green)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
 
-            const folio = document.getElementById("folio_").value.trim();
-            const eta = document.getElementById("eta").value;
-            const proveedor = document.getElementById("proveedor").value;
+// ─── g() helper — lee Select2 correctamente ───────────────
+function g(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  if (el.tagName === 'SELECT') return $(el).val() || '';
+  return el.value ? el.value.trim() : '';
+}
 
-            const punto = document.getElementById("punto").value;
-            const coordenadas = document.getElementById("coordenadas").value;
-            const proveedor2 = document.getElementById("proveedor2").value;
-            const distrito = document.getElementById("distrito").value;
-            const nombre = document.getElementById("nombre").value; //REVISAR LABEL DE NOMBRE IDC
+// ─── Tabs ──────────────────────────────────────────────────
+function switchTab(name, btn) {
+  guardarRegistro(true); // autoguardado silencioso
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
 
-            const causa = document.getElementById("causa").value;
-            const accion = document.getElementById("accion").value;
-            const etr = document.getElementById("etr").value;
-            const calibre = document.getElementById("calibre").value;
-            const coordenadas3 = document.getElementById("coordenadas3").value;
-            const qr = document.getElementById("qr").value;
-            const materiales = document.getElementById("materiales").value;
+// ─── OLT map (Cluster → OLT) ──────────────────────────────
+const CLUSTER_TO_OLT = {
+  "ALDAMA":                    ["ALDAMA_JUA","ALDAMA_2_JUA"],
+  "AMPLIACION ALDAMA":         ["ALDAMA_JUA","ALDAMA_2_JUA"],
+  "AMPLIACION ALDAMA 2":       ["ALDAMA_JUA","ALDAMA_2_JUA"],
+  "AMPLIACION ALDAMA 3":       ["ALDAMA_JUA","ALDAMA_2_JUA"],
+  "AMPLIACION ALDAMA 4":       ["ALDAMA_JUA","ALDAMA_2_JUA"],
+  "AMPLIACION ALDAMA 5":       ["ALDAMA_JUA","ALDAMA_2_JUA"],
+  "BUENOS AIRES":              ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "BUENOS AIRES_A":            ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "BUENOS AIRES 2":            ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "AMPLIACION BUENOS AIRES":   ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "AMPLIACION BUENOS AIRES_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "AMPLIACION BUENOS AIRES_2_A":["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "AMPLIACION BUENOS AIRES_3_A":["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "AMPLIACION BUENOS AIRES_4_A":["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "AMPLIACION BUENOS AIRES_5_A":["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "AMPLIACION BUENOS AIRES_6_A":["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
+  "CARLOS AMAYA":              ["CARLOS_AMAYA_JUA"],
+  "EL VERGEL":                 ["VERGEL_JUA"],
+  "LOS CIPRESES":              ["CIPRESES_JUA"],
+  "MAYORCA":                   ["MAYORCA_JUA"],
+  "NOGALES":                   ["NOGALES_JUA"],
+  "OASIS":                     ["OASIS_JUA"],
+  "SANTO DOMINGO":             ["SANTO_DOMINGO_JUA"],
+  "GOMEZ MORIN":               ["GOMEZ_MORIN_JUA"],
+  "AMPLIACION GOMEZ MORIN":    ["GOMEZ_MORIN_JUA"],
+  "LOMAS DE MORELOS":          ["LOMAS_DE_MORELOS_JUA"],
+  "AMPLIACION LOMAS DE MORELOS 2":["LOMAS_DE_MORELOS_JUA"],
+  "AMPLIACION LOMAS DE MORELOS 3":["LOMAS_DE_MORELOS_JUA"],
+  "THOMPSON":                  ["THOMPSON_JUA","THOMPSON_2_JUA"],
+  "THOMPSON_A":                ["THOMPSON_JUA","THOMPSON_2_JUA","HACIENDA_DE_LAS_TORRES_2_JUA"],
+  "TIERRA NUEVA":              ["HACIENDA_DE_LAS_TORRES_JUA","HACIENDA_DE_LAS_TORRES_2_JUA"],
+  "TIERRA NUEVA_A":            ["HACIENDA_DE_LAS_TORRES_JUA","HACIENDA_DE_LAS_TORRES_2_JUA"],
+  "AMPLIACION TIERRA NUEVA":   ["HACIENDA_DE_LAS_TORRES_JUA","HACIENDA_DE_LAS_TORRES_2_JUA"],
+  "AMPLIACION TIERRA NUEVA 2": ["HACIENDA_DE_LAS_TORRES_JUA","HACIENDA_DE_LAS_TORRES_2_JUA"],
+  "AMPLIACION TIERRA NUEVA 3": ["HACIENDA_DE_LAS_TORRES_JUA","HACIENDA_DE_LAS_TORRES_2_JUA"],
+  "AMPLIACION TIERRA NUEVA 4": ["HACIENDA_DE_LAS_TORRES_JUA","HACIENDA_DE_LAS_TORRES_2_JUA"],
+  "AMPLIACION TIERRA NUEVA 5": ["HACIENDA_DE_LAS_TORRES_JUA","HACIENDA_DE_LAS_TORRES_2_JUA"]
+};
 
-            const ciudad = document.getElementById("ciudad").value;
-            const estado = document.getElementById("estado").value;
-            const cluster = document.getElementById("cluster").value;
-            const olt = document.getElementById("olt").value;
-            const clientes = document.getElementById("clientes").value;
-            const falla_r = document.getElementById("falla_r").value;
-            const fecha = document.getElementById("fecha-texto").value;
-            const hr_desp = document.getElementById("hr_desp").value;
-            const hr_prov = document.getElementById("hr_prov").value;
-            const hr_llegada = document.getElementById("hr_llegada").value;
-            const hr_med = document.getElementById("hr_med").value;
-            const ubicacion_1er_2do = document.getElementById("ubicacion_1er_2do").value;
-            const qr_2 = document.getElementById("qr_2").value;
-            const causa_dano = document.getElementById("causa_dano").value;
-            const ubicacion_dano = document.getElementById("ubicacion_dano").value;
-            const desc_act = document.getElementById("desc_act").value;
-            const potencia_inicial = document.getElementById("potencia_inicial").value;
-            const potencia_final = document.getElementById("potencia_final").value;
-            const coordenadas_dano = document.getElementById("coordenadas_dano").value;
-            const trabajos_realizados = document.getElementById("trabajos_realizados").value;
-            const hr_final = document.getElementById("hr_final").value;
-            const atiende_nom_tec = document.getElementById("atiende_nom_tec").value;
-            const proveedor4 = document.getElementById("proveedor4").value;
-            const supervisor = document.getElementById("supervisor").value;
-            const justificacion_sla = document.getElementById("justificacion_sla").value;
-            const m_pausa = document.getElementById("m_pausa").value;
-            const t_pausa = document.getElementById("t_pausa").value;
-            const material_utilizado = document.getElementById("material_utilizado").value;
+function llenarOLT() {
+  const cluster  = g('cluster');
+  const oltSel   = document.getElementById('olt');
+  oltSel.innerHTML = '';
+  const olts = CLUSTER_TO_OLT[cluster] || [];
+  if (!olts.length) {
+    oltSel.innerHTML = '<option value="">Sin OLT asociada</option>';
+  } else {
+    olts.forEach(o => {
+      const op = document.createElement('option');
+      op.value = o; op.textContent = o;
+      oltSel.appendChild(op);
+    });
+    if (olts.length === 1) oltSel.value = olts[0];
+  }
+  updatePreview();
+}
 
+// ─── Fecha autofill ────────────────────────────────────────
+document.getElementById('fecha').addEventListener('input', function() {
+  document.getElementById('fecha-texto').value = this.value;
+  ['hr_desp','hr_prov','hr_llegada','hr_med','hr_final'].forEach(id => {
+    document.getElementById(id).value = this.value;
+  });
+  updatePreview();
+});
 
-            if (!folio) return alert("Debes ingresar un SD");
+// ─── Select2 init ──────────────────────────────────────────
+$(document).ready(function() {
+  $('#nombre').select2({ placeholder: 'Selecciona técnico', allowClear: true, dropdownParent: $('#panel-sitio') });
+  $('#nombre').on('change', updatePreview);
 
-            try {
-                await db.collection("usuarios").doc(folio).set({folio, eta, proveedor, punto, coordenadas, proveedor2, distrito, nombre,
-                                                                causa, accion, etr, calibre, coordenadas3, qr, materiales,
-                                                                ciudad, estado, cluster, olt, clientes, falla_r, hr_desp, hr_prov,
-                                                                hr_llegada, hr_med, ubicacion_1er_2do, qr_2, 
-                                                                causa_dano, ubicacion_dano, coordenadas_dano, desc_act, potencia_inicial, potencia_final, trabajos_realizados, hr_final,
-                                                                atiende_nom_tec, proveedor4, supervisor,
-                                                                justificacion_sla, m_pausa, t_pausa, material_utilizado, timestamp: firebase.firestore.FieldValue.serverTimestamp()});
-                                                                
-                alert("Datos guardados con folio: " + folio);
-                 cargarUltimosFolios(); 
-                //form.reset();
-            } catch (error) {
-                console.error("Error al guardar:", error);
-            }
-        });
+  $('#cluster').select2({ placeholder: 'Busca o selecciona...', allowClear: true, dropdownParent: $('#panel-final') });
+  $('#cluster').on('select2:select', llenarOLT);
+  $('#cluster').on('select2:clear', () => {
+    document.getElementById('olt').innerHTML = '<option value="">Selecciona Cluster primero</option>';
+    updatePreview();
+  });
+});
 
-        async function buscar() {
-      const id = document.getElementById("buscarId").value.trim();
-      //const resultado = document.getElementById("resultado");
+// ─── Cargar técnicos desde txt ─────────────────────────────
+async function cargarTecnicos() {
+  try {
+    const r = await fetch('./tecnicos.txt');
+    if (!r.ok) return;
+    const lines = (await r.text()).split('\n');
+    const sel = document.getElementById('nombre');
+    lines.forEach(l => {
+      const v = l.trim();
+      if (v) { const o = document.createElement('option'); o.value = v; o.textContent = v; sel.appendChild(o); }
+    });
+  } catch(e) {}
+}
+cargarTecnicos();
 
-      if (!id) return alert("Ingresa un ID válido.");
+// ─── updatePreview ─────────────────────────────────────────
+function updatePreview() {
+  // Sync readonly fields
+  const folio     = g('folio_');
+  const proveedor = g('proveedor');
+  const distrito  = g('distrito');
+  const nombre    = g('nombre');
+  const causa     = g('causa');
+  const coord3    = g('coordenadas3');
+  const qr        = g('qr');
+  const materiales = g('materiales');
 
-      try {
-        const doc = await db.collection("usuarios").doc(id).get();
+  document.getElementById('folio3_').value        = folio;
+  document.getElementById('folio4').value          = folio;
+  document.getElementById('sd').value              = folio;
+  document.getElementById('proveedor2').value      = proveedor;
+  document.getElementById('proveedor4').value      = proveedor;
+  document.getElementById('ciudad').value          = distrito;
+  document.getElementById('atiende_nom_tec').value = nombre;
+  document.getElementById('causa_dano').value      = causa;
+  document.getElementById('coordenadas_dano').value = coord3;
+  document.getElementById('qr_2').value            = qr;
+  document.getElementById('material_utilizado').value = materiales;
+  document.getElementById('folio-indicator').textContent = folio || 'Sin folio activo';
 
-        if (doc.exists) {
-          const datos = doc.data();
-            document.getElementById("folio_").value = datos.folio || "";
-            document.getElementById("eta").value = datos.eta || "";
-            document.getElementById("proveedor").value = datos.proveedor || "";
+  const eta=g('eta'), olt=g('olt'), cluster=g('cluster');
+  const punto=g('punto'), coordenadas=g('coordenadas');
+  const accion=g('accion'), etr=g('etr'), calibre=g('calibre');
+  const ciudad=g('ciudad'), estado=g('estado');
+  const clientes=g('clientes'), falla_r=g('falla_r');
+  const hr_desp=g('hr_desp'), hr_prov=g('hr_prov');
+  const hr_llegada=g('hr_llegada'), hr_med=g('hr_med');
+  const ubicacion_1er_2do=g('ubicacion_1er_2do'), qr_2=g('qr_2');
+  const causa_dano=g('causa_dano'), ubicacion_dano=g('ubicacion_dano');
+  const coordenadas_dano=g('coordenadas_dano'), desc_act=g('desc_act');
+  const potencia_inicial=g('potencia_inicial'), potencia_final=g('potencia_final');
+  const trabajos_realizados=g('trabajos_realizados'), hr_final=g('hr_final');
+  const atiende_nom_tec=g('atiende_nom_tec'), proveedor4=g('proveedor4');
+  const supervisor=g('supervisor'), justificacion_sla=g('justificacion_sla');
+  const m_pausa=g('m_pausa'), t_pausa=g('t_pausa'), material_utilizado=g('material_utilizado');
 
-            document.getElementById("punto").value = datos.punto || "";
-            document.getElementById("coordenadas").value = datos.coordenadas || "";
-            document.getElementById("proveedor2").value = datos.proveedor2 || "";
-            document.getElementById("distrito").value = datos.distrito || "";
-            document.getElementById("nombre").value = datos.nombre || ""; //REVISAR LABEL DE NOMBRE IDC
-            $('#nombre').val(datos.nombre).trigger('change');
-            document.getElementById("causa").value = datos.causa || "";
-            document.getElementById("accion").value = datos.accion || "";
-            document.getElementById("etr").value = datos.etr || "";
-            document.getElementById("calibre").value = datos.calibre || "";
-            document.getElementById("coordenadas3").value = datos.coordenadas3 || "";
-            document.getElementById("qr").value = datos.qr || "";
-            document.getElementById("materiales").value = datos.materiales || "";
+  const etaTxt   = `FOLIO: *${folio}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*`;
+  const sitioTxt = `SD: *${folio}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*`;
+  const falloTxt = `Folio: *${folio}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coord3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*`;
+  const finalTxt = `FOLIO: *${folio}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${falla_r}*\nFECHA_Y_HR_DE_ASG_DESP: *${hr_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${hr_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICION: *${hr_med}*\nUBICACIÓN_DE_1N_2N: *${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${desc_act}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS: *${trabajos_realizados}*\nFECHA_HR_FINAL_DE_REPARACION: *${hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA: *${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*`;
 
-            document.getElementById("ciudad").value = datos.ciudad || "";
-            document.getElementById("estado").value = datos.estado || "";
-            document.getElementById("cluster").value = datos.cluster || "";
-            $('#cluster').val(datos.cluster).trigger('change');
-            document.getElementById("olt").value = datos.olt || "";
-            if (window.innerWidth < 768) {
-            document.querySelector('.buscador-acordeon').removeAttribute('open');
-            }
-            document.getElementById("clientes").value = datos.clientes || "";
-            document.getElementById("falla_r").value = datos.falla_r || "";
-            document.getElementById("fecha-texto").value = datos.fecha || "";
-            document.getElementById("hr_desp").value = datos.hr_desp || "";
-            document.getElementById("hr_prov").value = datos.hr_prov || "";
-            document.getElementById("hr_llegada").value = datos.hr_llegada || "";
-            document.getElementById("hr_med").value = datos.hr_med || "";
-            document.getElementById("ubicacion_1er_2do").value = datos.ubicacion_1er_2do || "";
-            document.getElementById("qr_2").value = datos.qr_2 || "";
-            document.getElementById("causa_dano").value = datos.causa_dano || "";
-            document.getElementById("ubicacion_dano").value = datos.ubicacion_dano || "";
-            document.getElementById("coordenadas_dano").value = datos.coordenadas_dano || "";
-            document.getElementById("desc_act").value = datos.desc_act || "";
-            document.getElementById("potencia_inicial").value = datos.potencia_inicial || "";
-            document.getElementById("potencia_final").value = datos.potencia_final || "";
-            document.getElementById("trabajos_realizados").value = datos.trabajos_realizados || "";
-            document.getElementById("hr_final").value = datos.hr_final || "";
-            document.getElementById("atiende_nom_tec").value = datos.atiende_nom_tec || "";
-            document.getElementById("proveedor4").value = datos.proveedor4 || "";
-            document.getElementById("supervisor").value = datos.supervisor || "";
-            document.getElementById("justificacion_sla").value = datos.justificacion_sla || "";
-            document.getElementById("m_pausa").value = datos.m_pausa || "";
-            document.getElementById("t_pausa").value = datos.t_pausa || "";
-            document.getElementById("material_utilizado").value = datos.material_utilizado || "";
-          //resultado.innerText = "Datos cargados.";
-          updatePreview();
-        } else {
-         // resultado.innerText = "Documento no encontrado.";
-         alert("SD NO EXISTE");
-        }
-      } catch (error) {
-        //resultado.innerText = "Error al buscar.";
-        alert("ERROR AL BUSCAR");
-      }
-    }
-    //----------------------------CARGAR 5 ULTIMOS FOLIOS---------------------------------}
-async function cargarUltimosFolios() {
-  const lista = document.getElementById("lista-folios");
-  lista.innerHTML = "<li>Cargando...</li>";
+  document.getElementById('seccion-eta').textContent   = etaTxt;
+  document.getElementById('seccion-sitio').textContent = sitioTxt;
+  document.getElementById('seccion-fallo').textContent = falloTxt;
+  document.getElementById('seccion-final').textContent = finalTxt;
+
+  // Panel preview
+  function previewCard(title, txt, color) {
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <div style="padding:8px 12px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:${color};text-transform:uppercase;">${title}</div>
+      <pre style="padding:12px;font-family:var(--font-mono);font-size:11px;line-height:1.6;white-space:pre-wrap;color:var(--text2);">${txt}</pre>
+    </div>`;
+  }
+  document.getElementById('preview-eta').innerHTML   = previewCard('ETA',   etaTxt,   'var(--amber)');
+  document.getElementById('preview-sitio').innerHTML = previewCard('Sitio', sitioTxt, 'var(--accent)');
+  document.getElementById('preview-fallo').innerHTML = previewCard('Fallo', falloTxt, 'var(--red)');
+  document.getElementById('preview-final').innerHTML = previewCard('Final', finalTxt, 'var(--green)');
+}
+
+// ─── Copiar ────────────────────────────────────────────────
+function copiar(id, btn) {
+  const txt = document.getElementById(id)?.textContent || '';
+  const orig = btn.innerHTML;
+  navigator.clipboard.writeText(txt).then(() => {
+    btn.innerHTML = '✅'; btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    btn.innerHTML = '✅'; btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+// ─── Guardar en Firebase ───────────────────────────────────
+async function guardarRegistro(esAutoguardado = false) {
+  const folio = g('folio_');
+  if (!folio) { if (!esAutoguardado) showToast('Debes ingresar un SD', true); return; }
+
+  const statusText = document.getElementById('status-text');
+  const statusDot  = document.getElementById('status-dot');
+  if (esAutoguardado) { statusDot.style.background = 'var(--amber)'; statusText.textContent = 'Guardando...'; }
+
+  const data = {
+    folio, eta: g('eta'), proveedor: g('proveedor'),
+    punto: g('punto'), coordenadas: g('coordenadas'),
+    distrito: g('distrito'), nombre: g('nombre'),
+    causa: g('causa'), accion: g('accion'), etr: g('etr'), calibre: g('calibre'),
+    coordenadas3: g('coordenadas3'), qr: g('qr'), materiales: g('materiales'),
+    ciudad: g('ciudad'), estado: g('estado'), cluster: g('cluster'), olt: g('olt'),
+    clientes: g('clientes'), falla_r: g('falla_r'), fecha: g('fecha-texto'),
+    hr_desp: g('hr_desp'), hr_prov: g('hr_prov'), hr_llegada: g('hr_llegada'),
+    hr_med: g('hr_med'), ubicacion_1er_2do: g('ubicacion_1er_2do'), qr_2: g('qr_2'),
+    causa_dano: g('causa_dano'), ubicacion_dano: g('ubicacion_dano'),
+    coordenadas_dano: g('coordenadas_dano'), desc_act: g('desc_act'),
+    potencia_inicial: g('potencia_inicial'), potencia_final: g('potencia_final'),
+    trabajos_realizados: g('trabajos_realizados'), hr_final: g('hr_final'),
+    atiende_nom_tec: g('atiende_nom_tec'), proveedor4: g('proveedor4'),
+    supervisor: g('supervisor'), justificacion_sla: g('justificacion_sla'),
+    m_pausa: g('m_pausa'), t_pausa: g('t_pausa'), material_utilizado: g('material_utilizado'),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
 
   try {
-    const querySnapshot = await db.collection("usuarios")
-      .orderBy("timestamp", "desc")
-      .limit(5)
-      .get();
-
-    lista.innerHTML = "";
-
-    querySnapshot.forEach((doc) => {
-      const datos = doc.data();
-      const folio = datos.folio || doc.id;
-
-      const li = document.createElement("li");
-
-      const link = document.createElement("a");
-      link.textContent = folio;
-      link.style.marginRight = "10px";
-      link.style.color = "#007bff";
-      link.style.textDecoration = "underline";
-      link.style.cursor = "pointer";
-      link.onclick = () => {
-        document.getElementById("buscarId").value = folio;
-        buscar();
-      };
-
-      const btnEliminar = document.createElement("button");
-      btnEliminar.textContent = "🗑️";
-      btnEliminar.title = "Eliminar este folio";
-      btnEliminar.style.color = "red";
-      btnEliminar.style.border = "none";
-      btnEliminar.style.background = "none";
-      btnEliminar.style.cursor = "pointer";
-      btnEliminar.onclick = async () => {
-        if (confirm(`¿Eliminar el folio "${folio}"?`)) {
-          try {
-            await db.collection("usuarios").doc(folio).delete();
-            alert(`Folio "${folio}" eliminado`);
-            cargarUltimosFolios(); // 🔄 actualizar lista
-          } catch (err) {
-            alert("Error al eliminar");
-            console.error(err);
-          }
-        }
-      };
-
-      li.appendChild(link);
-      li.appendChild(btnEliminar);
-      lista.appendChild(li);
-    });
-
-    if (querySnapshot.empty) {
-      lista.innerHTML = "<li>No hay registros</li>";
-    }
-
-  } catch (error) {
-    console.error("Error al cargar folios:", error);
-    lista.innerHTML = "<li>Error al cargar</li>";
+    await db.collection("usuarios").doc(folio).set(data);
+    const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    statusDot.style.background = 'var(--green)';
+    statusText.textContent = 'Guardado ' + hora;
+    if (!esAutoguardado) showToast('Guardado: ' + folio);
+    cargarUltimosFolios();
+  } catch(err) {
+    console.error(err);
+    statusDot.style.background = 'var(--red)';
+    statusText.textContent = 'Error';
+    if (!esAutoguardado) showToast('Error al guardar', true);
   }
 }
 
+document.getElementById('modificar-form').addEventListener('submit', e => { e.preventDefault(); guardarRegistro(false); });
 
-  // Ejecutar al cargar la página
-  window.addEventListener("DOMContentLoaded", cargarUltimosFolios);
+// ─── Buscar ────────────────────────────────────────────────
+async function buscar() {
+  const id = document.getElementById("buscarId").value.trim();
+  if (!id) { showToast('Ingresa un SD válido', true); return; }
+  document.getElementById('galeria-fotos').innerHTML = '';
 
-  //----------------------BORRAR FOLIOS------------------------------
-  function limpiarSeleccion() {
-        document.getElementById("buscarId").value = "";
+  try {
+    const doc = await db.collection("usuarios").doc(id).get();
+    if (!doc.exists) { showToast('SD no encontrado', true); return; }
+    const d = doc.data();
 
-        // Si usas clases o efectos activos, puedes limpiarlos aquí:
-        document.querySelectorAll("#lista-folios li").forEach(el => el.classList.remove("activo"));
-        document.getElementById("modificar-form").reset();
-        	document.getElementById('proveedor').value = "GTB";
-	        document.getElementById('distrito').value = "JUAREZ";
-	        document.getElementById('estado').value = "CHIHUAHUA";
-        updatePreview();
+    const fields = ['folio_','eta','proveedor','punto','coordenadas','distrito',
+      'causa','accion','etr','calibre','coordenadas3','qr','materiales',
+      'ciudad','estado','clientes','falla_r','hr_desp','hr_prov',
+      'hr_llegada','hr_med','ubicacion_1er_2do','qr_2','causa_dano','ubicacion_dano',
+      'coordenadas_dano','desc_act','potencia_inicial','potencia_final','trabajos_realizados',
+      'hr_final','atiende_nom_tec','proveedor4','supervisor','justificacion_sla',
+      'm_pausa','t_pausa','material_utilizado'];
+
+    fields.forEach(fid => {
+      const el = document.getElementById(fid);
+      if (el && el.tagName !== 'SELECT') el.value = d[fid === 'folio_' ? 'folio' : fid] || '';
+    });
+
+    if (d.fecha) {
+      document.getElementById('fecha').value = d.fecha;
+      document.getElementById('fecha-texto').value = d.fecha;
     }
-    
 
-    </script>
+    $('#nombre').val(d.nombre || '').trigger('change');
 
-    </form>
-        </div>
-
-        <!-- Área de vista previa -->
-        <div class="text-preview" id="resultado">
-            <!-- La vista previa se actualizará automáticamente -->
-
-
-        </div>
-        <div class="botones-copiar-mobile">
-            <button onclick="copiarSeccion('seccion-eta', this)">📋 INI</button>
-            <button onclick="copiarSeccion('seccion-sitio', this)">📋 LLEG</button>
-            <button onclick="copiarSeccion('seccion-fallo', this)">📋 FALLO</button>
-            <button onclick="copiarSeccion('seccion-final', this)">📋 FIN</button>
-        </div>
-    </div>
-
-    <script>
-//-----------------------------LLENADO DE MDRS
-        async function cargarArchivoAutomatico1() {
-            // Ruta del archivo .txt (en el mismo directorio del proyecto)
-            const archivoRuta1 = './mdr.txt';
-
-            // Usamos fetch para obtener el contenido del archivo
-            try {
-                const respuesta = await fetch(archivoRuta1);
-
-                // Comprobar que el archivo se cargó correctamente
-                if (!respuesta.ok) {
-                    throw new Error('No se pudo cargar el archivo.');
-                }
-
-                // Leer el contenido del archivo como texto
-                const contenido = await respuesta.text();
-
-                // Dividir el contenido por líneas
-                const lineas = contenido.split('\n');
-
-                // Obtener el select
-                //const select = document.getElementById('atendio_desp');
-
-                // Añadir las líneas como opciones
-                lineas.forEach(linea => {
-                    const opcion = linea.trim();
-                    if (opcion) {
-                        const nuevaOpcion = document.createElement('option');
-                        nuevaOpcion.value = opcion;
-                        nuevaOpcion.textContent = opcion;
-                        select.appendChild(nuevaOpcion);
-                    }
-                });
-            } catch (error) {
-               // console.error('Error al cargar el archivo:', error);
-                //alert('Hubo un problema al cargar los mdr.');
-            }
-        }
-
-        // Llamar a la función al cargar la página
-        cargarArchivoAutomatico1();
-
-
-//------------------------------------------------------------------------- LLENADO DE TECNICOS
-
-
-       async function cargarArchivoAutomatico() {
-            // Ruta del archivo .txt (en el mismo directorio del proyecto)
-            const archivoRuta = './tecnicos.txt';
-
-            // Usamos fetch para obtener el contenido del archivo
-            try {
-                const respuesta = await fetch(archivoRuta);
-
-                // Comprobar que el archivo se cargó correctamente
-                if (!respuesta.ok) {
-                    throw new Error('No se pudo cargar el archivo.');
-                }
-
-                // Leer el contenido del archivo como texto
-                const contenido = await respuesta.text();
-
-                // Dividir el contenido por líneas
-                const lineas = contenido.split('\n');
-
-                // Obtener el select
-                const select = document.getElementById('nombre');
-
-                // Añadir las líneas como opciones
-                lineas.forEach(linea => {
-                    const opcion = linea.trim();
-                    if (opcion) {
-                        const nuevaOpcion = document.createElement('option');
-                        nuevaOpcion.value = opcion;
-                        nuevaOpcion.textContent = opcion;
-                        select.appendChild(nuevaOpcion);
-                    }
-                });
-            } catch (error) {
-                console.error('Error al cargar el archivo:', error);
-               // alert('Hubo un problema al cargar los tecnicos.');
-            }
-        }
-
-        // Llamar a la función al cargar la página
-        cargarArchivoAutomatico();
-
-// LLENADO AUTOMATICO Y FUNCION DE SELECT CON BUSQUEDA CON SCRIPT2
-
-	//NOMBRE DE TECNICO
- 	$(document).ready(function() {
-            $('#nombre').select2({
-                placeholder: 'Selecciona una opción',
-                allowClear: true,
-          });
-
- 	$('#nombre').on('change', function() {
-                // Obtener el texto de la opción seleccionada
-                var nombre = $(this).val();
-
-		// Obtener el texto de la opción seleccionada
-            
-
-                // Actualizar el contenido de la vista previa
-                updatePreview();
-            });
-
-            // Llamar al evento change al cargar la página para mostrar el texto por defecto
-            $('#nombre').trigger('change');
-            
-
-            // NUEVO: Inicializa búsqueda en Cluster
-    $('#cluster').select2({
-        placeholder: 'Escribe para buscar cluster...',
-        allowClear: true
-    });
-
-    // EVENTO PARA CLUSTER: Importante usar 'select2:select' para que dispare el auto-llenado
-    $('#cluster').on('select2:select', function (e) {
-        llenarNumero(); // Esto dispara tu lógica de OLT
-    });
-        });
-
-	    
-
-
-
- // AUTO LLENADO DE OLT SEGUN CLUSTER
-
-        var numeros = {
-            // ALDAMA
-            "ALDAMA": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA 2": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA 3": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA 4": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-            "AMPLIACION ALDAMA 5": ["ALDAMA_JUA","ALDAMA_2_JUA"],
-
-            // BUENOS AIRES
-            "BUENOS AIRES": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "BUENOS AIRES_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_2_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_3_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_4_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_5_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-            "AMPLIACION BUENOS AIRES_6_A": ["BUENOS_AIRES_JUA","BUENOS_AIRES_2_JUA"],
-
-            
-            // OTROS CLUSTERS
-            "CARLOS AMAYA": ["CARLOS_AMAYA_JUA"],
-            "EL VERGEL": ["VERGEL_JUA"],
-            "LOS CIPRESES": ["CIPRESES_JUA"],
-            "MAYORCA": ["MAYORCA_JUA"],
-            "NOGALES": ["NOGALES_JUA"],
-            "OASIS": ["OASIS_JUA"],
-            "SANTO DOMINGO": ["SANTO_DOMINGO_JUA"],
-            
-            // GOMEZ MORIN
-            "GOMEZ MORIN": ["GOMEZ_MORIN_JUA"],
-            "AMPLIACION GOMEZ MORIN": ["GOMEZ_MORIN_JUA"],
-
-            // LOMAS DE MORELOS
-            "LOMAS DE MORELOS": ["LOMAS_DE_MORELOS_JUA"],
-            "AMPLIACION LOMAS DE MORELOS 2": ["LOMAS_DE_MORELOS_JUA"],
-            "AMPLIACION LOMAS DE MORELOS 3": ["LOMAS_DE_MORELOS_JUA"],
-
-            // THOMPSON
-            "THOMPSON": ["THOMPSON_JUA", "THOMPSON_2_JUA"],
-            "THOMPSON_A": ["HACIENDA_DE_LAS_TORRES_2_JUA","THOMPSON_JUA","THOMPSON_2_JUA"],
-
-            // TIERRA NUEVA (Aquí habilitamos la doble opción)
-            "TIERRA NUEVA": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "TIERRA NUEVA_A": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA 2": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA 3": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA 4": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"],
-            "AMPLIACION TIERRA NUEVA 5": ["HACIENDA_DE_LAS_TORRES_JUA", "HACIENDA_DE_LAS_TORRES_2_JUA"]
-        };
-
-        function llenarNumero() {
-            var seleccion = document.getElementById("cluster").value;
-            var oltSelect = document.getElementById("olt");
-            
-            // Limpiar opciones anteriores
-            oltSelect.innerHTML = "";
-
-            if (numeros.hasOwnProperty(seleccion)) {
-                var opciones = numeros[seleccion];
-
-                opciones.forEach(function(oltNombre) {
-                    var el = document.createElement("option");
-                    el.textContent = oltNombre;
-                    el.value = oltNombre;
-                    oltSelect.appendChild(el);
-                });
-
-                // Si solo hay una opción, seleccionarla automáticamente
-                if (opciones.length === 1) {
-                    oltSelect.value = opciones[0];
-                }
-            } else {
-                var porDefecto = document.createElement("option");
-                porDefecto.textContent = "Sin OLT asociada";
-                porDefecto.value = "";
-                oltSelect.appendChild(porDefecto);
-            }
-            
-            updatePreview();
-        }
-
-
-        // Selecciona los elementos de entrada
-        const fechaInput = document.getElementById('fecha');
-        const fechaTextoInput = document.getElementById('fecha-texto');
-
-        // Añade un evento para actualizar el valor del campo de texto
-        fechaInput.addEventListener('input', function() {
-            const fechaSeleccionada = this.value;
-            fechaTextoInput.value = fechaSeleccionada || 'No se ha seleccionado ninguna fecha.';
-            document.getElementById('hr_llegada').value = fechaSeleccionada;
-            document.getElementById('hr_desp').value = fechaSeleccionada;
-            document.getElementById('hr_prov').value = fechaSeleccionada;
-            document.getElementById('hr_med').value = fechaSeleccionada;
-            document.getElementById('hr_final').value = fechaSeleccionada;
-
-            updatePreview();
-        });
-
-
-	document.getElementById('proveedor').value = "GTB";
-	document.getElementById('distrito').value = "JUAREZ";
-	document.getElementById('estado').value = "CHIHUAHUA";
-
-	
-        function updatePreview() {
-	
-
-
-
-            // Obtener el valor del FOLIO del primer bloque
-            var folio_ = document.getElementById('folio_').value.trim();
-
-            // Sincronizar el valor de los otros campos FOLIO
-            document.getElementById('folio3_').value = folio_;
-            document.getElementById('folio4').value = folio_;
-            document.getElementById('sd').value = folio_; // Suponiendo que SD debe ser igual al folio
-
-
-      	// Obtener el valor del PROVEEDOR del primer bloque
-            var proveedor= document.getElementById('proveedor').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('proveedor2').value = proveedor;
-            document.getElementById('proveedor4').value = proveedor;
-
-
-	// Obtener el valor del DISTRITO del SEGUNDO bloque
-            var distrito=document.getElementById('distrito').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('ciudad').value = distrito;
-
-	// Obtener el valor del NOMBRE del SEGUNDO bloque
-            var nombre=document.getElementById('nombre').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('atiende_nom_tec').value = nombre;
-
-
-	// Obtener el valor de CAUSA DE DAÑO del TERCER bloque
-            var causa=document.getElementById('causa').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('causa_dano').value = causa;
-
-	// Obtener el valor de CORDENADAS DAÑO del TERCER bloque
-            var coordenadas3=document.getElementById('coordenadas3').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('coordenadas_dano').value = coordenadas3;
-
-
-	// Obtener el valor de NUMERO QR del TERCER bloque
-            var qr=document.getElementById('qr').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('qr_2').value = qr;
-
-
-    // Obtener el valor de MATERIALES del TERCER bloque
-            var materiales=document.getElementById('materiales').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('material_utilizado').value = materiales;
-
-    // Obtener el valor de COORDENADAS FALLO del TERCER bloque
-            var coordenadas3 = document.getElementById('coordenadas3').value.trim();
-	// Sincronizar el valor de los otros campo
-            document.getElementById('coordenadas_dano').value = coordenadas3;
-
-
-
-
-            // Obtener los valores de los campos del primer bloque
-            var eta = document.getElementById('eta').value.trim();
-            var proveedor = document.getElementById('proveedor').value.trim();
-
-            // Obtener los valores de los campos del segundo bloque
-            var punto = document.getElementById('punto').value;
-            var coordenadas = document.getElementById('coordenadas').value.trim();
-            var proveedor2 = document.getElementById('proveedor2').value.trim();
-            var distrito = document.getElementById('distrito').value.trim();
-	        var nombre = document.getElementById('nombre').value.trim();
-
-            // Obtener los valores de los campos del tercer bloque
-            var causa = document.getElementById('causa').value.trim();
-            var accion = document.getElementById('accion').value.trim();
-            var calibre = document.getElementById('calibre').value.trim();
-            var coordenadas3 = document.getElementById('coordenadas3').value.trim();
-            var etr = document.getElementById('etr').value.trim();
-            var qr = document.getElementById('qr').value.trim();
-            var materiales = document.getElementById('materiales').value.trim();
-
-            // Obtener los valores de los campos del cuarto bloque
-            var ciudad = document.getElementById('ciudad').value.trim();
-            var estado = document.getElementById('estado').value.trim();
-            var cluster = document.getElementById('cluster').value.trim();
-            var olt = document.getElementById('olt').value.trim();
-            var clientes = document.getElementById('clientes').value.trim();
-            var falla_r = document.getElementById('falla_r').value.trim();
-            var hr_desp = document.getElementById('hr_desp').value.trim();
-            var hr_prov = document.getElementById('hr_prov').value.trim();
-            var hr_llegada = document.getElementById('hr_llegada').value.trim();
-            var hr_med = document.getElementById('hr_med').value.trim();
-            var ubicacion_1er_2do = document.getElementById('ubicacion_1er_2do').value.trim();
-            var qr_2 = document.getElementById('qr_2').value.trim();
-            var ubicacion_dano = document.getElementById('ubicacion_dano').value.trim();
-            var coordenadas_dano = document.getElementById('coordenadas_dano').value.trim();
-            var desc_act = document.getElementById('desc_act').value.trim();
-            var potencia_inicial= document.getElementById('potencia_inicial').value.trim();
-            var potencia_final = document.getElementById('potencia_final').value.trim();
-            var trabajos_realizados = document.getElementById('trabajos_realizados').value.trim();
-            var hr_final = document.getElementById('hr_final').value.trim();
-            var causa_dano = document.getElementById('causa_dano').value.trim();
-            var atiende_nom_tec = document.getElementById('atiende_nom_tec').value.trim();
-            var proveedor4 = document.getElementById('proveedor4').value.trim();
-            var supervisor = document.getElementById('supervisor').value.trim();
-            var justificacion_sla = document.getElementById('justificacion_sla').value.trim();
-            var m_pausa = document.getElementById('m_pausa').value.trim();
-            var t_pausa = document.getElementById('t_pausa').value.trim();
-            var material_utilizado = document.getElementById('material_utilizado').value.trim();
-
-            // Actualizar el contenido del div de vista previa
-            var resultado = document.getElementById('resultado');
-
-            resultado.innerHTML = `
-                <b>SCRIPT ETA:</b><div id="seccion-eta">FOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*</div>
-
-                <b>SCRIPT SITIO:</b><div id="seccion-sitio" style="white-space: pre-wrap;">SD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*</div>
-
-                <b>SCRIPT FALLO:</b><div id="seccion-fallo" style="white-space: pre-wrap;">Folio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*</div>
-
-                <b>SCRIPT FINAL:</b><div id="seccion-final" style="white-space: pre-wrap;">FOLIO: *${folio_}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${falla_r}*\nFECHA_Y_HR_DE_ASG_DESP: *${hr_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${hr_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICION: *${hr_med}*\nUBICACIÓN_DE_1N_2N: *${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${desc_act}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS: *${trabajos_realizados}*\nFECHA_HR_FINAL_DE_REPARACION: *${hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA: *${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*</div>`;
-
-           /* resultado.innerHTML = `<b>SCRIPT ETA:</b>\nFOLIO: *${folio_}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*\n
-            \n<b>SCRIPT SITIO:</b>\nSD: *${folio_}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*\n
-            \n<b>SCRIPT FALLO:</b>\nFolio: *${folio_}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*\n
-           
-            \n<b>SCRIPT FINAL:</b>\nFOLIO: *${folio_}*\nOT: *${ot}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nENLACES AFECTADOS: *${enlaces}*\nFALLA_REPORTADA: *${falla_r}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nUBICACIÓN_DE_1N_2N*${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nDIRECCION_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS DEL DAÑO: *${coordenadas_dano}*\nTRABAJOS_REALIZADOS(CONCEPTOS): *${trabajos_realizados}*\nPOTENCIA_FINAL: *${potencia_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA*${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*`;
-        */}
-
-        // Agregar eventos para actualizar la vista previa
-        document.getElementById('folio_').addEventListener('input', updatePreview);
-        document.getElementById('eta').addEventListener('input', updatePreview);
-        document.getElementById('proveedor').addEventListener('input', updatePreview);
-        document.getElementById('punto').addEventListener('input', updatePreview);
-        document.getElementById('coordenadas').addEventListener('input', updatePreview);
-        document.getElementById('proveedor2').addEventListener('input', updatePreview);
-        document.getElementById('distrito').addEventListener('input', updatePreview);
-        document.getElementById('nombre').addEventListener('input', updatePreview);
-        document.getElementById('causa').addEventListener('input', updatePreview);
-        document.getElementById('accion').addEventListener('input', updatePreview);
-        document.getElementById('calibre').addEventListener('input', updatePreview);
-        document.getElementById('coordenadas3').addEventListener('input', updatePreview);
-        document.getElementById('qr').addEventListener('input', updatePreview);
-        document.getElementById('etr').addEventListener('input', updatePreview);
-        document.getElementById('ciudad').addEventListener('input', updatePreview);
-        document.getElementById('estado').addEventListener('input', updatePreview);
-        document.getElementById('cluster').addEventListener('input', updatePreview);
-        document.getElementById('olt').addEventListener('input', updatePreview);
-        document.getElementById('clientes').addEventListener('input', updatePreview);
-        document.getElementById('falla_r').addEventListener('input', updatePreview);
-        document.getElementById('hr_llegada').addEventListener('input', updatePreview);
-        document.getElementById('ubicacion_1er_2do').addEventListener('input', updatePreview);
-        document.getElementById('ubicacion_dano').addEventListener('input', updatePreview);
-        document.getElementById('coordenadas_dano').addEventListener('input', updatePreview);
-        document.getElementById('causa_dano').addEventListener('input', updatePreview);
-        document.getElementById('potencia_final').addEventListener('input', updatePreview);
-        document.getElementById('trabajos_realizados').addEventListener('input', updatePreview);
-        document.getElementById('qr_2').addEventListener('input', updatePreview);
-        document.getElementById('atiende_nom_tec').addEventListener('input', updatePreview);
-        document.getElementById('proveedor4').addEventListener('input', updatePreview);
-        document.getElementById('supervisor').addEventListener('input', updatePreview);
-        document.getElementById('material_utilizado').addEventListener('input', updatePreview);
-        document.getElementById('justificacion_sla').addEventListener('input', updatePreview);
-        document.getElementById('materiales').addEventListener('input', updatePreview);
-        document.getElementById('m_pausa').addEventListener('input', updatePreview);
-        document.getElementById('t_pausa').addEventListener('input', updatePreview);
-        document.getElementById('hr_desp').addEventListener('input', updatePreview);
-        document.getElementById('hr_prov').addEventListener('input', updatePreview);
-        document.getElementById('hr_med').addEventListener('input', updatePreview);
-        document.getElementById('desc_act').addEventListener('input', updatePreview);
-        document.getElementById('potencia_inicial').addEventListener('input', updatePreview);
-        document.getElementById('hr_final').addEventListener('input', updatePreview);
-
-        // Llamar a updatePreview al cargar la página para inicializar la vista previa
+    if (d.cluster) {
+      $('#cluster').val(d.cluster).trigger('change');
+      llenarOLT();
+      setTimeout(() => {
+        if (d.olt) document.getElementById('olt').value = d.olt;
         updatePreview();
+      }, 150);
+    } else {
+      updatePreview();
+    }
 
-        function copiarSeccion(id, btn) {
-            var elemento = document.getElementById(id);
-            if (!elemento) return;
+    if (d.fotos && d.fotos.length > 0) d.fotos.forEach(url => mostrarFotoEnGaleria(url));
 
-            var tempTextarea = document.createElement("textarea");
-            tempTextarea.value = elemento.innerText;
-            document.body.appendChild(tempTextarea);
-            tempTextarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempTextarea);
+    // Cerrar acordeón en móvil tras buscar
+    document.getElementById('buscador-details').removeAttribute('open');
+    showToast('Cargado: ' + id);
+  } catch(err) {
+    console.error(err);
+    showToast('Error al buscar', true);
+  }
+}
 
-            // Feedback visual inmediato
-            var textoOriginal = btn.innerHTML;
-            btn.innerHTML = "✅ ¡COPIADO!";
-            btn.style.filter = "brightness(1.2)"; // Se ilumina un poco
+// ─── Limpiar ───────────────────────────────────────────────
+function limpiarSeleccion() {
+  document.getElementById('buscarId').value = '';
+  document.getElementById('modificar-form').reset();
+  document.getElementById('galeria-fotos').innerHTML = '';
+  document.getElementById('fecha-texto').value = '';
+  $('#nombre').val(null).trigger('change');
+  $('#cluster').val(null).trigger('change');
+  document.getElementById('olt').innerHTML = '<option value="">Selecciona Cluster primero</option>';
+  document.getElementById('proveedor').value = 'GTB';
+  document.getElementById('distrito').value  = 'JUAREZ';
+  document.getElementById('estado').value    = 'CHIHUAHUA';
+  updatePreview();
+}
 
-            setTimeout(function() {
-                btn.innerHTML = textoOriginal;
-                btn.style.filter = "none";
-            }, 1200);
-        }
-        function openTab(evt, tabId) {
-            // 1. Ocultar todos los bloques
-            var blocks = document.getElementsByClassName("block");
-            for (var i = 0; i < blocks.length; i++) {
-                blocks[i].classList.remove("active");
-            }
+// ─── Últimos folios ────────────────────────────────────────
+async function cargarUltimosFolios() {
+  const lista = document.getElementById("lista-folios");
+  lista.innerHTML = '<span style="color:var(--text3);font-size:11px;">Cargando...</span>';
+  try {
+    const snap = await db.collection("usuarios").orderBy("timestamp","desc").limit(10).get();
+    lista.innerHTML = '';
+    if (snap.empty) { lista.innerHTML = '<span style="color:var(--text3);font-size:11px;">Sin registros</span>'; return; }
+    snap.forEach(doc => {
+      const folio = doc.data().folio || doc.id;
+      const chip = document.createElement('div');
+      chip.className = 'folio-chip';
+      chip.innerHTML = `<span class="folio-chip-id">${folio}</span><span class="folio-chip-del">✕</span>`;
+      chip.querySelector('.folio-chip-id').onclick = () => {
+        document.getElementById('buscarId').value = folio; buscar();
+      };
+      chip.querySelector('.folio-chip-del').onclick = async e => {
+        e.stopPropagation();
+        if (!confirm(`¿Eliminar "${folio}"?`)) return;
+        try { await db.collection("usuarios").doc(folio).delete(); showToast('Eliminado: ' + folio); cargarUltimosFolios(); }
+        catch(err) { showToast('Error al eliminar', true); }
+      };
+      lista.appendChild(chip);
+    });
+  } catch(err) { lista.innerHTML = '<span style="color:var(--text3);font-size:11px;">Error al cargar</span>'; }
+}
 
-            // 2. Quitar la clase active de todos los botones
-            var buttons = document.getElementsByClassName("tab-button");
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove("active");
-            }
+// ─── Autoguardado al salir de clientes ────────────────────
+document.getElementById('clientes').addEventListener('change', function() {
+  if (this.value.trim()) guardarRegistro(true);
+});
 
-            // 3. Mostrar el bloque actual y marcar botón activo
-            document.getElementById(tabId).classList.add("active");
-            evt.currentTarget.classList.add("active");
+// ─── Eventos input ─────────────────────────────────────────
+document.querySelectorAll('#modificar-form input, #modificar-form select').forEach(el => {
+  el.addEventListener('input', updatePreview);
+});
 
-            // 4. OPCIONAL: En lugar de ir hasta arriba (0,0), 
-            // hace que la pantalla se ajuste suavemente al inicio del formulario
-            // si el usuario ya hizo mucho scroll hacia abajo.
-            const formPos = document.getElementById("modificar-form").getBoundingClientRect().top + window.pageYOffset;
-            if (window.pageYOffset > formPos) {
-                window.scrollTo({ top: formPos - 10, behavior: 'smooth' });
-            }
-        }
-    </script>
+// ─── Fotos ─────────────────────────────────────────────────
+const dropZone  = document.getElementById('drop-zone');
+const inputFotos = document.getElementById('input-fotos');
 
+dropZone.addEventListener('click', () => inputFotos.click());
+['dragenter','dragover','dragleave','drop'].forEach(ev =>
+  dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); })
+);
+['dragenter','dragover'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.add('dragover')));
+['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.remove('dragover')));
+dropZone.addEventListener('drop', e => procesarYSubirArchivos(e.dataTransfer.files));
+inputFotos.addEventListener('change', function(e) { procesarYSubirArchivos(e.target.files); this.value = ''; });
+
+async function procesarYSubirArchivos(archivos) {
+  const folio = g('folio_');
+  if (!folio) { showToast('Ingresa un Folio antes de subir fotos', true); return; }
+  const lista = Array.from(archivos || []);
+  if (!lista.length) return;
+
+  const statusText = document.getElementById('status-text');
+  const statusDot  = document.getElementById('status-dot');
+  statusDot.style.background = 'var(--amber)';
+  statusText.textContent = `Subiendo ${lista.length} foto(s)...`;
+
+  try {
+    const urlsNuevas = [];
+    for (let i = 0; i < lista.length; i++) {
+      const archivo = lista[i];
+      if (!archivo.type.startsWith('image/')) continue;
+      const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${i}_${archivo.name}`);
+      await ref.put(archivo);
+      const url = await ref.getDownloadURL();
+      urlsNuevas.push(url);
+      mostrarFotoEnGaleria(url);
+    }
+    if (urlsNuevas.length > 0) {
+      await db.collection("usuarios").doc(folio).set(
+        { fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) },
+        { merge: true }
+      );
+      statusDot.style.background = 'var(--green)';
+      statusText.textContent = 'Evidencia guardada';
+      showToast('Fotos subidas correctamente');
+    }
+  } catch(err) {
+    console.error(err);
+    statusDot.style.background = 'var(--red)';
+    statusText.textContent = 'Error al subir';
+    showToast('Error al subir imágenes', true);
+  }
+}
+
+function mostrarFotoEnGaleria(url) {
+  const galeria = document.getElementById('galeria-fotos');
+  const img = document.createElement('img');
+  img.src = url;
+  img.onclick = () => window.open(url, '_blank');
+  galeria.appendChild(img);
+}
+
+// ─── Init ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  cargarUltimosFolios();
+  updatePreview();
+});
+</script>
 </body>
 </html>
