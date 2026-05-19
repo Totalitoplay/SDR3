@@ -1259,12 +1259,20 @@ async function buscar() {
 function limpiarSeleccion() {
   document.getElementById('buscarId').value = '';
   document.getElementById('modificar-form').reset();
+  
+  // Limpiar selects de Select2 correctamente
   $('#nombre').val(null).trigger('change');
+  $('#olt').val(null).trigger('change'); 
+  
+  // Reiniciar el cluster a su estado por defecto
+  document.getElementById('cluster').innerHTML = '<option value="">Selecciona OLT primero</option>';
   $('#cluster').val(null).trigger('change');
-  document.getElementById('olt').innerHTML = '<option value="">Selecciona cluster primero</option>';
+
+  // Valores por defecto
   document.getElementById('proveedor').value = 'GTB';
   document.getElementById('distrito').value = 'JUAREZ';
   document.getElementById('estado').value = 'CHIHUAHUA';
+  
   updatePreview();
 }
 
