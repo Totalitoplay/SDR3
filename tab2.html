@@ -1337,6 +1337,14 @@ async function procesarYSubirArchivos(archivos) {
     statusText.textContent = 'Error al subir';
     showToast('Hubo un error al subir las imágenes', true);
   }
+  console.log('Folio:', folio);
+console.log('Archivo:', archivo.name, archivo.type, archivo.size);
+
+// Después del put:
+console.log('Subido OK, URL:', url);
+
+// Después del set:
+console.log('Guardado en Firestore OK');
 }
 
 function mostrarFotoEnGaleria(url) {
