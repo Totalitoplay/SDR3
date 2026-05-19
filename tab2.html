@@ -1320,7 +1320,7 @@ async function procesarYSubirArchivos(archivos) {
     for (let i = 0; i < lista.length; i++) {
       const archivo = lista[i];                          // FIX: variable declarada aquí
       if (!archivo.type.startsWith('image/')) continue;
-      const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${archivo.name}`);
+      const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${i}_${archivo.name}`);
       await ref.put(archivo);
       const url = await ref.getDownloadURL();
       urlsNuevas.push(url);
