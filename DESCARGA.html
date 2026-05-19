@@ -348,7 +348,7 @@ function descargarExcel() {
   datosAcumulados.forEach(d => {
     
     // Si el folio tiene fotos, las unimos separadas por espacios
-    const linksFotos = d.fotos && d.fotos.length > 0 ? d.fotos.join('\n') : 'Sin fotos';
+    const linksFotos = d.fotos && d.fotos.length > 0 ? d.fotos.join('   ') : 'Sin fotos';
 
     const fila = [
       d.folio, 
