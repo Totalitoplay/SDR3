@@ -1,133 +1,141 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SCRIPTS R3 — Full Screen</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-color: #111827; /* Fondo oscuro profesional */
-            --card-bg: #ffffff;
-            --accent-color: #2563eb;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
+  <meta charset="UTF-8">
+  <!-- FIX: viewport correcto para móvil, sin maximum-scale que bloquea zoom -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCRIPTS R3</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@700&display=swap" rel="stylesheet">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <style>
+    :root {
+      --accent: #2563eb;
+      --bg-tabs: #f8fafc;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --tab-h: 52px; /* altura fija de la barra de tabs */
+    }
 
-        /* Eliminamos el scroll del body para que el iframe sea el que mande */
-        body, html {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .tabs-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh; /* Ocupa el 100% del alto de la ventana */
-            width: 100vw;  /* Ocupa el 100% del ancho de la ventana */
-            background: var(--card-bg);
-        }
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: 'IBM Plex Mono', monospace;
+      background: #111827;
+    }
 
-        /* Barra de navegación superior compacta */
-        .button-container {
-            display: flex;
-            gap: 4px;
-            padding: 8px 12px;
-            background: #f8fafc;
-            border-bottom: 1px solid var(--border-color);
-            flex-shrink: 0; /* Evita que la barra se encoja */
-        }
+    input[type="radio"] { display: none; }
 
-        input[type="radio"] {
-            display: none;
-        }
+    .tabs-container {
+      display: flex;
+      flex-direction: column;
+      /* FIX: usar dvh (dynamic viewport height) en móvil para
+         descontar la barra del navegador correctamente.
+         Fallback a 100vh para browsers viejos. */
+      height: 100vh;
+      height: 100dvh;
+      width: 100vw;
+      background: #fff;
+    }
 
-        label {
-            padding: 8px 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
+    /* ── BARRA DE TABS ── */
+    .button-container {
+      display: flex;
+      gap: 2px;
+      padding: 6px 8px;
+      background: var(--bg-tabs);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      height: var(--tab-h);
+      overflow-x: auto;          /* scroll horizontal si no caben */
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;     /* ocultar scrollbar en Firefox */
+    }
+    .button-container::-webkit-scrollbar { display: none; }
 
-        label:hover {
-            background: #edf2f7;
-            color: var(--text-main);
-        }
+    label {
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.18s;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;       /* evita que el texto se parta */
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent; /* quita flash azul en iOS */
+    }
+    label:hover { background: #edf2f7; color: var(--text); }
 
-        /* Estilo activo tipo pestaña de navegador */
-        #tab1:checked ~ .button-container label[for="tab1"],
-        #tab2:checked ~ .button-container label[for="tab2"],
-        #tab3:checked ~ .button-container label[for="tab3"] {
-            background: var(--accent-color);
-            color: #ffffff;
-            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
-        }
+    /* Tab activa */
+    #tab1:checked ~ .button-container label[for="tab1"],
+    #tab2:checked ~ .button-container label[for="tab2"],
+    #tab3:checked ~ .button-container label[for="tab3"],
+    #tab4:checked ~ .button-container label[for="tab4"] {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(37,99,235,0.25);
+    }
 
-        /* Área de contenido que ocupa el resto de la pantalla */
-        .tab-content {
-            flex-grow: 1;
-            position: relative;
-            width: 100%;
-            background: #fff;
-        }
+    /* ── ÁREA DE CONTENIDO ── */
+    .tab-content {
+      flex: 1;           /* ocupa todo el espacio restante */
+      position: relative;
+      /* FIX: altura calculada descontando la barra de tabs */
+      height: calc(100vh - var(--tab-h));
+      height: calc(100dvh - var(--tab-h));
+      overflow: hidden;
+    }
 
-        iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: none;
-        }
+    iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+      /* FIX: permite scroll interno del iframe en iOS Safari */
+      -webkit-overflow-scrolling: touch;
+    }
 
-        /* Mostrar iframe activo */
-        #tab1:checked ~ .tab-content #content1,
-        #tab2:checked ~ .tab-content #content2,
-        #tab3:checked ~ .tab-content #content3, 
-        #tab4:checked ~ .tab-content #content4 {
-            display: block;
-        }
-    </style>
+    /* Mostrar iframe activo */
+    #tab1:checked ~ .tab-content #content1,
+    #tab2:checked ~ .tab-content #content2,
+    #tab3:checked ~ .tab-content #content3,
+    #tab4:checked ~ .tab-content #content4 { display: block; }
+  </style>
 </head>
 <body>
 
-        <div class="tabs-container">
-            <input type="radio" id="tab1" name="tab" checked>
-            <input type="radio" id="tab2" name="tab">
-            <input type="radio" id="tab3" name="tab">
-            <input type="radio" id="tab4" name="tab">
+<div class="tabs-container">
+  <input type="radio" id="tab1" name="tab" checked>
+  <input type="radio" id="tab2" name="tab">
+  <input type="radio" id="tab3" name="tab">
+  <input type="radio" id="tab4" name="tab">
 
-        <div class="button-container">
-            <label for="tab1">PRIMER FOLIO</label>
-            <label for="tab2">SEGUNDO FOLIO</label>
-            <label for="tab3">Celulares</label>
-            <label for="tab4">DESCARGA</label>
-        </div>
+  <div class="button-container">
+    <label for="tab1">Primer Folio</label>
+    <label for="tab2">Segundo Folio</label>
+    <label for="tab3">Celulares</label>
+    <label for="tab4">Descarga</label>
+  </div>
 
-        <div class="tab-content">
-            <iframe id="content1" src="tab1.html"></iframe>
-            <iframe id="content2" src="tab2.html"></iframe>
-            <iframe id="content3" src="tab3.html"></iframe>
-            <iframe id="content4" src="DESCARGA.html"></iframe>
-        </div>
-    </div>
+  <div class="tab-content">
+    <iframe id="content1" src="tab1.html"></iframe>
+    <iframe id="content2" src="tab2.html"></iframe>
+    <iframe id="content3" src="tab3.html"></iframe>
+    <iframe id="content4" src="DESCARGA.html"></iframe>
+  </div>
+</div>
 
 </body>
 </html>
