@@ -45,7 +45,6 @@
     flex-direction: column;
   }
 
-  /* TOPBAR */
   .topbar {
     display: flex;
     align-items: center;
@@ -75,16 +74,14 @@
   }
   .status-text { color: var(--text3); font-size: 11px; }
 
-  /* MAIN LAYOUT */
   .main {
     display: flex;
-    justify-content: center; /* Centra el bloque de trabajo */
+    justify-content: center;
     flex: 1;
     overflow: hidden;
     background: var(--bg);
   }
 
-  /* SIDEBAR */
   .sidebar {
     background: var(--bg2);
     border-right: 1px solid var(--border);
@@ -176,11 +173,10 @@
   }
   .folio-del:hover { color: var(--red); }
 
-  /* FORM AREA */
   .form-area {
-    width: 550px; 
-    min-width: 550px; /* Bloquea el ancho mínimo */
-    max-width: 550px; /* Bloquea el ancho máximo */
+    width: 550px;
+    min-width: 550px;
+    max-width: 550px;
     background: var(--bg2);
     border-right: 1px solid var(--border);
     border-left: 1px solid var(--border);
@@ -226,18 +222,11 @@
   .dot-fallo { background: var(--red); }
   .dot-final { background: var(--green); }
 
-  .tab-panel { 
-    display: none; 
-    padding: 20px; 
-    overflow-y: auto; 
-    flex: 1; 
-  }
-  #modificar-form {
-    max-width: 800px; /* Lo subimos de 550px a 800px para que sean más largos */
-    width: 100%;
-    margin: 0 auto; 
-    display: flex;
-    flex-direction: column;
+  .tab-panel {
+    display: none;
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
   }
   .tab-panel.active { display: block; }
 
@@ -253,27 +242,13 @@
     border-bottom: 1px solid var(--border);
   }
 
- .field-grid { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; 
-  }
-  .field-grid.cols3, 
-  .field-grid.col1 { 
+  .field-grid {
     display: flex;
     flex-direction: column;
-  }
-  .field-grid.col1 { grid-template-columns: 1fr; }
-  .field-span2 { 
-    grid-column: auto; 
+    gap: 10px;
   }
 
-  .field {
-    margin-bottom: 8px;
-  }
-  .field input, .field select {
-    padding: 6px 10px;
-  }
+  .field { margin-bottom: 8px; }
   .field:last-child { margin-bottom: 0; }
 
   .field label {
@@ -302,7 +277,7 @@
     border: 1px solid var(--border2);
     border-radius: var(--radius-sm);
     color: var(--text);
-    padding: 14px 16px; /* Reducimos ligeramente el padding vertical */
+    padding: 14px 16px;
     font-family: var(--font-mono);
     font-size: 16px;
     outline: none;
@@ -317,9 +292,7 @@
     cursor: not-allowed;
     background: var(--bg3);
   }
-  .field select option { 
-    background: var(--bg2); 
-  }
+  .field select option { background: var(--bg2); }
 
   .field-note {
     font-size: 10px;
@@ -335,50 +308,40 @@
     margin: 12px 0;
   }
 
-  /* SELECT2 dark override */
-  .select2-container {
-    width: 100% !important;
-  }
+  /* SELECT2 */
+  .select2-container { width: 100% !important; }
   .select2-container--default .select2-selection--single {
     width: 100% !important;
-    height: 46px !important; /* Ajusta este valor al alto que desees */
+    height: 46px !important;
     display: flex;
     align-items: center;
     border: 1px solid var(--border2);
     border-radius: var(--radius-sm);
   }
   .select2-container--default .select2-selection--single .select2-selection__rendered {
-      line-height: 46px !important; /* Igual al alto del contenedor */
-      padding-left: 14px !important; /* Espacio normal a la izquierda */
-      padding-right: 30px !important; /* Espacio para la flecha */
-      font-size: 14px !important;
-      color: var(--text);
-      display: block; /* Para que el alineado funcione mejor */
+    line-height: 46px !important;
+    padding-left: 14px !important;
+    padding-right: 30px !important;
+    font-size: 14px !important;
+    color: var(--text);
+    display: block;
   }
   .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 46px !important;
-    align-items: center;
     top: 0;
     right: 8px;
   }
-  .select2-dropdown {
-    align-items: center;
-    padding: 8px !important;
-    font-size: 13px;
-  }
+  .select2-dropdown { padding: 8px !important; font-size: 13px; }
   .select2-container--default .select2-results__option {
-    align-items: center;
-     color: var(--text2); 
-     font-size: 13px !important;
+    color: var(--text2);
+    font-size: 13px !important;
     padding: 10px 14px !important;
-    }
-  .select2-container--default .select2-results__option--highlighted { 
-    align-items: center;
-    background: var(--accent-dim); 
+  }
+  .select2-container--default .select2-results__option--highlighted {
+    background: var(--accent-dim);
     color: var(--accent);
-   }
+  }
   .select2-search--dropdown .select2-search__field {
-    align-items: center;
     background: var(--bg3);
     border: 1px solid var(--border2);
     color: var(--text);
@@ -389,8 +352,8 @@
   /* PREVIEW */
   .preview-area {
     width: 650px;
-    min-width: 650px; /* Evita que se encoja al cambiar de pestaña */
-    max-width: 650px; 
+    min-width: 650px;
+    max-width: 650px;
     background: var(--bg2);
     display: flex;
     flex-direction: column;
@@ -423,12 +386,12 @@
 
   .preview-scripts {
     padding: 16px;
-    overflow-y: auto; /* Activa el scroll vertical */
+    overflow-y: auto;
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: calc(100vh - 60px); /* Ajuste dinámico según el alto de la pantalla */
+    max-height: calc(100vh - 60px);
   }
 
   .script-card {
@@ -436,7 +399,7 @@
     border-radius: var(--radius);
     overflow: hidden;
     transition: border-color 0.15s;
-    flex-shrink: 0; /* IMPORTANTE: evita que las tarjetas se achiquen */
+    flex-shrink: 0;
     background: #ffffff;
   }
   .script-card:hover { border-color: var(--border2); }
@@ -483,56 +446,45 @@
     padding: 12px 16px;
     font-family: var(--font-mono);
     font-size: 11px;
-    line-height: 1.6; /* Un interlineado más natural */
+    line-height: 1.6;
     color: var(--text2);
-    word-break: break-word; /* Evita que el texto se salga de la tarjeta horizontalmente */
-    white-space: pre-wrap;  /* Respeta los saltos de línea del script */
+    word-break: break-word;
+    white-space: pre-wrap;
   }
   .sf { color: var(--text3); }
   .sv { color: var(--text); font-weight: 500; }
   .sv-empty { color: var(--text3); font-style: italic; }
 
-  /* Toast */
   .toast {
     position: fixed;
-    top: -100px; /* Inicia fuera de la pantalla (arriba) */
-    left: 50%; /* Se posiciona al centro horizontal */
-    transform: translateX(-50%); /* Ajuste exacto para centrado perfecto */
-    
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
     background: #ffffff;
     color: #1e293b;
     padding: 16px 32px;
-    border-radius: 50px; /* Forma de píldora más elegante */
-    font-family: 'Inter', sans-serif;
+    border-radius: 50px;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 15px;
     font-weight: 600;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
     gap: 12px;
-    border-bottom: 4px solid #059669; /* Borde abajo para el efecto de caída */
-    
+    border-bottom: 4px solid #059669;
     opacity: 0;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote suave */
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 10000;
     pointer-events: none;
     min-width: 300px;
     justify-content: center;
   }
-  
-  /* Estado cuando se muestra */
-  .toast.show {
-    top: 30px; /* Baja hasta 30px de la parte superior */
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  /* Scrollbar */
+  .toast.show { top: 30px; opacity: 1; transform: translateX(-50%) translateY(0); }
+
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-  /* ZONA DE DROP PARA FOTOS */
   .drop-zone {
     border: 2px dashed var(--border2);
     border-radius: var(--radius-sm);
@@ -546,20 +498,12 @@
     font-size: 12px;
     margin-top: 4px;
   }
-  .drop-zone:hover {
-    background: var(--bg3);
-    border-color: var(--text3);
-  }
-  .drop-zone.dragover {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+  .drop-zone:hover { background: var(--bg3); border-color: var(--text3); }
+  .drop-zone.dragover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">Scripts<span>FO</span></div>
@@ -583,14 +527,12 @@
       <button class="btn btn-accent" onclick="buscar()" style="margin-bottom:6px;">Buscar</button>
       <button class="btn btn-ghost" onclick="limpiarSeleccion()">Limpiar todo</button>
     </div>
-
     <div>
       <p class="sidebar-section-label">Últimos registros</p>
       <div class="folios-list" id="lista-folios">
         <div style="color:var(--text3);font-size:11px;">Cargando...</div>
       </div>
     </div>
-
     <button class="btn btn-save" type="submit" form="modificar-form">Guardar registro</button>
   </div>
 
@@ -608,9 +550,7 @@
       </button>
       <button class="tab-btn" onclick="switchTab('final',this)">
         <span class="tab-dot dot-final"></span>Final
-        
       </button>
-      
     </div>
 
     <form id="modificar-form" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
@@ -627,7 +567,7 @@
             <label>ETA</label>
             <input type="text" id="eta" name="eta" placeholder="Hora estimada de llegada" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Proveedor <span class="sync-tag">auto-sync</span></label>
             <input type="text" id="proveedor" name="proveedor" value="GTB" onblur="this.value=this.value.trim()">
           </div>
@@ -649,11 +589,11 @@
             <label>Proveedor <span class="sync-tag">auto-sync</span></label>
             <input type="text" id="proveedor2" name="proveedor2" readonly>
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Sitio / Punto de medición</label>
             <input type="text" id="punto" name="punto" placeholder="Descripción del punto" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Coordenadas</label>
             <input type="text" id="coordenadas" name="coordenadas" placeholder="Lat, Long" onblur="this.value=this.value.trim()">
           </div>
@@ -680,11 +620,11 @@
             <label>ETR</label>
             <input type="text" id="etr" name="etr" placeholder="Tiempo estimado de restauración" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Causa del daño <span class="sync-tag">auto-sync → final</span></label>
             <input type="text" id="causa" name="causa" placeholder="Descripción de la causa" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Acción correctiva</label>
             <input type="text" id="accion" name="accion" placeholder="Acción tomada" onblur="this.value=this.value.trim()">
           </div>
@@ -696,15 +636,14 @@
             <label>Número QR <span class="sync-tag">auto-sync → final</span></label>
             <input type="text" id="qr" name="qr" placeholder="QR del empalme" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Coordenadas del daño <span class="sync-tag">auto-sync → final</span></label>
             <input type="text" id="coordenadas3" name="coordenadas3" placeholder="Lat, Long" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Materiales a utilizar <span class="sync-tag">auto-sync → final</span></label>
             <input type="text" id="materiales" name="materiales" placeholder="Lista de materiales" onblur="this.value=this.value.trim()">
           </div>
-          
         </div>
       </div>
 
@@ -723,7 +662,7 @@
           <div class="field">
             <label>Estado</label>
             <input type="text" id="estado" name="estado" value="CHIHUAHUA" onblur="this.value=this.value.trim()">
-          </div>   
+          </div>
           <div class="field">
             <label>Selecciona fecha del corte</label>
             <input type="date" id="fecha" name="fecha">
@@ -761,7 +700,7 @@
             <label>Clientes afectados</label>
             <input type="text" id="clientes" name="clientes" placeholder="Número de clientes" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Falla reportada</label>
             <input type="text" id="falla_r" name="falla_r" placeholder="Descripción de la falla" onblur="this.value=this.value.trim()">
           </div>
@@ -781,7 +720,7 @@
             <label>HR 1ª medición</label>
             <input type="text" id="hr_med" name="hr_med" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Ubicación 1N / 2N</label>
             <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do" onblur="this.value=this.value.trim()">
           </div>
@@ -793,15 +732,15 @@
             <label>Causa del daño <span class="sync-tag">auto-sync</span></label>
             <input type="text" id="causa_dano" name="causa_dano" readonly>
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Ubicación del daño</label>
             <input type="text" id="ubicacion_dano" name="ubicacion_dano" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Coordenadas del daño <span class="sync-tag">auto-sync</span></label>
             <input type="text" id="coordenadas_dano" name="coordenadas_dano" readonly>
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Descripción de actividades</label>
             <input type="text" id="desc_act" name="desc_act" onblur="this.value=this.value.trim()">
           </div>
@@ -813,7 +752,7 @@
             <label>Potencia final</label>
             <input type="text" id="potencia_final" name="potencia_final" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Trabajos realizados</label>
             <input type="text" id="trabajos_realizados" name="trabajos_realizados" onblur="this.value=this.value.trim()">
           </div>
@@ -836,7 +775,7 @@
               <option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
             </select>
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Pausa hora inicial y final</label>
             <input type="text" id="justificacion_sla" name="justificacion_sla" onblur="this.value=this.value.trim()">
           </div>
@@ -848,11 +787,10 @@
             <label>Tiempo total de pausa</label>
             <input type="text" id="t_pausa" name="t_pausa" onblur="this.value=this.value.trim()">
           </div>
-          <div class="field field-span2">
+          <div class="field">
             <label>Material utilizado <span class="sync-tag">auto-sync</span></label>
             <input type="text" id="material_utilizado" name="material_utilizado" readonly>
           </div>
-
         </div>
       </div>
 
@@ -866,7 +804,7 @@
       <span class="live-badge">LIVE</span>
     </div>
     <div class="preview-scripts">
-      
+
       <div class="script-card">
         <div class="script-card-header">
           <span class="script-label label-eta"><span class="tab-dot dot-eta"></span>ETA</span>
@@ -902,22 +840,20 @@
         <div class="script-body" id="seccion-final-display"></div>
         <div id="seccion-final" style="display:none;"></div>
       </div>
-                <hr class="divider">
-        <div class="section-title">Evidencia Fotográfica</div>
-          <div class="field">
-          <div class="field">
-            <label>Subir imágenes</label>
-            <div id="drop-zone" class="drop-zone">
-              <span>Arrastra las fotos aquí o haz clic para seleccionar</span>
-              <input type="file" id="input-fotos" accept="image/*" multiple style="display: none;">
-            </div>
-          </div>
-        <div id="galeria-fotos" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;"></div>
-          <!-- accept="image/*" asegura que desde el celular abra la cámara o la galería -->
-          <input type="file" id="input-fotos" accept="image/*" multiple style="padding: 10px;">
+
+      <hr class="divider">
+      <div class="section-title">Evidencia Fotográfica</div>
+      <div class="field">
+        <label>Subir imágenes</label>
+        <!-- FIX: Un solo drop-zone y un solo input-fotos (había duplicados) -->
+        <div id="drop-zone" class="drop-zone">
+          <span>Arrastra las fotos aquí o haz clic para seleccionar</span>
         </div>
-        <!-- Aquí aparecerán las fotos en pequeñito -->
-        <div id="galeria-fotos" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;"></div>
+        <input type="file" id="input-fotos" accept="image/*" multiple style="display:none;">
+      </div>
+      <!-- FIX: Un solo galeria-fotos (había duplicados) -->
+      <div id="galeria-fotos" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;"></div>
+
     </div>
   </div>
 
@@ -934,7 +870,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
 
 <script>
-// ─── Firebase ───────────────────────────────────────────
+// ─── Firebase ────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
   authDomain: "scripts-2c739.firebaseapp.com",
@@ -947,50 +883,33 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-// ─── Status indicator ───────────────────────────────────
 document.getElementById('status-dot').style.background = 'var(--green)';
 document.getElementById('status-text').textContent = 'Firebase conectado';
 
-// ─── Toast ──────────────────────────────────────────────
+// ─── Toast ────────────────────────────────────────────────
 function showToast(msg, isError = false) {
   const t = document.getElementById('toast');
-  
-  // Usar innerHTML por si quieres agregar un icono rápido
   t.innerHTML = isError ? `<span>✕</span> ${msg}` : `<span>✓</span> ${msg}`;
-  
-  if (isError) {
-    t.classList.add('error');
-    t.style.borderBottomColor = '#dc2626'; // Rojo si es error
-  } else {
-    t.classList.remove('error');
-    t.style.borderBottomColor = '#059669'; // Verde si es éxito
-  }
-  
+  t.style.borderBottomColor = isError ? '#dc2626' : '#059669';
   t.classList.add('show');
-
-  setTimeout(() => {
-    t.classList.remove('show');
-  }, 3000);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ─── Tabs ───────────────────────────────────────────────
+// ─── Tabs ─────────────────────────────────────────────────
 function switchTab(name, btn) {
-  // 1. Intentar hacer un autoguardado silencioso antes de cambiar
   guardarRegistro(true);
-
-  // 2. Cambiar visualmente la pestaña
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   btn.classList.add('active');
 }
 
-// ─── OLT map ────────────────────────────────────────────
+// ─── OLT map ──────────────────────────────────────────────
 const OLT_TO_CLUSTERS = {
-  "ALDAMA_JUA": ["ALDAMA", "AMPLIACION ALDAMA", "AMPLIACION ALDAMA 2", "AMPLIACION ALDAMA 3", "AMPLIACION ALDAMA 4", "AMPLIACION ALDAMA 5"],
-  "ALDAMA_2_JUA": ["ALDAMA", "AMPLIACION ALDAMA", "AMPLIACION ALDAMA 2", "AMPLIACION ALDAMA 3", "AMPLIACION ALDAMA 4", "AMPLIACION ALDAMA 5"],
-  "BUENOS_AIRES_JUA": ["BUENOS AIRES", "BUENOS AIRES_A", "BUENOS AIRES 2", "AMPLIACION BUENOS AIRES", "AMPLIACION BUENOS AIRES_A", "AMPLIACION BUENOS AIRES_2_A", "AMPLIACION BUENOS AIRES_3_A", "AMPLIACION BUENOS AIRES_4_A", "AMPLIACION BUENOS AIRES_5_A", "AMPLIACION BUENOS AIRES_6_A"],
-  "BUENOS_AIRES_2_JUA": ["BUENOS AIRES", "BUENOS AIRES_A", "BUENOS AIRES 2", "AMPLIACION BUENOS AIRES", "AMPLIACION BUENOS AIRES_A", "AMPLIACION BUENOS AIRES_2_A", "AMPLIACION BUENOS AIRES_3_A", "AMPLIACION BUENOS AIRES_4_A", "AMPLIACION BUENOS AIRES_5_A", "AMPLIACION BUENOS AIRES_6_A"],
+  "ALDAMA_JUA": ["ALDAMA","AMPLIACION ALDAMA","AMPLIACION ALDAMA 2","AMPLIACION ALDAMA 3","AMPLIACION ALDAMA 4","AMPLIACION ALDAMA 5"],
+  "ALDAMA_2_JUA": ["ALDAMA","AMPLIACION ALDAMA","AMPLIACION ALDAMA 2","AMPLIACION ALDAMA 3","AMPLIACION ALDAMA 4","AMPLIACION ALDAMA 5"],
+  "BUENOS_AIRES_JUA": ["BUENOS AIRES","BUENOS AIRES_A","BUENOS AIRES 2","AMPLIACION BUENOS AIRES","AMPLIACION BUENOS AIRES_A","AMPLIACION BUENOS AIRES_2_A","AMPLIACION BUENOS AIRES_3_A","AMPLIACION BUENOS AIRES_4_A","AMPLIACION BUENOS AIRES_5_A","AMPLIACION BUENOS AIRES_6_A"],
+  "BUENOS_AIRES_2_JUA": ["BUENOS AIRES","BUENOS AIRES_A","BUENOS AIRES 2","AMPLIACION BUENOS AIRES","AMPLIACION BUENOS AIRES_A","AMPLIACION BUENOS AIRES_2_A","AMPLIACION BUENOS AIRES_3_A","AMPLIACION BUENOS AIRES_4_A","AMPLIACION BUENOS AIRES_5_A","AMPLIACION BUENOS AIRES_6_A"],
   "CARLOS_AMAYA_JUA": ["CARLOS AMAYA"],
   "VERGEL_JUA": ["EL VERGEL"],
   "CIPRESES_JUA": ["LOS CIPRESES"],
@@ -998,54 +917,45 @@ const OLT_TO_CLUSTERS = {
   "NOGALES_JUA": ["NOGALES"],
   "OASIS_JUA": ["OASIS"],
   "SANTO_DOMINGO_JUA": ["SANTO DOMINGO"],
-  "GOMEZ_MORIN_JUA": ["GOMEZ MORIN", "AMPLIACION GOMEZ MORIN"],
-  "LOMAS_DE_MORELOS_JUA": ["LOMAS DE MORELOS", "AMPLIACION LOMAS DE MORELOS 2", "AMPLIACION LOMAS DE MORELOS 3"],
-  "THOMPSON_JUA": ["THOMPSON", "THOMPSON_A"],
-  "THOMPSON_2_JUA": ["THOMPSON", "THOMPSON_A"],
-  "HACIENDA_DE_LAS_TORRES_JUA": ["TIERRA NUEVA", "TIERRA NUEVA_A", "AMPLIACION TIERRA NUEVA", "AMPLIACION TIERRA NUEVA 2", "AMPLIACION TIERRA NUEVA 3", "AMPLIACION TIERRA NUEVA 4", "AMPLIACION TIERRA NUEVA 5"],
-  "HACIENDA_DE_LAS_TORRES_2_JUA": ["THOMPSON_A", "TIERRA NUEVA", "TIERRA NUEVA_A", "AMPLIACION TIERRA NUEVA", "AMPLIACION TIERRA NUEVA 2", "AMPLIACION TIERRA NUEVA 3", "AMPLIACION TIERRA NUEVA 4", "AMPLIACION TIERRA NUEVA 5"]
+  "GOMEZ_MORIN_JUA": ["GOMEZ MORIN","AMPLIACION GOMEZ MORIN"],
+  "LOMAS_DE_MORELOS_JUA": ["LOMAS DE MORELOS","AMPLIACION LOMAS DE MORELOS 2","AMPLIACION LOMAS DE MORELOS 3"],
+  "THOMPSON_JUA": ["THOMPSON","THOMPSON_A"],
+  "THOMPSON_2_JUA": ["THOMPSON","THOMPSON_A"],
+  "HACIENDA_DE_LAS_TORRES_JUA": ["TIERRA NUEVA","TIERRA NUEVA_A","AMPLIACION TIERRA NUEVA","AMPLIACION TIERRA NUEVA 2","AMPLIACION TIERRA NUEVA 3","AMPLIACION TIERRA NUEVA 4","AMPLIACION TIERRA NUEVA 5"],
+  "HACIENDA_DE_LAS_TORRES_2_JUA": ["THOMPSON_A","TIERRA NUEVA","TIERRA NUEVA_A","AMPLIACION TIERRA NUEVA","AMPLIACION TIERRA NUEVA 2","AMPLIACION TIERRA NUEVA 3","AMPLIACION TIERRA NUEVA 4","AMPLIACION TIERRA NUEVA 5"]
 };
 
 function filtrarClustersPorOLT() {
   const oltVal = document.getElementById("olt").value;
   const clusterSelect = document.getElementById("cluster");
-  
   clusterSelect.innerHTML = '<option value="">— Selecciona Cluster —</option>';
-  const clustersAsociados = OLT_TO_CLUSTERS[oltVal] || [];
-  
-  clustersAsociados.forEach(c => {
+  const clusters = OLT_TO_CLUSTERS[oltVal] || [];
+  clusters.forEach(c => {
     const el = document.createElement("option");
-    el.value = c;
-    el.textContent = c;
+    el.value = c; el.textContent = c;
     clusterSelect.appendChild(el);
   });
-
-  if (clustersAsociados.length === 1) {
-    clusterSelect.value = clustersAsociados[0];
-  }
-
-  // ESTO ES CLAVE: Notifica a Select2 y al sistema de guardado
-  $(clusterSelect).trigger('change'); 
+  if (clusters.length === 1) clusterSelect.value = clusters[0];
+  $(clusterSelect).trigger('change');
   updatePreview();
 }
 
-// ─── Fecha autofill ─────────────────────────────────────
+// ─── Fecha autofill ───────────────────────────────────────
+// FIX: Al cargar registro, también se llena el input[type=date] (no solo el hidden)
 document.getElementById('fecha').addEventListener('input', function() {
-  const v = this.value;
-  document.getElementById('fecha-texto').value = v;
+  document.getElementById('fecha-texto').value = this.value;
   ['hr_llegada','hr_desp','hr_prov','hr_med','hr_final'].forEach(id => {
-    document.getElementById(id).value = v;
+    document.getElementById(id).value = this.value;
   });
   updatePreview();
 });
 
-// ─── Select2 init ───────────────────────────────────────
+// ─── Select2 init ─────────────────────────────────────────
 $(document).ready(function() {
-  // Inicializar técnico
   $('#nombre').select2({ placeholder: 'Selecciona técnico', allowClear: true, dropdownParent: $('#panel-sitio') });
+  // FIX: leer con $().val() para que Select2 sincronice correctamente
   $('#nombre').on('change', updatePreview);
 
-  // Inicializar OLT (Ahora es el que manda)
   $('#olt').select2({ placeholder: 'Busca o selecciona OLT', allowClear: true, dropdownParent: $('#panel-final') });
   $('#olt').on('select2:select', filtrarClustersPorOLT);
   $('#olt').on('select2:clear', function() {
@@ -1053,12 +963,11 @@ $(document).ready(function() {
     updatePreview();
   });
 
-  // Inicializar Cluster (Ahora es el filtrado)
   $('#cluster').select2({ placeholder: 'Selecciona Cluster', allowClear: true, dropdownParent: $('#panel-final') });
   $('#cluster').on('change', updatePreview);
 });
 
-// ─── Cargar técnicos desde txt ──────────────────────────
+// ─── Cargar técnicos desde txt ────────────────────────────
 async function cargarTecnicos() {
   try {
     const r = await fetch('./tecnicos.txt');
@@ -1077,11 +986,13 @@ async function cargarTecnicos() {
 }
 cargarTecnicos();
 
-// ─── Update Preview ─────────────────────────────────────
-function g(id) { 
+// ─── g() helper ── FIX: usa $().val() para Select2 ────────
+function g(id) {
   const el = document.getElementById(id);
   if (!el) return '';
-  return el.value ? el.value.trim() : ''; 
+  // Select2 maneja <select> → leer con jQuery para obtener valor real
+  if (el.tagName === 'SELECT') return $(el).val() || '';
+  return el.value ? el.value.trim() : '';
 }
 
 function renderLine(label, val) {
@@ -1089,39 +1000,33 @@ function renderLine(label, val) {
   return `<div><span class="sf">${label}: </span><span class="${hasVal ? 'sv' : 'sv-empty'}">${hasVal ? '*' + val + '*' : '—'}</span></div>`;
 }
 
+// ─── Update Preview ───────────────────────────────────────
 function updatePreview() {
-  // Sync fields
-  const folio = g('folio_');
-  document.getElementById('folio3_').value = folio;
-  document.getElementById('folio4').value = folio;
-  document.getElementById('sd').value = folio;
-
+  // Sync readonly fields
+  const folio    = g('folio_');
   const proveedor = g('proveedor');
-  document.getElementById('proveedor2').value = proveedor;
-  document.getElementById('proveedor4').value = proveedor;
-
-  const distrito = g('distrito');
-  document.getElementById('ciudad').value = distrito;
-
-  const nombre = g('nombre');
-  document.getElementById('atiende_nom_tec').value = nombre;
-
-  const causa = g('causa');
-  document.getElementById('causa_dano').value = causa;
-
-  const coord3 = g('coordenadas3');
-  document.getElementById('coordenadas_dano').value = coord3;
-
-  const qr = g('qr');
-  document.getElementById('qr_2').value = qr;
-
+  const distrito  = g('distrito');
+  const nombre    = g('nombre');   // FIX: ahora lee Select2 correctamente
+  const causa     = g('causa');
+  const coord3    = g('coordenadas3');
+  const qr        = g('qr');
   const materiales = g('materiales');
+
+  document.getElementById('folio3_').value      = folio;
+  document.getElementById('folio4').value        = folio;
+  document.getElementById('sd').value            = folio;
+  document.getElementById('proveedor2').value    = proveedor;
+  document.getElementById('proveedor4').value    = proveedor;
+  document.getElementById('ciudad').value        = distrito;
+  document.getElementById('atiende_nom_tec').value = nombre;
+  document.getElementById('causa_dano').value    = causa;
+  document.getElementById('coordenadas_dano').value = coord3;
+  document.getElementById('qr_2').value          = qr;
   document.getElementById('material_utilizado').value = materiales;
 
-  // Update folio indicator
   document.getElementById('folio-indicator').textContent = folio ? 'Folio activo: ' + folio : 'Sin folio activo';
 
-  // Re-read after sync
+  // Re-read all fields after sync
   const eta = g('eta'), olt = g('olt'), cluster = g('cluster');
   const punto = g('punto'), coordenadas = g('coordenadas');
   const accion = g('accion'), etr = g('etr'), calibre = g('calibre');
@@ -1137,20 +1042,17 @@ function updatePreview() {
   const atiende_nom_tec = g('atiende_nom_tec'), proveedor4 = g('proveedor4');
   const supervisor = g('supervisor'), justificacion_sla = g('justificacion_sla');
   const m_pausa = g('m_pausa'), t_pausa = g('t_pausa'), material_utilizado = g('material_utilizado');
-  const coordenadas3 = g('coordenadas3');
 
-  // Plain text for clipboard
-  const etaTxt = `FOLIO: *${folio}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*`;
+  const etaTxt   = `FOLIO: *${folio}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*`;
   const sitioTxt = `SD: *${folio}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*`;
-  const falloTxt = `Folio: *${folio}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coordenadas3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*`;
+  const falloTxt = `Folio: *${folio}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coord3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*`;
   const finalTxt = `FOLIO: *${folio}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${falla_r}*\nFECHA_Y_HR_DE_ASG_DESP: *${hr_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${hr_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICION: *${hr_med}*\nUBICACIÓN_DE_1N_2N: *${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${desc_act}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS: *${trabajos_realizados}*\nFECHA_HR_FINAL_DE_REPARACION: *${hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA: *${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*`;
 
-  document.getElementById('seccion-eta').textContent = etaTxt;
+  document.getElementById('seccion-eta').textContent   = etaTxt;
   document.getElementById('seccion-sitio').textContent = sitioTxt;
   document.getElementById('seccion-fallo').textContent = falloTxt;
   document.getElementById('seccion-final').textContent = finalTxt;
 
-  // Render visual previews
   document.getElementById('seccion-eta-display').innerHTML =
     renderLine('FOLIO', folio) + renderLine('ETA', eta) + renderLine('PROVEEDOR', proveedor);
 
@@ -1162,7 +1064,7 @@ function updatePreview() {
   document.getElementById('seccion-fallo-display').innerHTML =
     renderLine('Folio', folio) + renderLine('Causa del daño', causa) +
     renderLine('Acción', accion) + renderLine('ETR', etr) +
-    renderLine('Calibre FO', calibre) + renderLine('Coordenadas', coordenadas3) +
+    renderLine('Calibre FO', calibre) + renderLine('Coordenadas', coord3) +
     renderLine('QR', qr) + renderLine('Materiales', materiales);
 
   document.getElementById('seccion-final-display').innerHTML =
@@ -1182,53 +1084,41 @@ function updatePreview() {
     renderLine('T PAUSA', t_pausa) + renderLine('MATERIAL', material_utilizado);
 }
 
-// ─── Copiar sección ─────────────────────────────────────
+// ─── Copiar sección ───────────────────────────────────────
 function copiarSeccion(id, btn) {
   const el = document.getElementById(id);
   if (!el) return;
   navigator.clipboard.writeText(el.textContent).then(() => {
-    btn.textContent = '✓ Copiado';
-    btn.classList.add('copied');
+    btn.textContent = '✓ Copiado'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
   }).catch(() => {
     const ta = document.createElement('textarea');
     ta.value = el.textContent;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.textContent = '✓ Copiado';
-    btn.classList.add('copied');
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✓ Copiado'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
   });
 }
 
-// ─── Guardar en Firebase ────────────────────────────────
-// ─── Función Maestra de Guardado en Firebase ────────────
+// ─── Guardar en Firebase ──────────────────────────────────
 async function guardarRegistro(esAutoguardado = false) {
   const folio = g('folio_');
-  
-  // Si no hay folio y es autoguardado, cancelamos en silencio.
-  if (!folio) { 
-    if (!esAutoguardado) { 
-      showToast('Debes ingresar un SD', true); 
-    }
-    return; 
+  if (!folio) {
+    if (!esAutoguardado) showToast('Debes ingresar un SD', true);
+    return;
   }
 
-  // Elementos de la barra superior para el mensaje sutil
   const statusText = document.getElementById('status-text');
-  const statusDot = document.getElementById('status-dot');
+  const statusDot  = document.getElementById('status-dot');
 
-  // Si es autoguardado, ponemos el texto en modo "Guardando..."
   if (esAutoguardado) {
     statusDot.style.background = 'var(--amber)';
     statusText.textContent = 'Guardando...';
   }
-  
+
   const data = {
     folio, eta: g('eta'), proveedor: g('proveedor'),
-    punto: g('punto'), coordenadas: g('coordenadas'), proveedor2: g('proveedor2'),
+    punto: g('punto'), coordenadas: g('coordenadas'),
     distrito: g('distrito'), nombre: g('nombre'),
     causa: g('causa'), accion: g('accion'), etr: g('etr'), calibre: g('calibre'),
     coordenadas3: g('coordenadas3'), qr: g('qr'), materiales: g('materiales'),
@@ -1248,57 +1138,40 @@ async function guardarRegistro(esAutoguardado = false) {
 
   try {
     await db.collection("usuarios").doc(folio).set(data);
-    
-    // Obtenemos la hora actual (ej. "11:34")
     const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-
-    if (esAutoguardado) {
-      // Indicador sutil arriba a la izquierda
-      statusDot.style.background = 'var(--green)';
-      statusText.textContent = 'Guardado a las ' + hora;
-    } else {
-      // El toast normal solo si el usuario hizo clic manual en "Guardar registro"
-      showToast('Guardado manual: ' + folio);
-      statusDot.style.background = 'var(--green)';
-      statusText.textContent = 'Guardado a las ' + hora;
-    }
-    
-    cargarUltimosFolios(); 
+    statusDot.style.background = 'var(--green)';
+    statusText.textContent = 'Guardado a las ' + hora;
+    if (!esAutoguardado) showToast('Guardado: ' + folio);
+    cargarUltimosFolios();
   } catch(err) {
     console.error(err);
-    if (esAutoguardado) {
-      statusDot.style.background = 'var(--red)';
-      statusText.textContent = 'Error al autoguardar';
-    } else {
-      showToast('Error al guardar', true);
-    }
+    statusDot.style.background = 'var(--red)';
+    statusText.textContent = esAutoguardado ? 'Error al autoguardar' : 'Error';
+    if (!esAutoguardado) showToast('Error al guardar', true);
   }
 }
 
-// ─── Evento del botón Guardar / tecla Enter ─────────────
 document.getElementById('modificar-form').addEventListener('submit', async function(e) {
   e.preventDefault();
-  // Llamamos a la función indicando que NO es autoguardado (false)
   await guardarRegistro(false);
 });
 
-// ─── Buscar ─────────────────────────────────────────────
+// ─── Buscar ───────────────────────────────────────────────
 async function buscar() {
   const id = document.getElementById("buscarId").value.trim();
   if (!id) { showToast('Ingresa un SD válido', true); return; }
 
+  // FIX: Limpiar galería siempre, antes de saber si hay fotos o no
+  document.getElementById('galeria-fotos').innerHTML = '';
+
   try {
     const doc = await db.collection("usuarios").doc(id).get();
-    if (!doc.exists) { 
-      showToast('SD no encontrado', true); 
-      return; 
-    }
+    if (!doc.exists) { showToast('SD no encontrado', true); return; }
 
     const d = doc.data();
-    
-    // 1. Llenamos los campos de texto normales primero
+
     const fields = [
-      'folio_','eta','proveedor','punto','coordenadas','proveedor2','distrito',
+      'folio_','eta','proveedor','punto','coordenadas','distrito',
       'causa','accion','etr','calibre','coordenadas3','qr','materiales',
       'ciudad','estado','clientes','falla_r','hr_desp','hr_prov',
       'hr_llegada','hr_med','ubicacion_1er_2do','qr_2','causa_dano','ubicacion_dano',
@@ -1306,73 +1179,64 @@ async function buscar() {
       'hr_final','atiende_nom_tec','proveedor4','supervisor','justificacion_sla',
       'm_pausa','t_pausa','material_utilizado'
     ];
-
-    fields.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = d[id === 'folio_' ? 'folio' : id] || '';
+    fields.forEach(fid => {
+      const el = document.getElementById(fid);
+      if (el && el.tagName !== 'SELECT') el.value = d[fid === 'folio_' ? 'folio' : fid] || '';
     });
 
-    document.getElementById('fecha-texto').value = d.fecha || '';
+    // FIX: Llenar también el input[type=date] visible con la fecha guardada
+    if (d.fecha) {
+      document.getElementById('fecha').value = d.fecha;
+      document.getElementById('fecha-texto').value = d.fecha;
+    }
 
-    // 2. Cargamos el Técnico en Select2
+    // FIX: Cargar técnico con Select2
     $('#nombre').val(d.nombre || '').trigger('change');
 
-    // 3. Cargamos la OLT primero
+    // FIX: Cargar OLT → filtrar clusters → luego cargar cluster con timeout
     if (d.olt) {
       $('#olt').val(d.olt).trigger('change');
-      
-      // IMPORTANTE: Ejecutamos el filtro para que se cree la lista de Clusters
       filtrarClustersPorOLT();
-
-      // 4. Esperamos un instante a que el DOM se actualice y cargamos el Cluster
       setTimeout(() => {
-        if (d.cluster) {
-          $('#cluster').val(d.cluster).trigger('change');
-        }
-        updatePreview(); // Actualizamos la vista previa al final de todo
-      }, 150); 
+        if (d.cluster) $('#cluster').val(d.cluster).trigger('change');
+        updatePreview();
+      }, 150);
     } else {
       updatePreview();
     }
-    // Limpiamos la galería visual
-    const galeria = document.getElementById('galeria-fotos');
-    if (galeria) galeria.innerHTML = ''; 
-    
-    // Si el documento tiene fotos guardadas, las dibujamos
+
+    // Cargar fotos si existen
     if (d.fotos && d.fotos.length > 0) {
       d.fotos.forEach(url => mostrarFotoEnGaleria(url));
     }
-    showToast('Cargado: ' + id);
 
+    showToast('Cargado: ' + id);
   } catch(err) {
     console.error(err);
     showToast('Error al buscar', true);
   }
 }
 
-// ─── Limpiar ─────────────────────────────────────────────
+// ─── Limpiar ──────────────────────────────────────────────
 function limpiarSeleccion() {
   document.getElementById('buscarId').value = '';
   document.getElementById('modificar-form').reset();
   document.getElementById('galeria-fotos').innerHTML = '';
-  
-  // Limpiar selects de Select2 correctamente
+  document.getElementById('fecha-texto').value = '';
+
   $('#nombre').val(null).trigger('change');
-  $('#olt').val(null).trigger('change'); 
-  
-  // Reiniciar el cluster a su estado por defecto
+  $('#olt').val(null).trigger('change');
   document.getElementById('cluster').innerHTML = '<option value="">Selecciona OLT primero</option>';
   $('#cluster').val(null).trigger('change');
 
-  // Valores por defecto
   document.getElementById('proveedor').value = 'GTB';
-  document.getElementById('distrito').value = 'JUAREZ';
-  document.getElementById('estado').value = 'CHIHUAHUA';
-  
+  document.getElementById('distrito').value  = 'JUAREZ';
+  document.getElementById('estado').value    = 'CHIHUAHUA';
+
   updatePreview();
 }
 
-// ─── Últimos 10 folios ───────────────────────────────────
+// ─── Últimos 10 folios ─────────────────────────────────────
 async function cargarUltimosFolios() {
   const lista = document.getElementById("lista-folios");
   lista.innerHTML = '<div style="color:var(--text3);font-size:11px;">Cargando...</div>';
@@ -1408,132 +1272,87 @@ async function cargarUltimosFolios() {
   }
 }
 
-// ─── Eventos input → updatePreview ──────────────────────
+// ─── Eventos input → updatePreview ────────────────────────
 document.querySelectorAll('#modificar-form input, #modificar-form select').forEach(el => {
   el.addEventListener('input', updatePreview);
 });
-// ─── Autoguardado al llenar "Clientes afectados" ────────
+
 document.getElementById('clientes').addEventListener('change', function() {
-  // Solo hace el autoguardado si escribiste algo en el campo
-  if (this.value.trim() !== '') {
-    guardarRegistro(true);
-  }
-});
-// ─── Init ────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  cargarUltimosFolios();
-  updatePreview();
+  if (this.value.trim() !== '') guardarRegistro(true);
 });
 
-  // ─── Subir Fotos a Firebase Storage ─────────────────────
-// ─── Drag & Drop para Fotos en Firebase Storage ─────────
-const dropZone = document.getElementById('drop-zone');
+// ─── Drag & Drop fotos ─────────────────────────────────────
+// FIX: Un solo dropZone y un solo inputFotos (eliminados los duplicados del HTML)
+const dropZone  = document.getElementById('drop-zone');
 const inputFotos = document.getElementById('input-fotos');
 
-// Abrir el explorador de archivos si hacen clic en el cuadro
-if (dropZone) {
-  dropZone.addEventListener('click', () => inputFotos.click());
+dropZone.addEventListener('click', () => inputFotos.click());
 
-  // Evitar que el navegador abra la imagen por defecto
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    }, false);
-  });
+['dragenter','dragover','dragleave','drop'].forEach(ev => {
+  dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }, false);
+});
+['dragenter','dragover'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.add('dragover'), false));
+['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.remove('dragover'), false));
 
-  // Efectos visuales al arrastrar por encima
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
-  });
+dropZone.addEventListener('drop', e => procesarYSubirArchivos(e.dataTransfer.files), false);
 
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
-  });
+inputFotos.addEventListener('change', function(e) {
+  procesarYSubirArchivos(e.target.files);
+  this.value = '';
+});
 
-  // Procesar cuando sueltan el archivo
-  dropZone.addEventListener('drop', (e) => {
-    const archivos = e.dataTransfer.files;
-    procesarYSubirArchivos(archivos);
-  }, false);
-}
-
-// Procesar cuando seleccionan con clic tradicional
-if (inputFotos) {
-  inputFotos.addEventListener('change', function(e) {
-    procesarYSubirArchivos(e.target.files);
-    this.value = ''; // Limpiar el input oculto
-  });
-}
-
-// Función central que sube las fotos (usada por clic y por drop)
 async function procesarYSubirArchivos(archivos) {
   const folio = g('folio_');
-  
-  if (!folio) {
-    showToast('Ingresa un Folio / SD antes de subir evidencia', true);
-    return;
-  }
-
-  if (archivos.length === 0) return;
+  if (!folio) { showToast('Ingresa un Folio / SD antes de subir evidencia', true); return; }
+  if (!archivos.length) return;
 
   const statusText = document.getElementById('status-text');
-  const statusDot = document.getElementById('status-dot');
-  
+  const statusDot  = document.getElementById('status-dot');
   statusDot.style.background = 'var(--amber)';
   statusText.textContent = `Subiendo ${archivos.length} foto(s)...`;
 
   try {
     const urlsNuevas = [];
-
     for (let i = 0; i < archivos.length; i++) {
       const archivo = archivos[i];
-      // Solo aceptamos imágenes
       if (!archivo.type.startsWith('image/')) continue;
-
       const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${archivo.name}`);
       await ref.put(archivo);
       const url = await ref.getDownloadURL();
       urlsNuevas.push(url);
-      
       mostrarFotoEnGaleria(url);
     }
-
     if (urlsNuevas.length > 0) {
-      await db.collection("usuarios").doc(folio).set({
-        fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas)
-      }, { merge: true });
-
+      await db.collection("usuarios").doc(folio).set(
+        { fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) },
+        { merge: true }
+      );
       statusDot.style.background = 'var(--green)';
       statusText.textContent = 'Evidencia guardada';
       showToast('Fotos subidas correctamente');
     }
-
-  } catch (error) {
-    console.error("Error al subir fotos:", error);
+  } catch(err) {
+    console.error(err);
     statusDot.style.background = 'var(--red)';
     statusText.textContent = 'Error al subir';
     showToast('Hubo un error al subir las imágenes', true);
   }
 }
 
-  // Dibuja la miniatura en la galería
-  function mostrarFotoEnGaleria(url) {
-    const galeria = document.getElementById('galeria-fotos');
-    const img = document.createElement('img');
-    img.src = url;
-    img.style.width = '70px';
-    img.style.height = '70px';
-    img.style.objectFit = 'cover';
-    img.style.borderRadius = 'var(--radius-sm)';
-    img.style.border = '1px solid var(--border)';
-    img.style.cursor = 'pointer';
-    
-    // Si le dan clic a la miniatura, se abre en grande en otra pestaña
-    img.onclick = () => window.open(url, '_blank');
-    
-    galeria.appendChild(img);
-  }
+function mostrarFotoEnGaleria(url) {
+  const galeria = document.getElementById('galeria-fotos');
+  const img = document.createElement('img');
+  img.src = url;
+  img.style.cssText = 'width:70px;height:70px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;';
+  img.onclick = () => window.open(url, '_blank');
+  galeria.appendChild(img);
+}
+
+// ─── Init ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  cargarUltimosFolios();
+  updatePreview();
+});
 </script>
 </body>
 </html>
