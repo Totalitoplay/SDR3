@@ -75,6 +75,7 @@
     padding: 20px;
     border-radius: var(--radius);
     border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   }
 
   .title-section h1 {
@@ -88,11 +89,32 @@
     font-size: 12px;
   }
 
+  /* CONTROLES DE LA DERECHA (Buscador y Excel) */
+  .actions-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .search-input {
+    padding: 10px 14px;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    outline: none;
+    width: 250px;
+    transition: border-color 0.15s;
+    background: var(--bg);
+  }
+  .search-input:focus { border-color: var(--green); background: var(--bg2); }
+  .search-input::placeholder { color: var(--text3); }
+
   .btn {
     padding: 10px 16px;
     border-radius: var(--radius-sm);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
@@ -106,7 +128,7 @@
     color: #fff;
   }
   .btn-excel:hover { opacity: 0.9; box-shadow: 0 4px 12px var(--green-dim); }
-  .btn-excel:disabled { background: var(--text3); cursor: not-allowed; }
+  .btn-excel:disabled { background: var(--text3); cursor: not-allowed; box-shadow: none; }
 
   /* TABLA DE DATOS */
   .table-container {
@@ -117,6 +139,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
   }
   .table-scroll {
     overflow-y: auto;
@@ -142,19 +165,49 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-bottom: 1px solid var(--border);
+    white-space: nowrap;
   }
   td {
     padding: 12px 16px;
     border-bottom: 1px solid var(--border);
     color: var(--text);
     font-size: 12px;
+    vertical-align: middle;
   }
+  tbody tr { transition: background 0.1s; }
   tbody tr:hover { background: var(--bg); }
+  
   .empty-state {
     padding: 40px;
     text-align: center;
     color: var(--text3);
     font-size: 14px;
+  }
+
+  /* ESTILOS COMPACTOS PARA LAS FOTOS */
+  .fotos-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que pasen a la siguiente línea si son muchas, pero juntas */
+    gap: 6px;
+    align-items: center;
+  }
+  .foto-chip {
+    background: var(--bg2);
+    color: var(--accent);
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 10px;
+    border: 1px solid var(--border2);
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .foto-chip:hover {
+    background: var(--accent-dim);
+    border-color: var(--accent);
   }
 
   /* TOAST */
@@ -168,7 +221,7 @@
     padding: 16px 32px;
     border-radius: 50px;
     font-family: 'Inter', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -202,24 +255,29 @@
       <h1>Historial de Cortes Acumulados</h1>
       <p>Vista general de todos los folios guardados en la nube.</p>
     </div>
-    <button class="btn btn-excel" id="btn-descargar" onclick="descargarExcel()" disabled>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Descargar Excel (.csv)
-    </button>
+    
+    <div class="actions-right">
+      <input type="text" id="inputBusqueda" class="search-input" placeholder="Buscar por Folio / SD..." onkeyup="filtrarTabla()">
+      
+      <button class="btn btn-excel" id="btn-descargar" onclick="descargarExcel()" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Descargar CSV
+      </button>
+    </div>
   </div>
 
   <div class="table-container">
     <div class="table-scroll">
-      <table>
+      <table id="tablaReportes">
         <thead>
           <tr>
-            <th>Folio / SD</th>
-            <th>Fecha</th>
-            <th>Distrito</th>
-            <th>Cluster</th>
-            <th>Causa de Daño</th>
-            <th>Clientes Afec.</th>
-            <th>Evidencia</th>
+            <th style="width: 12%;">Folio / SD</th>
+            <th style="width: 10%;">Fecha</th>
+            <th style="width: 12%;">Distrito</th>
+            <th style="width: 15%;">Cluster</th>
+            <th style="width: 15%;">Causa de Daño</th>
+            <th style="width: 20%;">Clientes Afec.</th>
+            <th style="width: 16%;">Evidencia</th>
           </tr>
         </thead>
         <tbody id="tabla-body">
@@ -248,7 +306,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Variable global para guardar los datos y no hacer doble consulta a Firebase
 let datosAcumulados = [];
 
 // ─── Toast Funcionalidad ────────────────────────────────
@@ -260,7 +317,6 @@ function showToast(msg, isError = false) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-
 // ─── Cargar Datos a la Tabla ────────────────────────────
 async function cargarDatos() {
   const tbody = document.getElementById('tabla-body');
@@ -268,7 +324,6 @@ async function cargarDatos() {
   const contador = document.getElementById('contador-registros');
   
   try {
-    // Obtenemos todos los registros ordenados del más nuevo al más viejo
     const snap = await db.collection("usuarios").orderBy("timestamp", "desc").get();
     
     if (snap.empty) {
@@ -277,13 +332,12 @@ async function cargarDatos() {
       return;
     }
 
-    tbody.innerHTML = ''; // Limpiamos el mensaje de carga
-    datosAcumulados = []; // Reiniciamos el arreglo
+    tbody.innerHTML = '';
+    datosAcumulados = [];
 
     snap.forEach(doc => {
       const d = doc.data();
       
-      // 1. Armamos el objeto estandarizado para la tabla y el excel
       const registro = {
         folio: d.folio || 'N/A',
         fecha: d.fecha || 'N/A',
@@ -291,38 +345,39 @@ async function cargarDatos() {
         cluster: d.cluster || 'N/A',
         causa: d.causa || 'N/A',
         clientes: d.clientes || 'N/A',
-        fotos: d.fotos || [] // <-- AQUI SE CARGAN LAS FOTOS
+        fotos: d.fotos || []
       };
       
       datosAcumulados.push(registro);
 
-      // 2. Lógica para procesar las fotos en la tabla visual
-      let fotosHtml = '<span style="color: var(--text3); font-size: 11px;">Sin fotos</span>';
+      // --- NUEVO FORMATO DE FOTOS COMPACTAS ---
+      let fotosHtml = '<span style="color: var(--text3); font-size: 11px; font-style: italic;">Sin fotos</span>';
+      
       if (d.fotos && d.fotos.length > 0) {
-        // Creamos un pequeño link clickeable por cada foto encontrada
-        fotosHtml = d.fotos.map((url, i) => {
-          return `<a href="${url}" target="_blank" style="display: inline-block; background: var(--bg3); color: var(--accent); padding: 4px 8px; border-radius: 4px; text-decoration: none; font-weight: 600; margin: 2px; font-size: 11px; border: 1px solid var(--border);">📷 F${i + 1}</a>`;
+        // Creamos los chips
+        const chips = d.fotos.map((url, i) => {
+          return `<a href="${url}" target="_blank" class="foto-chip" title="Ver foto ${i + 1}">📷 ${i + 1}</a>`;
         }).join('');
+        
+        // Los envolvemos en el contenedor flexible
+        fotosHtml = `<div class="fotos-container">${chips}</div>`;
       }
 
-      // 3. Creamos la fila visual en HTML
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="font-weight: 500; color: var(--accent);">${registro.folio}</td>
+        <td style="font-weight: 600; color: var(--accent);">${registro.folio}</td>
         <td>${registro.fecha}</td>
         <td>${registro.distrito}</td>
         <td>${registro.cluster}</td>
         <td>${registro.causa}</td>
-        <td>${registro.clientes}</td>
+        <td style="color: var(--text2);">${registro.clientes}</td>
         <td>${fotosHtml}</td>
       `;
       tbody.appendChild(tr);
     });
 
-    // Habilitar botón y actualizar contador
     btn.disabled = false;
     contador.textContent = `${datosAcumulados.length} folios sincronizados`;
-    showToast('Base de datos sincronizada');
 
   } catch (error) {
     console.error(error);
@@ -331,50 +386,54 @@ async function cargarDatos() {
   }
 }
 
+// ─── Función del Buscador en Vivo ───────────────────────
+function filtrarTabla() {
+  const input = document.getElementById("inputBusqueda");
+  const filtro = input.value.toUpperCase();
+  const tabla = document.getElementById("tablaReportes");
+  const tr = tabla.getElementsByTagName("tr");
+
+  // Recorremos todas las filas (saltamos la cabecera que es i=0 en thead)
+  for (let i = 1; i < tr.length; i++) {
+    const tdFolio = tr[i].getElementsByTagName("td")[0]; // La columna 0 es el Folio
+    
+    if (tdFolio) {
+      // Ignorar si es la fila de "Conectando..."
+      if (tdFolio.classList.contains('empty-state')) continue; 
+      
+      const textoCelda = tdFolio.textContent || tdFolio.innerText;
+      
+      // Si el texto coincide con la búsqueda, lo mostramos, si no, lo ocultamos
+      if (textoCelda.toUpperCase().indexOf(filtro) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
 // ─── Exportar a Excel (CSV) con Links de Fotos ───────────
 function descargarExcel() {
-  if (datosAcumulados.length === 0) {
-    showToast('No hay datos para exportar', true);
-    return;
-  }
-
+  if (datosAcumulados.length === 0) return;
   showToast('Generando Excel...');
 
-  // 1. Encabezados (Agregamos la columna de Links de Evidencia)
   const encabezados = ['Folio', 'Fecha', 'Distrito', 'Cluster', 'Causa de Daño', 'Clientes Afectados', 'Links de Evidencia'];
   let lineasCSV = [encabezados.map(item => `"${item}"`).join(',')];
 
-  // 2. Mapear los datos guardados en memoria
   datosAcumulados.forEach(d => {
-    
-    // Si el folio tiene fotos, las unimos separadas por espacios
     const linksFotos = d.fotos && d.fotos.length > 0 ? d.fotos.join('   ') : 'Sin fotos';
-
-    const fila = [
-      d.folio, 
-      d.fecha, 
-      d.distrito, 
-      d.cluster, 
-      d.causa, 
-      d.clientes, 
-      linksFotos // <-- Agregamos los links al final de la fila
-    ];
-    
+    const fila = [ d.folio, d.fecha, d.distrito, d.cluster, d.causa, d.clientes, linksFotos ];
     lineasCSV.push(fila.map(item => `"${item}"`).join(','));
   });
 
   const formatoCSV = lineasCSV.join('\n');
-
-  // 3. BOM (\uFEFF) para forzar UTF-8 en Excel
   const blob = new Blob(["\uFEFF" + formatoCSV], { type: 'text/csv;charset=utf-8;' });
-
-  // 4. Descargar archivo
+  
   const fechaHoy = new Date().toLocaleDateString('es-MX').replace(/\//g, '-');
   const link = document.createElement('a');
-  const url = URL.createObjectURL(blob);
-  
-  link.setAttribute('href', url);
-  link.setAttribute('download', `Acumulado_Cortes_${fechaHoy}.csv`);
+  link.href = URL.createObjectURL(blob);
+  link.download = `Acumulado_Cortes_${fechaHoy}.csv`;
   link.style.display = 'none';
   
   document.body.appendChild(link);
