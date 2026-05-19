@@ -1304,17 +1304,21 @@ inputFotos.addEventListener('change', function(e) {
 async function procesarYSubirArchivos(archivos) {
   const folio = g('folio_');
   if (!folio) { showToast('Ingresa un Folio / SD antes de subir evidencia', true); return; }
-  if (!archivos.length) return;
+
+  // FIX: convertir FileList a Array para iterar seguro
+  const lista = Array.from(archivos || []);
+  if (lista.length === 0) return;
 
   const statusText = document.getElementById('status-text');
   const statusDot  = document.getElementById('status-dot');
   statusDot.style.background = 'var(--amber)';
-  statusText.textContent = `Subiendo ${archivos.length} foto(s)...`;
+  statusText.textContent = `Subiendo ${lista.length} foto(s)...`;
 
   try {
     const urlsNuevas = [];
-    for (let i = 0; i < archivos.length; i++) {
-      const archivo = archivos[i];
+
+    for (let i = 0; i < lista.length; i++) {
+      const archivo = lista[i];                          // FIX: variable declarada aquí
       if (!archivo.type.startsWith('image/')) continue;
       const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${archivo.name}`);
       await ref.put(archivo);
@@ -1322,6 +1326,7 @@ async function procesarYSubirArchivos(archivos) {
       urlsNuevas.push(url);
       mostrarFotoEnGaleria(url);
     }
+
     if (urlsNuevas.length > 0) {
       await db.collection("usuarios").doc(folio).set(
         { fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) },
@@ -1337,14 +1342,6 @@ async function procesarYSubirArchivos(archivos) {
     statusText.textContent = 'Error al subir';
     showToast('Hubo un error al subir las imágenes', true);
   }
-  console.log('Folio:', folio);
-console.log('Archivo:', archivo.name, archivo.type, archivo.size);
-
-// Después del put:
-console.log('Subido OK, URL:', url);
-
-// Después del set:
-console.log('Guardado en Firestore OK');
 }
 
 function mostrarFotoEnGaleria(url) {
