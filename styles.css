@@ -1,11 +1,15 @@
 body {
-    font-family: Arial, sans-serif;
-    overflow: hidden; 
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    overflow: hidden; /* Mantiene la página sin scroll global, el scroll está en el iframe */
 }
 
 .tabs {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Cambiado a row para que se vean como pestañas horizontales */
+    width: 100%;
 }
 .container {
   width: 90%; /* En lugar de un valor fijo como 600px */
@@ -31,17 +35,20 @@ label:hover {
 }
 
 .tab-content {
-    position: relative;
+    width: 100%;
+    flex: 1; /* Permite que el contenido ocupe el resto de la pantalla */
+    display: flex;
+    flex-direction: column;
 }
 
 iframe {
     width: 100%;
-        height: 100vh;
+    /* En lugar de 100vh fijo que causa problemas con barras de navegación, 
+       usamos calc para restar el espacio ocupado por tus pestañas */
+    height: calc(100vh - 50px); /* Ajusta 50px según la altura real de tus labels */
     border: none;
     display: none;
-
 }
-
 
 
 /* Mostrar el iframe correspondiente al input seleccionado */
