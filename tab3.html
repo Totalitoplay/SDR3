@@ -24,6 +24,8 @@
       --red: #dc2626;
       --red-dim: rgba(220,38,38,0.10);
       --amber: #d97706;
+      --purple: #7c3aed;
+      --purple-dim: rgba(124,58,237,0.10);
       --radius: 10px;
       --radius-sm: 6px;
       --font-head: 'Syne', sans-serif;
@@ -370,7 +372,6 @@
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">Scripts<span>FO</span></div>
   <div class="status-wrap">
@@ -381,7 +382,6 @@
 
 <div class="app">
 
-  <!-- BUSCADOR ACORDEÓN -->
   <details class="buscador-wrap" id="buscador-details">
     <summary class="buscador-summary">
       <span>🔍 Buscar SD — <span id="folio-indicator" style="color:var(--accent)">Sin folio activo</span></span>
@@ -400,7 +400,6 @@
     </div>
   </details>
 
-  <!-- TABS NAV -->
   <div class="tabs-nav">
     <button class="tab-btn active" onclick="switchTab('eta',this)">
       <span class="tab-dot dot-eta"></span>ETA
@@ -419,11 +418,9 @@
     </button>
   </div>
 
-  <!-- PANELS -->
   <div class="panels-wrap">
     <form id="modificar-form">
 
-      <!-- ETA -->
       <div class="tab-panel active" id="panel-eta">
         <div class="section-title">Script ETA — Inicial</div>
         <div class="field">
@@ -438,10 +435,20 @@
           <label>Proveedor <span class="sync-tag">auto-sync</span></label>
           <input type="text" id="proveedor" name="proveedor" value="GTB" onblur="this.value=this.value.trim()">
         </div>
+        <div class="field">
+          <label>Responsable <span class="sync-tag" style="background: var(--purple-dim); color: var(--purple);">solo BD</span></label>
+          <select id="responsable" name="responsable">
+            <option value="">— Selecciona —</option>
+            <option value="Fernando">Fernando</option>
+            <option value="Cesar">Cesar</option>
+            <option value="Jesus">Jesus</option>
+            <option value="Jorge">Jorge</option>
+            <option value="Ivan">Ivan</option>
+          </select>
+        </div>
         <input type="hidden" id="fecha-texto" name="fecha-texto">
       </div>
 
-      <!-- SITIO -->
       <div class="tab-panel" id="panel-sitio">
         <div class="section-title">Script Sitio — Llegada</div>
         <div class="field">
@@ -470,7 +477,6 @@
         </div>
       </div>
 
-      <!-- FALLO -->
       <div class="tab-panel" id="panel-fallo">
         <div class="section-title">Script Fallo</div>
         <div class="field">
@@ -507,7 +513,6 @@
         </div>
       </div>
 
-      <!-- FINAL -->
       <div class="tab-panel" id="panel-final">
         <div class="section-title">Script Final — Cierre</div>
         <div class="field">
@@ -681,7 +686,6 @@
         <div class="galeria" id="galeria-fotos"></div>
       </div>
 
-      <!-- PREVIEW -->
       <div class="tab-panel" id="panel-preview">
         <div class="section-title">Vista previa de scripts</div>
         <div id="preview-eta"   style="margin-bottom:16px;"></div>
@@ -692,14 +696,12 @@
 
     </form>
 
-    <!-- Textos ocultos para el clipboard -->
     <div id="seccion-eta"   style="display:none;"></div>
     <div id="seccion-sitio" style="display:none;"></div>
     <div id="seccion-fallo" style="display:none;"></div>
     <div id="seccion-final" style="display:none;"></div>
   </div>
 
-  <!-- BARRA DE COPIAR FIJA ABAJO -->
   <div class="copy-bar">
     <button class="c-eta"   onclick="copiar('seccion-eta',   this)">📋 ETA</button>
     <button class="c-sitio" onclick="copiar('seccion-sitio', this)">📋 SITIO</button>
@@ -707,15 +709,10 @@
     <button class="c-final" onclick="copiar('seccion-final', this)">📋 FINAL</button>
   </div>
 
-</div><!-- /app -->
+</div><div class="toast" id="toast"></div>
 
-<div class="toast" id="toast"></div>
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
-<!-- jQuery + Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
 
@@ -731,7 +728,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db      = firebase.firestore();
-const storage = firebase.storage();
 
 document.getElementById('status-dot').style.background = 'var(--green)';
 document.getElementById('status-text').textContent = 'Conectado';
@@ -952,6 +948,7 @@ async function guardarRegistro(esAutoguardado = false) {
   if (esAutoguardado) { statusDot.style.background = 'var(--amber)'; statusText.textContent = 'Guardando...'; }
 
   const data = {
+    responsable: g('responsable'), // AGREGADO: Responsable
     folio, eta: g('eta'), proveedor: g('proveedor'),
     punto: g('punto'), coordenadas: g('coordenadas'),
     distrito: g('distrito'), nombre: g('nombre'),
@@ -999,7 +996,8 @@ async function buscar() {
     if (!doc.exists) { showToast('SD no encontrado', true); return; }
     const d = doc.data();
 
-    const fields = ['folio_','eta','proveedor','punto','coordenadas','distrito',
+    // AGREGADO: responsable incluido en los campos
+    const fields = ['folio_','responsable','eta','proveedor','punto','coordenadas','distrito',
       'causa','accion','etr','calibre','coordenadas3','qr','materiales',
       'ciudad','estado','clientes','falla_r','hr_desp','hr_prov',
       'hr_llegada','hr_med','ubicacion_1er_2do','qr_2','causa_dano','ubicacion_dano',
@@ -1016,6 +1014,9 @@ async function buscar() {
       document.getElementById('fecha').value = d.fecha;
       document.getElementById('fecha-texto').value = d.fecha;
     }
+
+    // Asegurarse de seleccionar al responsable
+    if (d.responsable) document.getElementById('responsable').value = d.responsable;
 
     $('#nombre').val(d.nombre || '').trigger('change');
 
@@ -1093,9 +1094,11 @@ document.querySelectorAll('#modificar-form input, #modificar-form select').forEa
   el.addEventListener('input', updatePreview);
 });
 
-// ─── Fotos ─────────────────────────────────────────────────
+// ─── Drag & Drop fotos (HACIA GOOGLE DRIVE) ────────────────
 const dropZone  = document.getElementById('drop-zone');
 const inputFotos = document.getElementById('input-fotos');
+
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoavHo7-EdKZ53AaY5rlWOhOhSCdRserAGBwlqWyCWYoRQjzlCn1MxJohDf9nTZ2mX/exec";
 
 dropZone.addEventListener('click', () => inputFotos.click());
 ['dragenter','dragover','dragleave','drop'].forEach(ev =>
@@ -1106,6 +1109,16 @@ dropZone.addEventListener('click', () => inputFotos.click());
 dropZone.addEventListener('drop', e => procesarYSubirArchivos(e.dataTransfer.files));
 inputFotos.addEventListener('change', function(e) { procesarYSubirArchivos(e.target.files); this.value = ''; });
 
+// Función para convertir la imagen a texto (Base64)
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
 async function procesarYSubirArchivos(archivos) {
   const folio = g('folio_');
   if (!folio) { showToast('Ingresa un Folio antes de subir fotos', true); return; }
@@ -1115,19 +1128,39 @@ async function procesarYSubirArchivos(archivos) {
   const statusText = document.getElementById('status-text');
   const statusDot  = document.getElementById('status-dot');
   statusDot.style.background = 'var(--amber)';
-  statusText.textContent = `Subiendo ${lista.length} foto(s)...`;
+  statusText.textContent = `Subiendo ${lista.length} foto(s) a Drive...`;
 
   try {
     const urlsNuevas = [];
+
     for (let i = 0; i < lista.length; i++) {
       const archivo = lista[i];
       if (!archivo.type.startsWith('image/')) continue;
-      const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${i}_${archivo.name}`);
-      await ref.put(archivo);
-      const url = await ref.getDownloadURL();
-      urlsNuevas.push(url);
-      mostrarFotoEnGaleria(url);
+
+      // 1. Convertir la foto a Base64
+      const base64Data = await fileToBase64(archivo);
+
+      // 2. Enviar al script de Google Drive
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          folio: folio,
+          fileName: `${Date.now()}_${i}_${archivo.name}`,
+          fileBase64: base64Data
+        })
+      });
+
+      const resultado = await response.json();
+
+      if (resultado.exito) {
+        urlsNuevas.push(resultado.url);
+        mostrarFotoEnGaleria(resultado.url);
+      } else {
+        console.error("Error en Apps Script:", resultado.error);
+      }
     }
+
+    // 3. Guardar los links de Drive en tu Firebase Firestore
     if (urlsNuevas.length > 0) {
       await db.collection("usuarios").doc(folio).set(
         { fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) },
@@ -1135,13 +1168,17 @@ async function procesarYSubirArchivos(archivos) {
       );
       statusDot.style.background = 'var(--green)';
       statusText.textContent = 'Evidencia guardada';
-      showToast('Fotos subidas correctamente');
+      showToast('Fotos subidas a Drive');
+    } else {
+      statusDot.style.background = 'var(--red)';
+      statusText.textContent = 'Error al subir';
+      showToast('No se pudo subir a Drive', true);
     }
   } catch(err) {
     console.error(err);
     statusDot.style.background = 'var(--red)';
-    statusText.textContent = 'Error al subir';
-    showToast('Error al subir imágenes', true);
+    statusText.textContent = 'Error al conectar';
+    showToast('Error al conectar con Drive', true);
   }
 }
 
