@@ -82,7 +82,7 @@
     background: var(--bg);
   }
 
-  .sidebar {
+.sidebar {
     background: var(--bg2);
     border-right: 1px solid var(--border);
     display: flex;
@@ -90,6 +90,11 @@
     padding: 16px;
     gap: 16px;
     overflow-y: auto;
+    
+    /* AÑADE ESTAS 3 LÍNEAS PARA BLOQUEAR SU TAMAÑO */
+    width: 280px; 
+    min-width: 280px;
+    max-width: 280px;
   }
 
   .sidebar-section-label {
@@ -588,11 +593,11 @@
             <label>Responsable <span class="sync-tag" style="background: var(--purple-dim); color: var(--purple);">solo BD</span></label>
             <select id="responsable" name="responsable">
               <option value="">— Selecciona —</option>
-              <option value="Fernando">Fernando</option>
-              <option value="Cesar">Cesar</option>
-              <option value="Jesus">Jesus</option>
-              <option value="Jorge">Jorge</option>
-              <option value="Ivan">Ivan</option>
+              <option value="FERNANDO GOMEZ NOGUEZ">FERNANDO GOMEZ NOGUEZ</option>
+              <option value="CESAR DAVID ORDAZ MICHEL">CESAR DAVID ORDAZ MICHEL</option>
+              <option value="JESUS EDUARDO RODRIGUEZ HERNANDEZ">JESUS EDUARDO RODRIGUEZ HERNANDEZ</option>
+              <option value="JORGE ALBERTO ROBLES CORTEZ">JORGE ALBERTO ROBLES CORTEZ</option>
+              <option value="IVAN DE JESUS HERRERA ESTRADA">IVAN DE JESUS HERRERA ESTRADA</option>
             </select>
           </div>
         <input type="hidden" id="fecha-texto" name="fecha-texto">
@@ -875,7 +880,6 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 <!-- jQuery + Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
@@ -892,7 +896,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
+
 
 document.getElementById('status-dot').style.background = 'var(--green)';
 document.getElementById('status-text').textContent = 'Firebase conectado';
@@ -1299,9 +1303,12 @@ document.getElementById('clientes').addEventListener('change', function() {
 });
 
 // ─── Drag & Drop fotos ─────────────────────────────────────
-// FIX: Un solo dropZone y un solo inputFotos (eliminados los duplicados del HTML)
+// ─── Drag & Drop fotos (Hacia Google Drive) ────────────────
 const dropZone  = document.getElementById('drop-zone');
 const inputFotos = document.getElementById('input-fotos');
+
+// IMPORTANTE: Pon aquí la URL que te dio Google Apps Script en el Paso 2
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoavHo7-EdKZ53AaY5rlWOhOhSCdRserAGBwlqWyCWYoRQjzlCn1MxJohDf9nTZ2mX/exec";
 
 dropZone.addEventListener('click', () => inputFotos.click());
 
@@ -1318,32 +1325,59 @@ inputFotos.addEventListener('change', function(e) {
   this.value = '';
 });
 
+// Función para convertir la imagen a texto (Base64)
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
 async function procesarYSubirArchivos(archivos) {
   const folio = g('folio_');
   if (!folio) { showToast('Ingresa un Folio / SD antes de subir evidencia', true); return; }
 
-  // FIX: convertir FileList a Array para iterar seguro
   const lista = Array.from(archivos || []);
   if (lista.length === 0) return;
 
   const statusText = document.getElementById('status-text');
   const statusDot  = document.getElementById('status-dot');
   statusDot.style.background = 'var(--amber)';
-  statusText.textContent = `Subiendo ${lista.length} foto(s)...`;
+  statusText.textContent = `Subiendo ${lista.length} foto(s) a Drive...`;
 
   try {
     const urlsNuevas = [];
 
     for (let i = 0; i < lista.length; i++) {
-      const archivo = lista[i];                          // FIX: variable declarada aquí
+      const archivo = lista[i];
       if (!archivo.type.startsWith('image/')) continue;
-      const ref = storage.ref(`evidencias/${folio}/${Date.now()}_${i}_${archivo.name}`);
-      await ref.put(archivo);
-      const url = await ref.getDownloadURL();
-      urlsNuevas.push(url);
-      mostrarFotoEnGaleria(url);
+
+      // 1. Convertir la foto a Base64
+      const base64Data = await fileToBase64(archivo);
+
+      // 2. Enviar al script de Google Drive
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          folio: folio,
+          fileName: `${Date.now()}_${i}_${archivo.name}`,
+          fileBase64: base64Data
+        })
+      });
+
+      const resultado = await response.json();
+
+      if (resultado.exito) {
+        urlsNuevas.push(resultado.url);
+        mostrarFotoEnGaleria(resultado.url);
+      } else {
+        console.error("Error en Apps Script:", resultado.error);
+      }
     }
 
+    // 3. Guardar los links de Drive en tu Firebase Firestore
     if (urlsNuevas.length > 0) {
       await db.collection("usuarios").doc(folio).set(
         { fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) },
@@ -1351,13 +1385,17 @@ async function procesarYSubirArchivos(archivos) {
       );
       statusDot.style.background = 'var(--green)';
       statusText.textContent = 'Evidencia guardada';
-      showToast('Fotos subidas correctamente');
+      showToast('Fotos subidas a Drive correctamente');
+    } else {
+      statusDot.style.background = 'var(--red)';
+      statusText.textContent = 'Error al subir';
+      showToast('No se pudo subir ninguna imagen', true);
     }
   } catch(err) {
     console.error(err);
     statusDot.style.background = 'var(--red)';
     statusText.textContent = 'Error al subir';
-    showToast('Hubo un error al subir las imágenes', true);
+    showToast('Hubo un error al conectar con Drive', true);
   }
 }
 
@@ -1365,11 +1403,12 @@ function mostrarFotoEnGaleria(url) {
   const galeria = document.getElementById('galeria-fotos');
   const img = document.createElement('img');
   img.src = url;
+  // Nota: Google Drive a veces no permite incrustar la imagen directamente como miniatura
+  // Si no se ve la vista previa, igual funcionará el enlace al hacer clic.
   img.style.cssText = 'width:70px;height:70px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;';
   img.onclick = () => window.open(url, '_blank');
   galeria.appendChild(img);
 }
-
 // ─── Init ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   cargarUltimosFolios();
