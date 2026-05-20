@@ -1235,6 +1235,7 @@ async function buscar() {
 
     // FIX: Cargar técnico con Select2
     $('#nombre').val(d.nombre || '').trigger('change');
+    document.getElementById('responsable').value = d.responsable || '';
 
     // FIX: Cargar OLT → filtrar clusters → luego cargar cluster con timeout
     if (d.olt) {
