@@ -1170,16 +1170,17 @@ try {
       await fetch(APPS_SCRIPT_URL, {
         method: "POST",
         body: JSON.stringify({
-          folio: data.folio,
-          fecha: data.fecha,
-          distrito: data.distrito,
-          cluster: data.cluster,
+          folio:       data.folio,
+          fecha:       data.fecha,
+          distrito:    data.distrito,
+          cluster:     data.cluster,
           responsable: data.responsable,
-          causa: data.causa,
+          causa:       data.causa,
+          clientes:    data.clientes,   // ← NUEVO
           observacion: data.desc_act,
           soloRegistro: true,
-          fileName: null,
-          fileBase64: null
+          fileName:    null,
+          fileBase64:  null
         })
       });
     } catch(e) { /* silencioso, no bloquea el guardado */ }
