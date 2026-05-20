@@ -255,8 +255,7 @@
       <h1>Historial de Cortes Acumulados</h1>
       <p>Vista general de todos los folios guardados en la nube.</p>
     </div>
-      
-<div class="actions-right">
+    <div class="actions-right">
       
       <button class="btn btn-icon" onclick="recargarDatos()" title="Actualizar datos">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -264,10 +263,6 @@
           <polyline points="1 20 1 14 7 14"></polyline>
           <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
         </svg>
-      </button>
-
-      <button class="btn" style="background: var(--red); color: #fff;" onclick="borrarRegistrosSinFecha()" title="Eliminar folios sin fecha">
-        ✕ Borrar N/A
       </button>
 
       <div class="search-wrapper">
@@ -320,45 +315,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <script>
-  async function borrarRegistrosSinFecha() {
-  // Alerta de seguridad para evitar accidentes
-  if (!confirm("¿Estás seguro de que deseas eliminar TODOS los folios que no tienen fecha (N/A)? Esta acción limpiará la base de datos y no se puede deshacer.")) return;
-  
-  showToast("Buscando y eliminando registros vacíos...");
-  
-  try {
-    const snap = await db.collection("usuarios").get();
-    const promesas = [];
-    let contadorDel = 0;
-
-    snap.forEach(doc => {
-      const d = doc.data();
-      // Si la fecha no existe, viene vacía o es explícitamente un texto 'N/A'
-      if (!d.fecha || d.fecha.trim() === '' || d.fecha === 'N/A') {
-        // Añadimos la orden de eliminación a la lista de ejecución
-        promesas.push(db.collection("usuarios").doc(doc.id).delete());
-        contadorDel++;
-      }
-    });
-
-    if (contadorDel === 0) {
-      showToast("No se encontraron registros con fecha N/A.", true);
-      return;
-    }
-
-    // Ejecuta todas las eliminaciones en paralelo para que sea inmediato
-    await Promise.all(promesas);
-    
-    showToast(`Se eliminaron ${contadorDel} registros incompletos.`);
-    
-    // Refresca la tabla automáticamente para mostrar los datos limpios
-    recargarDatos(); 
-
-  } catch (error) {
-    console.error("Error al purgar la base de datos:", error);
-    showToast("Hubo un error al eliminar los registros", true);
-  }
-}
 const firebaseConfig = {
   apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
   authDomain: "scripts-2c739.firebaseapp.com",
