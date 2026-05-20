@@ -897,7 +897,12 @@ function showToast(msg, isError = false) {
 
 // ─── Tabs ─────────────────────────────────────────────────
 function switchTab(name, btn) {
-  guardarRegistro(true);
+  // 1. Autoguardado SOLO si el usuario entra a la pestaña "FINAL"
+  if (name === 'final') {
+    guardarRegistro(true);
+  }
+
+  // 2. Cambiar visualmente la pestaña
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
