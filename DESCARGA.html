@@ -408,7 +408,11 @@ function renderizarTabla() {
       const chips = registro.fotos.map((url, i) =>
         `<a href="${url}" target="_blank" class="foto-chip" title="Ver foto ${i+1}">📷 ${i+1}</a>`
       ).join('');
-      fotosHtml = `<div class="fotos-container">${chips}</div>`;
+      
+      // NUEVO BOTÓN ZIP
+      const zipBtn = `<button onclick="descargarZipFolio('${registro.folio}')" class="foto-chip" style="background:#f59e0b; color:#fff; border:none; cursor:pointer; margin-left:4px;">📦 Descargar ZIP</button>`;
+      
+      fotosHtml = `<div class="fotos-container">${chips} ${zipBtn}</div>`;
     }
 
     const tr = document.createElement('tr');
