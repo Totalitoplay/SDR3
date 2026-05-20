@@ -519,7 +519,18 @@
 
   <!-- SIDEBAR -->
   <div class="sidebar">
+      <div class="field">
+        <label>Subir imágenes</label>
+        <!-- FIX: Un solo drop-zone y un solo input-fotos (había duplicados) -->
+        <div id="drop-zone" class="drop-zone">
+          <span>IMAGENES, ARRASTRA O SELECCIONA</span>
+        </div>
+        <input type="file" id="input-fotos" accept="image/*" multiple style="display:none;">
+      </div>
+      <!-- FIX: Un solo galeria-fotos (había duplicados) -->
+      <div id="galeria-fotos" style="display:flex; gap:5px; flex-wrap:wrap; margin-top:10px; max-height: 150px; overflow-y: auto;"></div>
     <div>
+      
       <p class="sidebar-section-label">Buscar SD</p>
       <div class="search-wrap" style="margin-bottom:8px;">
         <input type="text" id="buscarId" placeholder="Ej. SD-20481">
@@ -573,7 +584,17 @@
           </div>
         </div>
         <hr class="divider">
-        <p class="field-note">Al seleccionar la fecha se llenará automáticamente: HR_DESP, HR_PROV, HR_LLEGADA, HR_MED y HR_FINAL.</p>
+        <div class="field">
+            <label>Responsable <span class="sync-tag" style="background: var(--purple-dim); color: var(--purple);">solo BD</span></label>
+            <select id="responsable" name="responsable">
+              <option value="">— Selecciona —</option>
+              <option value="Fernando">Fernando</option>
+              <option value="Cesar">Cesar</option>
+              <option value="Jesus">Jesus</option>
+              <option value="Jorge">Jorge</option>
+              <option value="Ivan">Ivan</option>
+            </select>
+          </div>
         <input type="hidden" id="fecha-texto" name="fecha-texto">
       </div>
 
@@ -843,16 +864,6 @@
 
       <hr class="divider">
       <div class="section-title">Evidencia Fotográfica</div>
-      <div class="field">
-        <label>Subir imágenes</label>
-        <!-- FIX: Un solo drop-zone y un solo input-fotos (había duplicados) -->
-        <div id="drop-zone" class="drop-zone">
-          <span>Arrastra las fotos aquí o haz clic para seleccionar</span>
-        </div>
-        <input type="file" id="input-fotos" accept="image/*" multiple style="display:none;">
-      </div>
-      <!-- FIX: Un solo galeria-fotos (había duplicados) -->
-      <div id="galeria-fotos" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;"></div>
 
     </div>
   </div>
@@ -1122,6 +1133,7 @@ async function guardarRegistro(esAutoguardado = false) {
   }
 
   const data = {
+    responsable: g('responsable'),
     folio, eta: g('eta'), proveedor: g('proveedor'),
     punto: g('punto'), coordenadas: g('coordenadas'),
     distrito: g('distrito'), nombre: g('nombre'),
@@ -1176,7 +1188,7 @@ async function buscar() {
     const d = doc.data();
 
     const fields = [
-      'folio_','eta','proveedor','punto','coordenadas','distrito',
+      'folio_','responsable','eta','proveedor','punto','coordenadas','distrito',
       'causa','accion','etr','calibre','coordenadas3','qr','materiales',
       'ciudad','estado','clientes','falla_r','hr_desp','hr_prov',
       'hr_llegada','hr_med','ubicacion_1er_2do','qr_2','causa_dano','ubicacion_dano',
