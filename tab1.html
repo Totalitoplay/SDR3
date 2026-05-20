@@ -1337,15 +1337,15 @@ function fileToBase64(file) {
 
 async function procesarYSubirArchivos(archivos) {
   const folio = g('folio_');
-  if (!folio) { showToast('Ingresa un Folio / SD antes de subir evidencia', true); return; }
+  if (!folio) { showToast('Ingresa un Folio antes de subir fotos', true); return; }
 
   const lista = Array.from(archivos || []);
-  if (lista.length === 0) return;
+  if (!lista.length) return;
 
   const statusText = document.getElementById('status-text');
   const statusDot  = document.getElementById('status-dot');
   statusDot.style.background = 'var(--amber)';
-  statusText.textContent = `Subiendo ${lista.length} foto(s) a Drive...`;
+  statusText.textContent = `Subiendo ${lista.length} foto(s)...`;
 
   try {
     const urlsNuevas = [];
@@ -1354,10 +1354,8 @@ async function procesarYSubirArchivos(archivos) {
       const archivo = lista[i];
       if (!archivo.type.startsWith('image/')) continue;
 
-      // 1. Convertir la foto a Base64
       const base64Data = await fileToBase64(archivo);
-
-      // 2. Enviar al script de Google Drive
+      
       const datosParaEnviar = {
         folio: folio,
         fecha: g('fecha'),
@@ -1365,25 +1363,28 @@ async function procesarYSubirArchivos(archivos) {
         cluster: g('cluster'),
         responsable: g('responsable'),
         causa: g('causa'),
-        observacion: g('desc_act'), // Asegúrate que este ID exista o cámbialo
+        observacion: g('desc_act'),
         fileName: `${Date.now()}_${i}_${archivo.name}`,
         fileBase64: base64Data
       };
+
       const response = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
         body: JSON.stringify(datosParaEnviar)
       });
+
       const resultado = await response.json();
 
-      if (resultado.exito) {
+      // --- CAMBIO AQUÍ: Verificación estricta ---
+      if (resultado.exito && resultado.url) {
         urlsNuevas.push(resultado.url);
         mostrarFotoEnGaleria(resultado.url);
       } else {
-        console.error("Error en Apps Script:", resultado.error);
+        console.error("Fallo al subir archivo:", resultado.error || "URL vacía");
       }
     }
 
-    // 3. Guardar los links de Drive en tu Firebase Firestore
+    // --- CAMBIO AQUÍ: Solo ejecutamos si hay URLs válidas ---
     if (urlsNuevas.length > 0) {
       await db.collection("usuarios").doc(folio).set(
         { fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) },
@@ -1391,17 +1392,16 @@ async function procesarYSubirArchivos(archivos) {
       );
       statusDot.style.background = 'var(--green)';
       statusText.textContent = 'Evidencia guardada';
-      showToast('Fotos subidas a Drive correctamente');
+      showToast('Fotos subidas y Excel actualizado');
     } else {
-      statusDot.style.background = 'var(--red)';
-      statusText.textContent = 'Error al subir';
-      showToast('No se pudo subir ninguna imagen', true);
+      showToast('No se guardó ninguna foto', true);
     }
+
   } catch(err) {
     console.error(err);
     statusDot.style.background = 'var(--red)';
     statusText.textContent = 'Error al subir';
-    showToast('Hubo un error al conectar con Drive', true);
+    showToast('Error en la comunicación', true);
   }
 }
 
