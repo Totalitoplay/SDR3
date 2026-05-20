@@ -16,7 +16,7 @@
     --text2: #4b5563;
     --text3: #9ca3af;
     --accent: #2563eb;
-    --accent-dim: rgba(37,99,235,0.10); /* FIX: faltaba esta variable, se usaba en foto-chip:hover */
+    --accent-dim: rgba(37,99,235,0.10);
     --green: #059669;
     --green-dim: rgba(5,150,105,0.10);
     --radius: 10px;
@@ -179,7 +179,6 @@
     align-items: center;
     white-space: nowrap;
   }
-  /* FIX: --accent-dim ya existe, el hover ahora funciona */
   .foto-chip:hover { background: var(--accent-dim); border-color: var(--accent); }
 
   .toast {
@@ -226,9 +225,8 @@
       <p>Vista general de todos los folios guardados en la nube.</p>
     </div>
     <div class="actions-right">
-      <!-- FIX: placeholder actualizado — busca por folio, distrito o causa -->
       <input type="text" id="inputBusqueda" class="search-input"
-             placeholder="Buscar por folio, distrito o causa..."
+             placeholder="Buscar por folio, distrito, responsable..."
              oninput="filtrarTabla()">
       <button class="btn btn-excel" id="btn-descargar" onclick="descargarExcel()" disabled>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -246,19 +244,17 @@
       <table id="tablaReportes">
         <thead>
           <tr>
-            <th style="width:12%;">Folio / SD</th>
+            <th style="width:10%;">Folio / SD</th>
             <th style="width:10%;">Fecha</th>
             <th style="width:12%;">Distrito</th>
-            <th style="width:15%;">Cluster</th>
-            <th style="width:15%;">Causa de Daño</th>
-            <th style="width:20%;">Clientes Afec.</th>
-            <th style="width:16%;">Evidencia</th>
+            <th style="width:12%;">Cluster</th>
+            <th style="width:12%;">Responsable</th> <th style="width:14%;">Causa de Daño</th>
+            <th style="width:15%;">Clientes Afec.</th>
+            <th style="width:15%;">Evidencia</th>
           </tr>
         </thead>
-        <!-- FIX: tbody separado para que filtrarTabla() itere solo filas de datos -->
         <tbody id="tabla-body">
-          <tr><td colspan="7" class="empty-state">Conectando con Firebase...</td></tr>
-        </tbody>
+          <tr><td colspan="8" class="empty-state">Conectando con Firebase...</td></tr> </tbody>
       </table>
     </div>
   </div>
@@ -302,7 +298,7 @@ async function cargarDatos() {
     const snap = await db.collection("usuarios").orderBy("timestamp", "desc").get();
 
     if (snap.empty) {
-      tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay folios registrados en el sistema.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No hay folios registrados en el sistema.</td></tr>';
       contador.textContent = '0 registros encontrados';
       return;
     }
@@ -312,14 +308,16 @@ async function cargarDatos() {
 
     snap.forEach(doc => {
       const d = doc.data();
+      // SE AGREGÓ EL RESPONSABLE AL OBJETO
       const registro = {
-        folio:    d.folio    || 'N/A',
-        fecha:    d.fecha    || 'N/A',
-        distrito: d.distrito || 'N/A',
-        cluster:  d.cluster  || 'N/A',
-        causa:    d.causa    || 'N/A',
-        clientes: d.clientes || 'N/A',
-        fotos:    d.fotos    || []
+        folio:       d.folio       || 'N/A',
+        fecha:       d.fecha       || 'N/A',
+        distrito:    d.distrito    || 'N/A',
+        cluster:     d.cluster     || 'N/A',
+        responsable: d.responsable || 'N/A', 
+        causa:       d.causa       || 'N/A',
+        clientes:    d.clientes    || 'N/A',
+        fotos:       d.fotos       || []
       };
       datosAcumulados.push(registro);
 
@@ -331,12 +329,14 @@ async function cargarDatos() {
         fotosHtml = `<div class="fotos-container">${chips}</div>`;
       }
 
+      // SE ACTUALIZÓ EL ORDEN DE LAS CELDAS HTML
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="font-weight:600;color:var(--accent);">${registro.folio}</td>
         <td>${registro.fecha}</td>
         <td>${registro.distrito}</td>
         <td>${registro.cluster}</td>
+        <td style="font-weight:500;">${registro.responsable}</td>
         <td>${registro.causa}</td>
         <td style="color:var(--text2);">${registro.clientes}</td>
         <td>${fotosHtml}</td>
@@ -349,32 +349,32 @@ async function cargarDatos() {
 
   } catch(error) {
     console.error(error);
-    tbody.innerHTML = '<tr><td colspan="7" class="empty-state" style="color:#dc2626;">Error al conectar con la base de datos.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-state" style="color:#dc2626;">Error al conectar con la base de datos.</td></tr>';
     contador.textContent = 'Error de conexión';
     showToast('Error al cargar datos', true);
   }
 }
 
 // ─── Buscador ─────────────────────────────────────────────
-// FIX: itera solo las filas del tbody (no del thead), y busca en
-// folio (col 0), distrito (col 2) y causa (col 4)
 function filtrarTabla() {
   const filtro = document.getElementById("inputBusqueda").value.toUpperCase().trim();
-  // FIX: seleccionamos las tr directamente del tbody, no del table completo
   const filas = document.querySelectorAll("#tabla-body tr");
 
   filas.forEach(tr => {
-    // Ignorar la fila de estado vacío
     if (tr.querySelector('.empty-state')) return;
 
     const tds = tr.getElementsByTagName("td");
-    // Busca en folio (0), distrito (2) y causa (4)
-    const textoFolio    = (tds[0]?.textContent || '').toUpperCase();
-    const textoDistrito = (tds[2]?.textContent || '').toUpperCase();
-    const textoCausa    = (tds[4]?.textContent || '').toUpperCase();
+    
+    // Las posiciones cambiaron porque agregamos una columna, ajustamos los índices:
+    // Folio(0), Distrito(2), Responsable(4), Causa(5)
+    const textoFolio       = (tds[0]?.textContent || '').toUpperCase();
+    const textoDistrito    = (tds[2]?.textContent || '').toUpperCase();
+    const textoResponsable = (tds[4]?.textContent || '').toUpperCase();
+    const textoCausa       = (tds[5]?.textContent || '').toUpperCase();
 
     const coincide = textoFolio.includes(filtro) ||
                      textoDistrito.includes(filtro) ||
+                     textoResponsable.includes(filtro) ||
                      textoCausa.includes(filtro);
 
     tr.style.display = coincide ? '' : 'none';
@@ -390,12 +390,16 @@ function descargarExcel() {
 
   try {
     showToast('Generando CSV...');
-    const encabezados = ['Folio','Fecha','Distrito','Cluster','Causa de Daño','Clientes Afectados','Links de Evidencia'];
+    // SE ACTUALIZARON LOS ENCABEZADOS DEL EXCEL
+    const encabezados = ['Folio','Fecha','Distrito','Cluster','Responsable','Causa de Daño','Clientes Afectados','Links de Evidencia'];
     const lineas = [encabezados.map(h => `"${h}"`).join(',')];
 
     datosAcumulados.forEach(d => {
       const links = d.fotos.length > 0 ? d.fotos.join('   ') : 'Sin fotos';
-      const fila  = [d.folio, d.fecha, d.distrito, d.cluster, d.causa, d.clientes, links];
+      
+      // SE ACTUALIZÓ EL ORDEN DE LOS DATOS QUE SE ENVIAN AL EXCEL
+      const fila  = [d.folio, d.fecha, d.distrito, d.cluster, d.responsable, d.causa, d.clientes, links];
+      
       lineas.push(fila.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
     });
 
@@ -409,7 +413,7 @@ function descargarExcel() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(link.href); // FIX: liberar memoria del objeto URL
+    URL.revokeObjectURL(link.href);
   } catch(err) {
     console.error(err);
     showToast('Error al generar el CSV', true);
