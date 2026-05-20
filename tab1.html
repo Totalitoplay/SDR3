@@ -1409,6 +1409,32 @@ function mostrarFotoEnGaleria(url) {
   img.onclick = () => window.open(url, '_blank');
   galeria.appendChild(img);
 }
+
+  // Tienes que poner tu misma URL de Apps Script aquí
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoavHo7-EdKZ53AaY5rlWOhOhSCdRserAGBwlqWyCWYoRQjzlCn1MxJohDf9nTZ2mX/exec";
+
+async function descargarZipFolio(folio) {
+  showToast('Empaquetando ZIP de ' + folio + ' (puede tardar unos segundos)...');
+  try {
+    const url = APPS_SCRIPT_URL + "?action=downloadZip&folio=" + folio;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.exito) {
+      // Convierte el texto que nos mandó Google de vuelta a un archivo ZIP y lo descarga
+      const link = document.createElement('a');
+      link.href = "data:application/zip;base64," + data.zipBase64;
+      link.download = data.nombre;
+      link.click();
+      showToast('ZIP descargado con éxito');
+    } else {
+      showToast(data.error || 'No se pudo generar el ZIP', true);
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Error al conectar con Google Drive', true);
+  }
+}
 // ─── Init ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   cargarUltimosFolios();
