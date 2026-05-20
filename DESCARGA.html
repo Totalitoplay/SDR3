@@ -87,8 +87,19 @@
 
   .actions-right { display: flex; gap: 12px; align-items: center; }
 
+  /* CAJA DE BÚSQUEDA CON LUPA */
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-wrapper svg {
+    position: absolute;
+    left: 12px;
+    color: var(--text3);
+  }
   .search-input {
-    padding: 10px 14px;
+    padding: 10px 14px 10px 34px; /* Espacio para la lupa */
     border: 1px solid var(--border2);
     border-radius: var(--radius-sm);
     font-family: var(--font-mono);
@@ -117,6 +128,15 @@
   .btn-excel { background: var(--green); color: #fff; }
   .btn-excel:hover { opacity: 0.9; box-shadow: 0 4px 12px var(--green-dim); }
   .btn-excel:disabled { background: var(--text3); cursor: not-allowed; box-shadow: none; }
+  
+  /* BOTÓN RECARGAR */
+  .btn-icon {
+    padding: 10px;
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-icon:hover { background: var(--border); color: var(--text); }
 
   .table-container {
     background: var(--bg2);
@@ -132,6 +152,8 @@
 
   table { width: 100%; border-collapse: collapse; text-align: left; }
   thead { background: var(--bg3); position: sticky; top: 0; z-index: 10; }
+  
+  /* ESTILOS PARA ORDENAR COLUMNAS */
   th {
     padding: 12px 16px;
     font-family: var(--font-head);
@@ -144,8 +166,17 @@
     white-space: nowrap;
     cursor: pointer;
     user-select: none;
+    transition: background 0.15s;
   }
-  th:hover { background: var(--border); }
+  th:hover { background: var(--border); color: var(--text); }
+  .sort-icon {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 10px;
+    color: var(--text3);
+  }
+  th.active-sort { color: var(--accent); }
+  th.active-sort .sort-icon { color: var(--accent); font-weight: bold; }
 
   td {
     padding: 12px 16px;
@@ -225,9 +256,25 @@
       <p>Vista general de todos los folios guardados en la nube.</p>
     </div>
     <div class="actions-right">
-      <input type="text" id="inputBusqueda" class="search-input"
-             placeholder="Buscar por folio, distrito, responsable..."
-             oninput="filtrarTabla()">
+      
+      <button class="btn btn-icon" onclick="recargarDatos()" title="Actualizar datos">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
+
+      <div class="search-wrapper">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="inputBusqueda" class="search-input"
+               placeholder="Buscar folio, distrito, responsable..."
+               oninput="filtrarTabla()">
+      </div>
+
       <button class="btn btn-excel" id="btn-descargar" onclick="descargarExcel()" disabled>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -244,17 +291,19 @@
       <table id="tablaReportes">
         <thead>
           <tr>
-            <th style="width:10%;">Folio / SD</th>
-            <th style="width:10%;">Fecha</th>
-            <th style="width:12%;">Distrito</th>
-            <th style="width:12%;">Cluster</th>
-            <th style="width:12%;">Responsable</th> <th style="width:14%;">Causa de Daño</th>
-            <th style="width:15%;">Clientes Afec.</th>
+            <th style="width:10%;" onclick="ordenarTabla('folio', this)">Folio / SD <span class="sort-icon">↕</span></th>
+            <th style="width:10%;" onclick="ordenarTabla('fecha', this)">Fecha <span class="sort-icon">↕</span></th>
+            <th style="width:12%;" onclick="ordenarTabla('distrito', this)">Distrito <span class="sort-icon">↕</span></th>
+            <th style="width:12%;" onclick="ordenarTabla('cluster', this)">Cluster <span class="sort-icon">↕</span></th>
+            <th style="width:12%;" onclick="ordenarTabla('responsable', this)">Responsable <span class="sort-icon">↕</span></th>
+            <th style="width:14%;" onclick="ordenarTabla('causa', this)">Causa de Daño <span class="sort-icon">↕</span></th>
+            <th style="width:15%;" onclick="ordenarTabla('clientes', this)">Clientes Afec. <span class="sort-icon">↕</span></th>
             <th style="width:15%;">Evidencia</th>
           </tr>
         </thead>
         <tbody id="tabla-body">
-          <tr><td colspan="8" class="empty-state">Conectando con Firebase...</td></tr> </tbody>
+          <tr><td colspan="8" class="empty-state">Conectando con Firebase...</td></tr>
+        </tbody>
       </table>
     </div>
   </div>
@@ -278,6 +327,9 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 let datosAcumulados = [];
+// Variables de estado para el ordenamiento
+let columnaActual = '';
+let ordenAscendente = true;
 
 // ─── Toast ────────────────────────────────────────────────
 function showToast(msg, isError = false) {
@@ -288,27 +340,24 @@ function showToast(msg, isError = false) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ─── Cargar datos ─────────────────────────────────────────
+// ─── Obtener datos de Firebase ────────────────────────────
 async function cargarDatos() {
   const tbody    = document.getElementById('tabla-body');
   const btn      = document.getElementById('btn-descargar');
-  const contador = document.getElementById('contador-registros');
 
   try {
     const snap = await db.collection("usuarios").orderBy("timestamp", "desc").get();
 
     if (snap.empty) {
       tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No hay folios registrados en el sistema.</td></tr>';
-      contador.textContent = '0 registros encontrados';
+      document.getElementById('contador-registros').textContent = '0 registros encontrados';
       return;
     }
 
-    tbody.innerHTML = '';
     datosAcumulados = [];
 
     snap.forEach(doc => {
       const d = doc.data();
-      // SE AGREGÓ EL RESPONSABLE AL OBJETO
       const registro = {
         folio:       d.folio       || 'N/A',
         fecha:       d.fecha       || 'N/A',
@@ -320,39 +369,108 @@ async function cargarDatos() {
         fotos:       d.fotos       || []
       };
       datosAcumulados.push(registro);
-
-      let fotosHtml = '<span style="color:var(--text3);font-size:11px;font-style:italic;">Sin fotos</span>';
-      if (d.fotos && d.fotos.length > 0) {
-        const chips = d.fotos.map((url, i) =>
-          `<a href="${url}" target="_blank" class="foto-chip" title="Ver foto ${i+1}">📷 ${i+1}</a>`
-        ).join('');
-        fotosHtml = `<div class="fotos-container">${chips}</div>`;
-      }
-
-      // SE ACTUALIZÓ EL ORDEN DE LAS CELDAS HTML
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td style="font-weight:600;color:var(--accent);">${registro.folio}</td>
-        <td>${registro.fecha}</td>
-        <td>${registro.distrito}</td>
-        <td>${registro.cluster}</td>
-        <td style="font-weight:500;">${registro.responsable}</td>
-        <td>${registro.causa}</td>
-        <td style="color:var(--text2);">${registro.clientes}</td>
-        <td>${fotosHtml}</td>
-      `;
-      tbody.appendChild(tr);
     });
 
     btn.disabled = false;
-    contador.textContent = `${datosAcumulados.length} folios sincronizados`;
+    
+    // Una vez descargados, los dibujamos en pantalla
+    renderizarTabla();
+    showToast('Datos actualizados correctamente');
 
   } catch(error) {
     console.error(error);
     tbody.innerHTML = '<tr><td colspan="8" class="empty-state" style="color:#dc2626;">Error al conectar con la base de datos.</td></tr>';
-    contador.textContent = 'Error de conexión';
+    document.getElementById('contador-registros').textContent = 'Error de conexión';
     showToast('Error al cargar datos', true);
   }
+}
+
+// ─── Botón Recargar Manualmente ───────────────────────────
+function recargarDatos() {
+  document.getElementById('tabla-body').innerHTML = '<tr><td colspan="8" class="empty-state">Actualizando datos...</td></tr>';
+  // Limpiamos los iconos de ordenado
+  document.querySelectorAll('th').forEach(th => {
+    th.classList.remove('active-sort');
+    if(th.querySelector('.sort-icon')) th.querySelector('.sort-icon').textContent = '↕';
+  });
+  columnaActual = '';
+  cargarDatos();
+}
+
+// ─── Dibujar la Tabla en HTML ─────────────────────────────
+function renderizarTabla() {
+  const tbody = document.getElementById('tabla-body');
+  tbody.innerHTML = '';
+
+  datosAcumulados.forEach(registro => {
+    let fotosHtml = '<span style="color:var(--text3);font-size:11px;font-style:italic;">Sin fotos</span>';
+    if (registro.fotos && registro.fotos.length > 0) {
+      const chips = registro.fotos.map((url, i) =>
+        `<a href="${url}" target="_blank" class="foto-chip" title="Ver foto ${i+1}">📷 ${i+1}</a>`
+      ).join('');
+      fotosHtml = `<div class="fotos-container">${chips}</div>`;
+    }
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:600;color:var(--accent);">${registro.folio}</td>
+      <td>${registro.fecha}</td>
+      <td>${registro.distrito}</td>
+      <td>${registro.cluster}</td>
+      <td style="font-weight:500;">${registro.responsable}</td>
+      <td>${registro.causa}</td>
+      <td style="color:var(--text2);">${registro.clientes}</td>
+      <td>${fotosHtml}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('contador-registros').textContent = `${datosAcumulados.length} folios sincronizados`;
+  
+  // Si hay algo en la barra de búsqueda, aplicamos el filtro de nuevo para no perderlo
+  filtrarTabla();
+}
+
+// ─── Sistema de Ordenamiento (Mayor a menor / A-Z) ────────
+function ordenarTabla(columna, thElement) {
+  // 1. Determinar si ordenamos de A-Z o Z-A
+  if (columnaActual === columna) {
+    ordenAscendente = !ordenAscendente; // Invertir orden si es la misma columna
+  } else {
+    columnaActual = columna;
+    ordenAscendente = true; // Por defecto A-Z al cambiar de columna
+  }
+
+  // 2. Modificar clases visuales en los encabezados
+  document.querySelectorAll('th').forEach(th => {
+    th.classList.remove('active-sort');
+    if(th.querySelector('.sort-icon')) th.querySelector('.sort-icon').textContent = '↕';
+  });
+  
+  thElement.classList.add('active-sort');
+  thElement.querySelector('.sort-icon').textContent = ordenAscendente ? '↓' : '↑';
+
+  // 3. Ordenar el Array de datos
+  datosAcumulados.sort((a, b) => {
+    let valorA = a[columna];
+    let valorB = b[columna];
+
+    // Si es la columna de clientes, tratarlos como números para que 10 sea mayor que 2
+    if (columna === 'clientes') {
+      valorA = parseInt(valorA) || 0;
+      valorB = parseInt(valorB) || 0;
+    } else {
+      valorA = String(valorA).toLowerCase();
+      valorB = String(valorB).toLowerCase();
+    }
+
+    if (valorA < valorB) return ordenAscendente ? -1 : 1;
+    if (valorA > valorB) return ordenAscendente ? 1 : -1;
+    return 0;
+  });
+
+  // 4. Volver a dibujar la tabla ordenada
+  renderizarTabla();
 }
 
 // ─── Buscador ─────────────────────────────────────────────
@@ -362,11 +480,8 @@ function filtrarTabla() {
 
   filas.forEach(tr => {
     if (tr.querySelector('.empty-state')) return;
-
     const tds = tr.getElementsByTagName("td");
     
-    // Las posiciones cambiaron porque agregamos una columna, ajustamos los índices:
-    // Folio(0), Distrito(2), Responsable(4), Causa(5)
     const textoFolio       = (tds[0]?.textContent || '').toUpperCase();
     const textoDistrito    = (tds[2]?.textContent || '').toUpperCase();
     const textoResponsable = (tds[4]?.textContent || '').toUpperCase();
@@ -383,23 +498,17 @@ function filtrarTabla() {
 
 // ─── Descargar CSV ────────────────────────────────────────
 function descargarExcel() {
-  if (datosAcumulados.length === 0) {
-    showToast('No hay datos para exportar', true);
-    return;
-  }
+  if (datosAcumulados.length === 0) return;
 
   try {
     showToast('Generando CSV...');
-    // SE ACTUALIZARON LOS ENCABEZADOS DEL EXCEL
     const encabezados = ['Folio','Fecha','Distrito','Cluster','Responsable','Causa de Daño','Clientes Afectados','Links de Evidencia'];
     const lineas = [encabezados.map(h => `"${h}"`).join(',')];
 
+    // Exportará los datos en el mismo orden que estén actualmente en pantalla
     datosAcumulados.forEach(d => {
       const links = d.fotos.length > 0 ? d.fotos.join('   ') : 'Sin fotos';
-      
-      // SE ACTUALIZÓ EL ORDEN DE LOS DATOS QUE SE ENVIAN AL EXCEL
       const fila  = [d.folio, d.fecha, d.distrito, d.cluster, d.responsable, d.causa, d.clientes, links];
-      
       lineas.push(fila.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
     });
 
