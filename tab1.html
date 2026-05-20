@@ -82,7 +82,7 @@
     background: var(--bg);
   }
 
-  .sidebar {
+.sidebar {
     background: var(--bg2);
     border-right: 1px solid var(--border);
     display: flex;
@@ -90,6 +90,11 @@
     padding: 16px;
     gap: 16px;
     overflow-y: auto;
+    
+    /* AÑADE ESTAS 3 LÍNEAS PARA BLOQUEAR SU TAMAÑO */
+    width: 280px; 
+    min-width: 280px;
+    max-width: 280px;
   }
 
   .sidebar-section-label {
