@@ -68,4 +68,24 @@ iframe {
   content: '✕';
   background: #dc2626;
 }
+#galeria-fotos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+    
+    /* ESTO ES LO QUE SOLUCIONA EL DISEÑO ROTO */
+    max-height: 250px;       /* Ajusta a la altura que prefieras */
+    overflow-y: auto;        /* Crea scroll si las fotos exceden la altura */
+    padding-right: 5px;      /* Espacio para que el scroll no tape las fotos */
+}
 
+/* Opcional: Para que las imágenes no se estiren de más */
+#galeria-fotos img {
+    flex: 0 0 calc(33.33% - 5px); /* Ajusta a columnas de 3 imágenes */
+    height: 70px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    cursor: pointer;
+}
