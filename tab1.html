@@ -1407,15 +1407,42 @@ async function procesarYSubirArchivos(archivos) {
       }
     }
 
-    if (urlsNuevas.length > 0) {
-      await db.collection("usuarios").doc(folio).set(
-        { fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) },
-        { merge: true }
-      );
+// 3. Guardar los links de Drive Y TODOS LOS DATOS en tu Firebase Firestore
+      if (urlsNuevas.length > 0) {
+      
+      // Recopilamos toda la información del formulario (igual que en guardarRegistro)
+      const dataCompleta = {
+        responsable: g('responsable'),
+        folio: folio, eta: g('eta'), proveedor: g('proveedor'),
+        punto: g('punto'), coordenadas: g('coordenadas'),
+        distrito: g('distrito'), nombre: g('nombre'),
+        causa: g('causa'), accion: g('accion'), etr: g('etr'), calibre: g('calibre'),
+        coordenadas3: g('coordenadas3'), qr: g('qr'), materiales: g('materiales'),
+        ciudad: g('ciudad'), estado: g('estado'), cluster: g('cluster'), olt: g('olt'),
+        clientes: g('clientes'), falla_r: g('falla_r'), fecha: g('fecha-texto'),
+        hr_desp: g('hr_desp'), hr_prov: g('hr_prov'), hr_llegada: g('hr_llegada'),
+        hr_med: g('hr_med'), ubicacion_1er_2do: g('ubicacion_1er_2do'), qr_2: g('qr_2'),
+        causa_dano: g('causa_dano'), ubicacion_dano: g('ubicacion_dano'),
+        coordenadas_dano: g('coordenadas_dano'), desc_act: g('desc_act'),
+        potencia_inicial: g('potencia_inicial'), potencia_final: g('potencia_final'),
+        trabajos_realizados: g('trabajos_realizados'), hr_final: g('hr_final'),
+        atiende_nom_tec: g('atiende_nom_tec'), proveedor4: g('proveedor4'),
+        supervisor: g('supervisor'), justificacion_sla: g('justificacion_sla'),
+        m_pausa: g('m_pausa'), t_pausa: g('t_pausa'), material_utilizado: g('material_utilizado'),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) // Empaquetamos las fotos aquí mismo
+      };
+
+      // Guardamos TODO de un solo golpe en Firebase
+      await db.collection("usuarios").doc(folio).set(dataCompleta, { merge: true });
+      
       statusDot.style.background = 'var(--green)';
       statusText.textContent = 'Evidencia guardada';
-      showToast('Fotos subidas y Excel actualizado');
+      showToast('Fotos y datos guardados con éxito');
+      cargarUltimosFolios(); // Actualizamos la lista lateral
     } else {
+      statusDot.style.background = 'var(--red)';
+      statusText.textContent = 'Error al subir';
       showToast('No se guardó ninguna foto', true);
     }
 
