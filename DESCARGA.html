@@ -298,7 +298,7 @@
             <th style="width:12%;" onclick="ordenarTabla('responsable', this)">Responsable <span class="sort-icon">↕</span></th>
             <th style="width:14%;" onclick="ordenarTabla('causa', this)">Causa de Daño <span class="sort-icon">↕</span></th>
             <th style="width:15%;" onclick="ordenarTabla('clientes', this)">Clientes Afec. <span class="sort-icon">↕</span></th>
-            <th style="width:15%;">Evidencia</th>
+            <th>Evidencia</th>
           </tr>
         </thead>
         <tbody id="tabla-body">
@@ -532,7 +532,31 @@ function descargarExcel() {
     showToast('Error al generar el CSV', true);
   }
 }
+// ─── Descargar ZIP de Evidencias (Google Drive) ───────────
+// Pon aquí tu URL de Apps Script
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoavHo7-EdKZ53AaY5rlWOhOhSCdRserAGBwlqWyCWYoRQjzlCn1MxJohDf9nTZ2mX/exec";
 
+async function descargarZipFolio(folio) {
+  showToast('Empaquetando ZIP de ' + folio + ' (puede tardar unos segundos)...');
+  try {
+    const url = APPS_SCRIPT_URL + "?action=downloadZip&folio=" + folio;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.exito) {
+      const link = document.createElement('a');
+      link.href = "data:application/zip;base64," + data.zipBase64;
+      link.download = data.nombre;
+      link.click();
+      showToast('ZIP descargado con éxito');
+    } else {
+      showToast(data.error || 'No se pudo generar el ZIP', true);
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Error al conectar con Google Drive', true);
+  }
+}
 // ─── Init ─────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', cargarDatos);
 </script>
