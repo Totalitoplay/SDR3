@@ -938,7 +938,7 @@ function copiar(id, btn) {
   });
 }
 
-// ─── Guardar en Firebase ───────────────────────────────────
+// ─── Guardar en Firebase y Sheets ───────────────────────────
 async function guardarRegistro(esAutoguardado = false) {
   const folio = g('folio_');
   if (!folio) { if (!esAutoguardado) showToast('Debes ingresar un SD', true); return; }
@@ -948,7 +948,7 @@ async function guardarRegistro(esAutoguardado = false) {
   if (esAutoguardado) { statusDot.style.background = 'var(--amber)'; statusText.textContent = 'Guardando...'; }
 
   const data = {
-    responsable: g('responsable'), // AGREGADO: Responsable
+    responsable: g('responsable'), 
     folio, eta: g('eta'), proveedor: g('proveedor'),
     punto: g('punto'), coordenadas: g('coordenadas'),
     distrito: g('distrito'), nombre: g('nombre'),
@@ -975,6 +975,27 @@ async function guardarRegistro(esAutoguardado = false) {
     statusText.textContent = 'Guardado ' + hora;
     if (!esAutoguardado) showToast('Guardado: ' + folio);
     cargarUltimosFolios();
+
+    // ── NUEVO: registrar en Sheets aunque no haya foto ──
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          folio:       data.folio,
+          fecha:       data.fecha,
+          distrito:    data.distrito,
+          cluster:     data.cluster,
+          responsable: data.responsable,
+          causa:       data.causa,
+          clientes:    data.clientes,
+          observacion: data.desc_act,
+          soloRegistro: true,
+          fileName:    null,
+          fileBase64:  null
+        })
+      });
+    } catch(e) { /* silencioso, no bloquea el guardado */ }
+
   } catch(err) {
     console.error(err);
     statusDot.style.background = 'var(--red)';
@@ -1137,26 +1158,35 @@ async function procesarYSubirArchivos(archivos) {
       const archivo = lista[i];
       if (!archivo.type.startsWith('image/')) continue;
 
-      // 1. Convertir la foto a Base64
       const base64Data = await fileToBase64(archivo);
 
-      // 2. Enviar al script de Google Drive
+      // --- CAMBIO AQUÍ: Enviamos todos los datos a Sheets ---
+      const datosParaEnviar = {
+        folio: folio,
+        fecha: g('fecha'),
+        distrito: g('distrito'),
+        cluster: g('cluster'),
+        responsable: g('responsable'),
+        causa: g('causa'),
+        clientes: g('clientes'),
+        observacion: g('desc_act'),
+        fileName: `${Date.now()}_${i}_${archivo.name}`,
+        fileBase64: base64Data
+      };
+
       const response = await fetch(APPS_SCRIPT_URL, {
         method: "POST",
-        body: JSON.stringify({
-          folio: folio,
-          fileName: `${Date.now()}_${i}_${archivo.name}`,
-          fileBase64: base64Data
-        })
+        body: JSON.stringify(datosParaEnviar)
       });
 
       const resultado = await response.json();
 
-      if (resultado.exito) {
+      // --- CAMBIO AQUÍ: Verificación estricta ---
+      if (resultado.exito && resultado.url) {
         urlsNuevas.push(resultado.url);
         mostrarFotoEnGaleria(resultado.url);
       } else {
-        console.error("Error en Apps Script:", resultado.error);
+        console.error("Error en Apps Script:", resultado.error || "URL vacía");
       }
     }
 
@@ -1168,17 +1198,17 @@ async function procesarYSubirArchivos(archivos) {
       );
       statusDot.style.background = 'var(--green)';
       statusText.textContent = 'Evidencia guardada';
-      showToast('Fotos subidas a Drive');
+      showToast('Fotos subidas y Excel actualizado');
     } else {
       statusDot.style.background = 'var(--red)';
       statusText.textContent = 'Error al subir';
-      showToast('No se pudo subir a Drive', true);
+      showToast('No se guardó ninguna foto', true);
     }
   } catch(err) {
     console.error(err);
     statusDot.style.background = 'var(--red)';
     statusText.textContent = 'Error al conectar';
-    showToast('Error al conectar con Drive', true);
+    showToast('Error de comunicación', true);
   }
 }
 
