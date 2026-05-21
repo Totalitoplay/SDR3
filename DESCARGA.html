@@ -539,8 +539,12 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoavHo7-EdKZ53
 async function descargarZipFolio(folio) {
   showToast('Empaquetando ZIP de ' + folio + ' (puede tardar unos segundos)...');
   try {
-    const url = APPS_SCRIPT_URL + "?action=downloadZip&folio=" + folio;
-    const response = await fetch(url);
+    // CAMBIAMOS A POST PARA EVITAR BLOQUEOS DE CORS
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "downloadZip", folio: folio })
+    });
+    
     const data = await response.json();
 
     if (data.exito) {
