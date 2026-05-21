@@ -969,7 +969,7 @@ async function guardarRegistro(esAutoguardado = false) {
   };
 
   try {
-    await db.collection("usuarios").doc(folio).set(data);
+    await db.collection("usuarios").doc(folio).set(data, { merge: true });
     const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
     statusDot.style.background = 'var(--green)';
     statusText.textContent = 'Guardado ' + hora;
