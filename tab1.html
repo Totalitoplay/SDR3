@@ -1386,6 +1386,7 @@ async function procesarYSubirArchivos(archivos) {
         cluster: g('cluster'),
         responsable: g('responsable'),
         causa: g('causa'),
+        clientes: g('clientes'), // <--- AQUÍ FALTABA ESTO
         observacion: g('desc_act'),
         fileName: `${Date.now()}_${i}_${archivo.name}`,
         fileBase64: base64Data
@@ -1398,7 +1399,6 @@ async function procesarYSubirArchivos(archivos) {
 
       const resultado = await response.json();
 
-      // --- CAMBIO AQUÍ: Verificación estricta ---
       if (resultado.exito && resultado.url) {
         urlsNuevas.push(resultado.url);
         mostrarFotoEnGaleria(resultado.url);
@@ -1407,7 +1407,6 @@ async function procesarYSubirArchivos(archivos) {
       }
     }
 
-    // --- CAMBIO AQUÍ: Solo ejecutamos si hay URLs válidas ---
     if (urlsNuevas.length > 0) {
       await db.collection("usuarios").doc(folio).set(
         { fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) },
@@ -1427,7 +1426,6 @@ async function procesarYSubirArchivos(archivos) {
     showToast('Error en la comunicación', true);
   }
 }
-
 function mostrarFotoEnGaleria(url) {
   const galeria = document.getElementById('galeria-fotos');
   const img = document.createElement('img');
