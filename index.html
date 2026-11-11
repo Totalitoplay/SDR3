@@ -2,19 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <!-- FIX: viewport correcto para móvil, sin maximum-scale que bloquea zoom -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>SCRIPTS R3</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=Syne:wght@700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --accent: #2563eb;
-      --bg-tabs: #f8fafc;
-      --border: #e2e8f0;
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --tab-h: 52px; /* altura fija de la barra de tabs */
+      --c: #2563eb;
+      --c-soft: rgba(37, 99, 235, .20);
+      --side-bg: #0f172a;
+      --idle: #94a3b8;
+      --idle-hover: #e2e8f0;
+      --tab-h: 44px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,119 +22,302 @@
       height: 100%;
       width: 100%;
       overflow: hidden;
-      font-family: 'IBM Plex Mono', monospace;
-      background: #111827;
-    }
-
-    input[type="radio"] { display: none; }
-
-    .tabs-container {
-      display: flex;
-      flex-direction: column;
-      /* FIX: usar dvh (dynamic viewport height) en móvil para
-         descontar la barra del navegador correctamente.
-         Fallback a 100vh para browsers viejos. */
-      height: 100vh;
-      height: 100dvh;
-      width: 100vw;
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
       background: #fff;
     }
 
-    /* ── BARRA DE TABS ── */
-    .button-container {
-      display: flex;
-      gap: 2px;
-      padding: 6px 8px;
-      background: var(--bg-tabs);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-      height: var(--tab-h);
-      overflow-x: auto;          /* scroll horizontal si no caben */
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;     /* ocultar scrollbar en Firefox */
-    }
-    .button-container::-webkit-scrollbar { display: none; }
+    input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
 
-    label {
-      padding: 7px 14px;
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      border-radius: 6px;
-      transition: all 0.18s;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      white-space: nowrap;       /* evita que el texto se parta */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      width: 100%;
+    }
+
+    /* ── Color por pestaña ── */
+    #tab1:checked ~ .header { --c: #2563eb; --c-soft: rgba(37, 99, 235, .20); }   /* azul */
+    #tab2:checked ~ .header { --c: #7c3aed; --c-soft: rgba(124, 58, 237, .22); }  /* violeta */
+    #tab3:checked ~ .header { --c: #059669; --c-soft: rgba(5, 150, 105, .22); }   /* verde */
+    #tab4:checked ~ .header { --c: #ea580c; --c-soft: rgba(234, 88, 12, .22); }   /* naranja */
+    #tab5:checked ~ .header { --c: #db2777; --c-soft: rgba(219, 39, 119, .22); }  /* rosa */
+    #tab6:checked ~ .header { --c: #0891b2; --c-soft: rgba(8, 145, 178, .22); }   /* celulares: cian */
+    #tab7:checked ~ .header { --c: #b45309; --c-soft: rgba(180, 83, 9, .24); }    /* descarga: ámbar */
+
+    /* ── Cabecera (barra superior en móvil, panel lateral en escritorio) ── */
+    .header {
       flex-shrink: 0;
+      background: var(--side-bg);
+      padding-top: env(safe-area-inset-top, 0px);
+      border-bottom: 4px solid var(--c);
+      transition: border-color .25s;
+    }
+
+    .brand {
+      display: none;
+      font-family: 'Syne', 'IBM Plex Sans', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: .02em;
+      color: #f8fafc;
+    }
+
+    .nav {
       display: flex;
       align-items: center;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent; /* quita flash azul en iOS */
+      gap: 6px;
+      padding: 8px 8px 14px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
     }
-    label:hover { background: #edf2f7; color: var(--text); }
+    .nav::-webkit-scrollbar { display: none; }
 
-    /* Tab activa */
-    #tab1:checked ~ .button-container label[for="tab1"],
-    #tab2:checked ~ .button-container label[for="tab2"],
-    #tab3:checked ~ .button-container label[for="tab3"],
-    #tab4:checked ~ .button-container label[for="tab4"] {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 2px 6px rgba(37,99,235,0.25);
+    .group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .group + .group {
+      margin-left: 6px;
+      padding-left: 12px;
+      border-left: 1px solid rgba(255, 255, 255, .20);
     }
+    .group-title { display: none; }
 
-    /* ── ÁREA DE CONTENIDO ── */
-    .tab-content {
-      flex: 1;           /* ocupa todo el espacio restante */
+    label {
       position: relative;
-      /* FIX: altura calculada descontando la barra de tabs */
-      height: calc(100vh - var(--tab-h));
-      height: calc(100dvh - var(--tab-h));
-      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      height: var(--tab-h);
+      padding: 0 16px 0 10px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--idle);
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: background .18s, color .18s, transform .18s, box-shadow .18s;
     }
+    label:hover { background: rgba(255, 255, 255, .07); color: var(--idle-hover); }
+
+    /* Insignia: número del folio o icono de la herramienta */
+    .badge {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, .10);
+      transition: background .18s, color .18s;
+    }
+    .badge svg {
+      width: 14px; height: 14px;
+      fill: none; stroke: currentColor; stroke-width: 2.2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ── Pestaña ACTIVA ── */
+    #tab1:checked ~ .header label[for="tab1"],
+    #tab2:checked ~ .header label[for="tab2"],
+    #tab3:checked ~ .header label[for="tab3"],
+    #tab4:checked ~ .header label[for="tab4"],
+    #tab5:checked ~ .header label[for="tab5"],
+    #tab6:checked ~ .header label[for="tab6"],
+    #tab7:checked ~ .header label[for="tab7"] {
+      background: var(--c);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 0 0 3px var(--c-soft), 0 6px 16px rgba(0, 0, 0, .35);
+      transform: translateY(-1px);
+    }
+
+    #tab1:checked ~ .header label[for="tab1"] .badge,
+    #tab2:checked ~ .header label[for="tab2"] .badge,
+    #tab3:checked ~ .header label[for="tab3"] .badge,
+    #tab4:checked ~ .header label[for="tab4"] .badge,
+    #tab5:checked ~ .header label[for="tab5"] .badge,
+    #tab6:checked ~ .header label[for="tab6"] .badge,
+    #tab7:checked ~ .header label[for="tab7"] .badge {
+      background: #fff;
+      color: var(--c);
+    }
+
+    /* Triangulito bajo la pestaña activa (barra superior) */
+    #tab1:checked ~ .header label[for="tab1"]::after,
+    #tab2:checked ~ .header label[for="tab2"]::after,
+    #tab3:checked ~ .header label[for="tab3"]::after,
+    #tab4:checked ~ .header label[for="tab4"]::after,
+    #tab5:checked ~ .header label[for="tab5"]::after,
+    #tab6:checked ~ .header label[for="tab6"]::after,
+    #tab7:checked ~ .header label[for="tab7"]::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+      margin-left: -7px;
+      border-left: 7px solid transparent;
+      border-right: 7px solid transparent;
+      border-top: 7px solid var(--c);
+      pointer-events: none;
+    }
+
+    /* Foco con teclado */
+    #tab1:focus-visible ~ .header label[for="tab1"],
+    #tab2:focus-visible ~ .header label[for="tab2"],
+    #tab3:focus-visible ~ .header label[for="tab3"],
+    #tab4:focus-visible ~ .header label[for="tab4"],
+    #tab5:focus-visible ~ .header label[for="tab5"],
+    #tab6:focus-visible ~ .header label[for="tab6"],
+    #tab7:focus-visible ~ .header label[for="tab7"] {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    /* ── Contenido ── */
+    .tab-content { flex: 1; min-height: 0; position: relative; overflow: hidden; background: #fff; }
 
     iframe {
       position: absolute;
-      top: 0; left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       border: none;
       display: none;
-      /* FIX: permite scroll interno del iframe en iOS Safari */
-      -webkit-overflow-scrolling: touch;
+      background: #fff;
     }
 
-    /* Mostrar iframe activo */
     #tab1:checked ~ .tab-content #content1,
     #tab2:checked ~ .tab-content #content2,
     #tab3:checked ~ .tab-content #content3,
-    #tab4:checked ~ .tab-content #content4 { display: block; }
+    #tab4:checked ~ .tab-content #content4,
+    #tab5:checked ~ .tab-content #content5,
+    #tab6:checked ~ .tab-content #content6,
+    #tab7:checked ~ .tab-content #content7 {
+      display: block;
+      animation: entrar .22s ease-out;
+    }
+
+    @keyframes entrar {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ── Escritorio: panel lateral con los grupos ── */
+    @media (min-width: 900px) {
+      .app { display: grid; grid-template-columns: 250px 1fr; }
+
+      .header {
+        display: flex;
+        flex-direction: column;
+        padding: 22px 12px;
+        border-bottom: none;
+        border-right: 4px solid var(--c);
+        overflow-y: auto;
+      }
+
+      .brand { display: block; padding: 0 10px; margin-bottom: 26px; }
+
+      .nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 22px;
+        padding: 0;
+        overflow: visible;
+      }
+
+      .group { flex-direction: column; align-items: stretch; gap: 4px; }
+      .group + .group { margin: 0; padding: 0; border-left: none; }
+
+      .group-title {
+        display: block;
+        padding: 0 10px 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+      }
+
+      label { width: 100%; }
+      label::after { display: none !important; }   /* sin triangulito en el panel lateral */
+      #tab1:checked ~ .header label[for="tab1"],
+      #tab2:checked ~ .header label[for="tab2"],
+      #tab3:checked ~ .header label[for="tab3"],
+      #tab4:checked ~ .header label[for="tab4"],
+      #tab5:checked ~ .header label[for="tab5"],
+      #tab6:checked ~ .header label[for="tab6"],
+      #tab7:checked ~ .header label[for="tab7"] { transform: translateX(3px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
   </style>
 </head>
 <body>
 
-<div class="tabs-container">
+<div class="app">
   <input type="radio" id="tab1" name="tab" checked>
   <input type="radio" id="tab2" name="tab">
   <input type="radio" id="tab3" name="tab">
   <input type="radio" id="tab4" name="tab">
+  <input type="radio" id="tab5" name="tab">
+  <input type="radio" id="tab6" name="tab">
+  <input type="radio" id="tab7" name="tab">
 
-  <div class="button-container">
-    <label for="tab1">Primer Folio</label>
-    <label for="tab2">Segundo Folio</label>
-    <label for="tab3">Celulares</label>
-    <label for="tab4">Descarga</label>
-  </div>
+  <header class="header">
+    <span class="brand">SCRIPTS R3</span>
+
+    <nav class="nav" aria-label="Secciones">
+      <div class="group" role="group" aria-label="Folios">
+        <span class="group-title">Folios</span>
+        <label for="tab1"><span class="badge">1</span>Primer folio</label>
+        <label for="tab2"><span class="badge">2</span>Segundo folio</label>
+        <label for="tab3"><span class="badge">3</span>Tercer folio</label>
+        <label for="tab4"><span class="badge">4</span>Cuarto folio</label>
+        <label for="tab5"><span class="badge">5</span>Quinto folio</label>
+      </div>
+
+      <div class="group" role="group" aria-label="Herramientas">
+        <span class="group-title">Herramientas</span>
+        <label for="tab6">
+          <span class="badge"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span>
+          Celulares
+        </label>
+        <label for="tab7">
+          <span class="badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg></span>
+          Descarga
+        </label>
+      </div>
+    </nav>
+  </header>
 
   <div class="tab-content">
-    <iframe id="content1" src="tab1.html"></iframe>
-    <iframe id="content2" src="tab2.html"></iframe>
-    <iframe id="content3" src="tab3.html"></iframe>
-    <iframe id="content4" src="DESCARGA.html"></iframe>
+    <iframe id="content1" src="tab1.html" title="Primer folio"></iframe>
+    <iframe id="content2" src="tab2.html" title="Segundo folio"></iframe>
+    <iframe id="content3" src="tab3.html" title="Tercer folio"></iframe>
+    <iframe id="content4" src="tab4.html" title="Cuarto folio"></iframe>
+    <iframe id="content5" src="tab5.html" title="Quinto folio"></iframe>
+    <iframe id="content6" src="tabC.html" title="Celulares"></iframe>
+    <iframe id="content7" src="DESCARGA.html" title="Descarga"></iframe>
   </div>
 </div>
+
+<script>
+  // En pantallas angostas, centra la pestaña activa dentro de la barra
+  document.querySelectorAll('input[name="tab"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      var label = document.querySelector('label[for="' + radio.id + '"]');
+      if (label && label.scrollIntoView) {
+        label.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
