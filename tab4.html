@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TAB 4</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --bg2: #ffffff;
+    --bg3: #eef0f4;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --text: #111827;
+    --text2: #4b5563;
+    --text3: #9ca3af;
+    --accent: #2563eb;
+    --accent-dim: rgba(37,99,235,0.10);
+    --green: #059669;
+    --green-dim: rgba(5,150,105,0.10);
+    --red: #dc2626;
+    --red-dim: rgba(220,38,38,0.10);
+    --amber: #d97706;
+    --amber-dim: rgba(217,119,6,0.10);
+    --purple: #7c3aed;
+    --purple-dim: rgba(124,58,237,0.10);
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--accent); }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .status-text { color: var(--text3); font-size: 11px; }
+
+  .main {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+.sidebar {
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 16px;
+    overflow-y: auto;
+    
+    /* AÑADE ESTAS 3 LÍNEAS PARA BLOQUEAR SU TAMAÑO */
+    width: 280px; 
+    min-width: 280px;
+    max-width: 280px;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .search-wrap { position: relative; }
+  .search-wrap input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 8px 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--text3); }
+
+  .btn {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .btn-accent {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-accent:hover { opacity: 0.85; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+  }
+  .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+  .btn-save {
+    background: var(--green-dim);
+    border-color: var(--green);
+    color: var(--green);
+    margin-top: auto;
+  }
+  .btn-save:hover { background: rgba(62,207,142,0.22); }
+
+  .folios-list { display: flex; flex-direction: column; gap: 2px; }
+  .folio-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .folio-row:hover { background: var(--bg3); }
+  .folio-id {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .folio-del {
+    color: var(--text3);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0 2px;
+    transition: color 0.12s;
+  }
+  .folio-del:hover { color: var(--red); }
+
+  .form-area {
+    width: 550px;
+    min-width: 550px;
+    max-width: 550px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 11px 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text3);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .tab-btn:hover { color: var(--text2); background: var(--bg3); }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); background: var(--bg); }
+
+  .tab-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-eta { background: var(--amber); }
+  .dot-sitio { background: var(--accent); }
+  .dot-fallo { background: var(--red); }
+  .dot-final { background: var(--green); }
+
+  .tab-panel {
+    display: none;
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .tab-panel.active { display: block; }
+
+  .section-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .field-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .field { margin-bottom: 8px; }
+  .field:last-child { margin-bottom: 0; }
+
+  .field label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sync-tag {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--green-dim);
+    color: var(--green);
+    letter-spacing: 0.05em;
+  }
+
+  .field input,
+  .field select {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .field input:focus,
+  .field select:focus { border-color: var(--accent); }
+  .field input::placeholder { color: var(--text3); }
+  .field input[readonly] {
+    color: var(--text3);
+    cursor: not-allowed;
+    background: var(--bg3);
+  }
+  .field select option { background: var(--bg2); }
+
+  .field-note {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: -8px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 12px 0;
+  }
+
+  /* SELECT2 */
+  .select2-container { width: 100% !important; }
+  .select2-container--default .select2-selection--single {
+    width: 100% !important;
+    height: 46px !important;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+  }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 46px !important;
+    padding-left: 14px !important;
+    padding-right: 30px !important;
+    font-size: 14px !important;
+    color: var(--text);
+    display: block;
+  }
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 46px !important;
+    top: 0;
+    right: 8px;
+  }
+  .select2-dropdown { padding: 8px !important; font-size: 13px; }
+  .select2-container--default .select2-results__option {
+    color: var(--text2);
+    font-size: 13px !important;
+    padding: 10px 14px !important;
+  }
+  .select2-container--default .select2-results__option--highlighted {
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+  .select2-search--dropdown .select2-search__field {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  /* PREVIEW */
+  .preview-area {
+    width: 650px;
+    min-width: 650px;
+    max-width: 650px;
+    background: var(--bg2);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .preview-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .preview-title {
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .live-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--green-dim);
+    color: var(--green);
+    letter-spacing: 0.05em;
+  }
+
+  .preview-scripts {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: calc(100vh - 60px);
+  }
+
+  .script-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.15s;
+    flex-shrink: 0;
+    background: #ffffff;
+  }
+  .script-card:hover { border-color: var(--border2); }
+
+  .script-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .script-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .label-eta { color: var(--amber); }
+  .label-sitio { color: var(--accent); }
+  .label-fallo { color: var(--red); }
+  .label-final { color: var(--green); }
+
+  .copy-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.12s;
+    letter-spacing: 0.05em;
+  }
+  .copy-btn:hover { background: var(--bg2); color: var(--text); border-color: var(--text3); }
+  .copy-btn.copied { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+
+  .script-body {
+    padding: 12px 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text2);
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+  .sf { color: var(--text3); }
+  .sv { color: var(--text); font-weight: 500; }
+  .sv-empty { color: var(--text3); font-style: italic; }
+
+  .toast {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    color: #1e293b;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 4px solid #059669;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 10000;
+    pointer-events: none;
+    min-width: 300px;
+    justify-content: center;
+  }
+  .toast.show { top: 30px; opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .drop-zone {
+    border: 2px dashed var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 24px 20px;
+    text-align: center;
+    background: var(--bg2);
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .drop-zone:hover { background: var(--bg3); border-color: var(--text3); }
+  .drop-zone.dragover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">Scripts<span>FO</span></div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-text" id="status-text">Conectando...</span>
+    </div>
+  </div>
+  <div style="color:var(--text3);font-size:11px;" id="folio-indicator">Sin folio activo</div>
+</div>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+      <div class="field">
+        <label>Subir imágenes</label>
+        <!-- FIX: Un solo drop-zone y un solo input-fotos (había duplicados) -->
+        <div id="drop-zone" class="drop-zone">
+          <span>IMAGENES, ARRASTRA O SELECCIONA</span>
+        </div>
+        <input type="file" id="input-fotos" accept="image/*" multiple style="display:none;">
+      </div>
+      <!-- FIX: Un solo galeria-fotos (había duplicados) -->
+      <div id="galeria-fotos" style="display:flex; gap:5px; flex-wrap:wrap; margin-top:10px; max-height: 150px; overflow-y: auto;"></div>
+    <div>
+      
+      <p class="sidebar-section-label">Buscar SD</p>
+      <div class="search-wrap" style="margin-bottom:8px;">
+        <input type="text" id="buscarId" placeholder="Ej. SD-20481">
+      </div>
+      <button class="btn btn-accent" onclick="buscar()" style="margin-bottom:6px;">Buscar</button>
+      <button class="btn btn-ghost" onclick="limpiarSeleccion()">Limpiar todo</button>
+    </div>
+    <div>
+      <p class="sidebar-section-label">Últimos registros</p>
+      <div class="folios-list" id="lista-folios">
+        <div style="color:var(--text3);font-size:11px;">Cargando...</div>
+      </div>
+    </div>
+    <button class="btn btn-save" type="submit" form="modificar-form">Guardar registro</button>
+  </div>
+
+  <!-- FORM AREA -->
+  <div class="form-area">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('eta',this)">
+        <span class="tab-dot dot-eta"></span>ETA
+      </button>
+      <button class="tab-btn" onclick="switchTab('sitio',this)">
+        <span class="tab-dot dot-sitio"></span>Sitio
+      </button>
+      <button class="tab-btn" onclick="switchTab('fallo',this)">
+        <span class="tab-dot dot-fallo"></span>Fallo
+      </button>
+      <button class="tab-btn" onclick="switchTab('final',this)">
+        <span class="tab-dot dot-final"></span>Final
+      </button>
+    </div>
+
+    <form id="modificar-form" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+
+      <!-- TAB: ETA -->
+      <div class="tab-panel active" id="panel-eta">
+        <div class="section-title">Script ETA — Inicial</div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Folio / SD</label>
+            <input type="text" id="folio_" name="folio_" placeholder="SD-XXXXX" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>ETA</label>
+            <input type="text" id="eta" name="eta" placeholder="Hora estimada de llegada" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="proveedor" name="proveedor" value="GTB" onblur="this.value=this.value.trim()">
+          </div>
+        </div>
+        <hr class="divider">
+        <div class="field">
+            <label>Responsable <span class="sync-tag" style="background: var(--purple-dim); color: var(--purple);">solo BD</span></label>
+            <select id="responsable" name="responsable">
+              <option value="">— Selecciona —</option>
+              <option value="FERNANDO GOMEZ NOGUEZ">FERNANDO GOMEZ NOGUEZ</option>
+              <option value="CESAR DAVID ORDAZ MICHEL">CESAR DAVID ORDAZ MICHEL</option>
+              <option value="JESUS EDUARDO RODRIGUEZ HERNANDEZ">JESUS EDUARDO RODRIGUEZ HERNANDEZ</option>
+              <option value="JORGE ALBERTO ROBLES CORTEZ">JORGE ALBERTO ROBLES CORTEZ</option>
+              <option value="IVAN DE JESUS HERRERA ESTRADA">IVAN DE JESUS HERRERA ESTRADA</option>
+            </select>
+          </div>
+        <input type="hidden" id="fecha-texto" name="fecha-texto">
+      </div>
+
+      <!-- TAB: SITIO -->
+      <div class="tab-panel" id="panel-sitio">
+        <div class="section-title">Script Sitio — Llegada</div>
+        <div class="field-grid">
+          <div class="field">
+            <label>SD <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="sd" name="sd" readonly>
+          </div>
+          <div class="field">
+            <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="proveedor2" name="proveedor2" readonly>
+          </div>
+          <div class="field">
+            <label>Sitio / Punto de medición</label>
+            <input type="text" id="punto" name="punto" placeholder="Descripción del punto" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Coordenadas</label>
+            <input type="text" id="coordenadas" name="coordenadas" placeholder="Lat, Long" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Distrito <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="distrito" name="distrito" value="JUAREZ" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Nombre del técnico</label>
+            <select id="nombre" name="nombre"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: FALLO -->
+      <div class="tab-panel" id="panel-fallo">
+        <div class="section-title">Script Fallo</div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Folio <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="folio3_" name="folio3_" readonly>
+          </div>
+          <div class="field">
+            <label>ETR</label>
+            <input type="text" id="etr" name="etr" placeholder="Tiempo estimado de restauración" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Causa del daño <span class="sync-tag">auto-sync → final</span></label>
+            <input type="text" id="causa" name="causa" placeholder="Descripción de la causa" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Acción correctiva</label>
+            <input type="text" id="accion" name="accion" placeholder="Acción tomada" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Capacidad de FO</label>
+            <input type="text" id="calibre" name="calibre" placeholder="Ej. 12 hilos" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Número QR <span class="sync-tag">auto-sync → final</span></label>
+            <input type="text" id="qr" name="qr" placeholder="QR del empalme" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Coordenadas del daño <span class="sync-tag">auto-sync → final</span></label>
+            <input type="text" id="coordenadas3" name="coordenadas3" placeholder="Lat, Long" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Materiales a utilizar <span class="sync-tag">auto-sync → final</span></label>
+            <input type="text" id="materiales" name="materiales" placeholder="Lista de materiales" onblur="this.value=this.value.trim()">
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: FINAL -->
+      <div class="tab-panel" id="panel-final">
+        <div class="section-title">Script Final — Cierre</div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Folio <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="folio4" name="folio4" readonly>
+          </div>
+          <div class="field">
+            <label>Ciudad <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="ciudad" name="ciudad" readonly>
+          </div>
+          <div class="field">
+            <label>Estado</label>
+            <input type="text" id="estado" name="estado" value="CHIHUAHUA" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Selecciona fecha del corte</label>
+            <input type="date" id="fecha" name="fecha">
+          </div>
+          <div class="field">
+            <label>OLT</label>
+            <select id="olt" name="olt">
+              <option value="">— Selecciona OLT —</option>
+              <option value="ALDAMA_JUA">ALDAMA_JUA</option>
+              <option value="ALDAMA_2_JUA">ALDAMA_2_JUA</option>
+              <option value="BUENOS_AIRES_JUA">BUENOS_AIRES_JUA</option>
+              <option value="BUENOS_AIRES_2_JUA">BUENOS_AIRES_2_JUA</option>
+              <option value="CARLOS_AMAYA_JUA">CARLOS_AMAYA_JUA</option>
+              <option value="VERGEL_JUA">VERGEL_JUA</option>
+              <option value="CIPRESES_JUA">CIPRESES_JUA</option>
+              <option value="MAYORCA_JUA">MAYORCA_JUA</option>
+              <option value="NOGALES_JUA">NOGALES_JUA</option>
+              <option value="OASIS_JUA">OASIS_JUA</option>
+              <option value="SANTO_DOMINGO_JUA">SANTO_DOMINGO_JUA</option>
+              <option value="GOMEZ_MORIN_JUA">GOMEZ_MORIN_JUA</option>
+              <option value="LOMAS_DE_MORELOS_JUA">LOMAS_DE_MORELOS_JUA</option>
+              <option value="THOMPSON_JUA">THOMPSON_JUA</option>
+              <option value="THOMPSON_2_JUA">THOMPSON_2_JUA</option>
+              <option value="HACIENDA_DE_LAS_TORRES_JUA">HACIENDA_DE_LAS_TORRES_JUA</option>
+              <option value="HACIENDA_DE_LAS_TORRES_2_JUA">HACIENDA_DE_LAS_TORRES_2_JUA</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Cluster</label>
+            <select id="cluster" name="cluster">
+              <option value="">Selecciona OLT primero</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Clientes afectados</label>
+            <input type="text" id="clientes" name="clientes" placeholder="Número de clientes" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Falla reportada</label>
+            <input type="text" id="falla_r" name="falla_r" placeholder="Descripción de la falla" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Fecha y HR asg. DESP</label>
+            <input type="text" id="hr_desp" name="hr_desp" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Fecha y HR asg. PROV</label>
+            <input type="text" id="hr_prov" name="hr_prov" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>HR llegada a la zona</label>
+            <input type="text" id="hr_llegada" name="hr_llegada" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>HR 1ª medición</label>
+            <input type="text" id="hr_med" name="hr_med" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Ubicación 1N / 2N</label>
+            <input type="text" id="ubicacion_1er_2do" name="ubicacion_1er_2do" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>QR segundo nivel <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="qr_2" name="qr_2" readonly>
+          </div>
+          <div class="field">
+            <label>Causa del daño <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="causa_dano" name="causa_dano" readonly>
+          </div>
+          <div class="field">
+            <label>Ubicación del daño</label>
+            <input type="text" id="ubicacion_dano" name="ubicacion_dano" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Coordenadas del daño <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="coordenadas_dano" name="coordenadas_dano" readonly>
+          </div>
+          <div class="field">
+            <label>Descripción de actividades</label>
+            <input type="text" id="desc_act" name="desc_act" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Potencia inicial</label>
+            <input type="text" id="potencia_inicial" name="potencia_inicial" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Potencia final</label>
+            <input type="text" id="potencia_final" name="potencia_final" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Trabajos realizados</label>
+            <input type="text" id="trabajos_realizados" name="trabajos_realizados" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Fecha y HR final de reparación</label>
+            <input type="text" id="hr_final" name="hr_final" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Atiende nom. técnico <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="atiende_nom_tec" name="atiende_nom_tec" readonly>
+          </div>
+          <div class="field">
+            <label>Proveedor <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="proveedor4" name="proveedor4" readonly>
+          </div>
+          <div class="field">
+            <label>Supervisor distrito</label>
+            <select id="supervisor" name="supervisor">
+              <option value="Jesus Eduardo Rodriguez Hernandez">Jesus Eduardo Rodriguez Hernandez</option>
+              <option value="Jorge Alberto Robles Cortez">Jorge Alberto Robles Cortez</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Pausa hora inicial y final</label>
+            <input type="text" id="justificacion_sla" name="justificacion_sla" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Motivo de pausa</label>
+            <input type="text" id="m_pausa" name="m_pausa" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Tiempo total de pausa</label>
+            <input type="text" id="t_pausa" name="t_pausa" onblur="this.value=this.value.trim()">
+          </div>
+          <div class="field">
+            <label>Material utilizado <span class="sync-tag">auto-sync</span></label>
+            <input type="text" id="material_utilizado" name="material_utilizado" readonly>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-area">
+    <div class="preview-header">
+      <span class="preview-title">Vista previa</span>
+      <span class="live-badge">LIVE</span>
+    </div>
+    <div class="preview-scripts">
+
+      <div class="script-card">
+        <div class="script-card-header">
+          <span class="script-label label-eta"><span class="tab-dot dot-eta"></span>ETA</span>
+          <button class="copy-btn" onclick="copiarSeccion('seccion-eta', this)">Copiar</button>
+        </div>
+        <div class="script-body" id="seccion-eta-display"></div>
+        <div id="seccion-eta" style="display:none;"></div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-header">
+          <span class="script-label label-sitio"><span class="tab-dot dot-sitio"></span>Sitio</span>
+          <button class="copy-btn" onclick="copiarSeccion('seccion-sitio', this)">Copiar</button>
+        </div>
+        <div class="script-body" id="seccion-sitio-display"></div>
+        <div id="seccion-sitio" style="display:none;"></div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-header">
+          <span class="script-label label-fallo"><span class="tab-dot dot-fallo"></span>Fallo</span>
+          <button class="copy-btn" onclick="copiarSeccion('seccion-fallo', this)">Copiar</button>
+        </div>
+        <div class="script-body" id="seccion-fallo-display"></div>
+        <div id="seccion-fallo" style="display:none;"></div>
+      </div>
+
+      <div class="script-card">
+        <div class="script-card-header">
+          <span class="script-label label-final"><span class="tab-dot dot-final"></span>Final</span>
+          <button class="copy-btn" onclick="copiarSeccion('seccion-final', this)">Copiar</button>
+        </div>
+        <div class="script-body" id="seccion-final-display"></div>
+        <div id="seccion-final" style="display:none;"></div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-title">Evidencia Fotográfica</div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<!-- jQuery + Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/js/select2.min.js"></script>
+
+<script>
+// ─── Firebase ────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyD63qvgPWjAF7wDB1o4O3sgvDU0PtAwHb8",
+  authDomain: "scripts-2c739.firebaseapp.com",
+  projectId: "scripts-2c739",
+  storageBucket: "scripts-2c739.firebasestorage.app",
+  messagingSenderId: "1054970007452",
+  appId: "1:1054970007452:web:1d283693bb8377192c0259"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+
+document.getElementById('status-dot').style.background = 'var(--green)';
+document.getElementById('status-text').textContent = 'Firebase conectado';
+
+// ─── Toast ────────────────────────────────────────────────
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.innerHTML = isError ? `<span>✕</span> ${msg}` : `<span>✓</span> ${msg}`;
+  t.style.borderBottomColor = isError ? '#dc2626' : '#059669';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── Tabs ─────────────────────────────────────────────────
+function switchTab(name, btn) {
+  // 1. Autoguardado SOLO si el usuario entra a la pestaña "FINAL"
+  if (name === 'final') {
+    guardarRegistro(true);
+  }
+
+  // 2. Cambiar visualmente la pestaña
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── OLT map ──────────────────────────────────────────────
+const OLT_TO_CLUSTERS = {
+  "ALDAMA_JUA": ["ALDAMA","AMPLIACION ALDAMA","AMPLIACION ALDAMA 2","AMPLIACION ALDAMA 3","AMPLIACION ALDAMA 4","AMPLIACION ALDAMA 5", "ALDAMA_A"],
+  "ALDAMA_2_JUA": ["ALDAMA","AMPLIACION ALDAMA","AMPLIACION ALDAMA 2","AMPLIACION ALDAMA 3","AMPLIACION ALDAMA 4","AMPLIACION ALDAMA 5", "ALDAMA_A"],
+  "BUENOS_AIRES_JUA": ["BUENOS AIRES","BUENOS AIRES_A","AMPLIACION BUENOS AIRES","AMPLIACION BUENOS AIRES_A","AMPLIACION BUENOS AIRES_2_A","AMPLIACION BUENOS AIRES_3_A","AMPLIACION BUENOS AIRES_4_A","AMPLIACION BUENOS AIRES_5_A","AMPLIACION BUENOS AIRES_6_A","AMPLIACION BUENOS AIRES_7_A"],
+  "BUENOS_AIRES_2_JUA": ["BUENOS AIRES","BUENOS AIRES_A","AMPLIACION BUENOS AIRES","AMPLIACION BUENOS AIRES_A","AMPLIACION BUENOS AIRES_2_A","AMPLIACION BUENOS AIRES_3_A","AMPLIACION BUENOS AIRES_4_A","AMPLIACION BUENOS AIRES_5_A","AMPLIACION BUENOS AIRES_6_A","AMPLIACION BUENOS AIRES_7_A"],
+  "CARLOS_AMAYA_JUA": ["CARLOS AMAYA"],
+  "VERGEL_JUA": ["EL VERGEL"],
+  "CIPRESES_JUA": ["LOS CIPRESES"],
+  "MAYORCA_JUA": ["MAYORCA"],
+  "NOGALES_JUA": ["NOGALES","AMPLIACION NOGALES"],
+  "OASIS_JUA": ["OASIS"],
+  "SANTO_DOMINGO_JUA": ["SANTO DOMINGO"],
+  "GOMEZ_MORIN_JUA": ["GOMEZ MORIN","AMPLIACION GOMEZ MORIN","GOMEZ MORIN_A"],
+  "LOMAS_DE_MORELOS_JUA": ["LOMAS DE MORELOS","AMPLIACION LOMAS DE MORELOS","AMPLIACION LOMAS DE MORELOS 2","AMPLIACION LOMAS DE MORELOS 3"],
+  "THOMPSON_JUA": ["THOMPSON","THOMPSON_A"],
+  "THOMPSON_2_JUA": ["THOMPSON","THOMPSON_A"],
+  "HACIENDA_DE_LAS_TORRES_JUA": ["TIERRA NUEVA","TIERRA NUEVA_A","AMPLIACION TIERRA NUEVA","AMPLIACION TIERRA NUEVA 2","AMPLIACION TIERRA NUEVA 3","AMPLIACION TIERRA NUEVA 4","AMPLIACION TIERRA NUEVA 5","TIERRA NUEVA_A","TIERRA NUEVA_2_A","TIERRA NUEVA_3_A","TIERRA NUEVA_4_A"],
+  "HACIENDA_DE_LAS_TORRES_2_JUA": ["THOMPSON_A","TIERRA NUEVA","TIERRA NUEVA_A","AMPLIACION TIERRA NUEVA","AMPLIACION TIERRA NUEVA 2","AMPLIACION TIERRA NUEVA 3","AMPLIACION TIERRA NUEVA 4","AMPLIACION TIERRA NUEVA 5","TIERRA NUEVA_A","TIERRA NUEVA_2_A","TIERRA NUEVA_3_A","TIERRA NUEVA_4_A"]
+};
+
+function filtrarClustersPorOLT() {
+  const oltVal = document.getElementById("olt").value;
+  const clusterSelect = document.getElementById("cluster");
+  clusterSelect.innerHTML = '<option value="">— Selecciona Cluster —</option>';
+  const clusters = OLT_TO_CLUSTERS[oltVal] || [];
+  clusters.forEach(c => {
+    const el = document.createElement("option");
+    el.value = c; el.textContent = c;
+    clusterSelect.appendChild(el);
+  });
+  if (clusters.length === 1) clusterSelect.value = clusters[0];
+  $(clusterSelect).trigger('change');
+  updatePreview();
+}
+
+// ─── Fecha autofill ───────────────────────────────────────
+// FIX: Al cargar registro, también se llena el input[type=date] (no solo el hidden)
+document.getElementById('fecha').addEventListener('input', function() {
+  document.getElementById('fecha-texto').value = this.value;
+  ['hr_llegada','hr_desp','hr_prov','hr_med','hr_final'].forEach(id => {
+    document.getElementById(id).value = this.value;
+  });
+  updatePreview();
+});
+
+// ─── Select2 init ─────────────────────────────────────────
+$(document).ready(function() {
+  $('#nombre').select2({ placeholder: 'Selecciona técnico', allowClear: true, dropdownParent: $('#panel-sitio') });
+  // FIX: leer con $().val() para que Select2 sincronice correctamente
+  $('#nombre').on('change', updatePreview);
+
+  $('#olt').select2({ placeholder: 'Busca o selecciona OLT', allowClear: true, dropdownParent: $('#panel-final') });
+  $('#olt').on('select2:select', filtrarClustersPorOLT);
+  $('#olt').on('select2:clear', function() {
+    document.getElementById('cluster').innerHTML = '<option value="">Selecciona OLT primero</option>';
+    updatePreview();
+  });
+
+  $('#cluster').select2({ placeholder: 'Selecciona Cluster', allowClear: true, dropdownParent: $('#panel-final') });
+  $('#cluster').on('change', updatePreview);
+});
+
+// ─── Cargar técnicos desde txt ────────────────────────────
+async function cargarTecnicos() {
+  try {
+    const r = await fetch('./tecnicos.txt');
+    if (!r.ok) return;
+    const lines = (await r.text()).split('\n');
+    const sel = document.getElementById('nombre');
+    lines.forEach(l => {
+      const v = l.trim();
+      if (v) {
+        const o = document.createElement('option');
+        o.value = v; o.textContent = v;
+        sel.appendChild(o);
+      }
+    });
+  } catch(e) { /* sin archivo local */ }
+}
+cargarTecnicos();
+
+// ─── g() helper ── FIX: usa $().val() para Select2 ────────
+function g(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  // Select2 maneja <select> → leer con jQuery para obtener valor real
+  if (el.tagName === 'SELECT') return $(el).val() || '';
+  return el.value ? el.value.trim() : '';
+}
+
+function renderLine(label, val) {
+  const hasVal = val && val.length > 0;
+  return `<div><span class="sf">${label}: </span><span class="${hasVal ? 'sv' : 'sv-empty'}">${hasVal ? '*' + val + '*' : '—'}</span></div>`;
+}
+
+// ─── Update Preview ───────────────────────────────────────
+function updatePreview() {
+  // Sync readonly fields
+  const folio    = g('folio_');
+  const proveedor = g('proveedor');
+  const distrito  = g('distrito');
+  const nombre    = g('nombre');   // FIX: ahora lee Select2 correctamente
+  const causa     = g('causa');
+  const coord3    = g('coordenadas3');
+  const qr        = g('qr');
+  const materiales = g('materiales');
+
+  document.getElementById('folio3_').value      = folio;
+  document.getElementById('folio4').value        = folio;
+  document.getElementById('sd').value            = folio;
+  document.getElementById('proveedor2').value    = proveedor;
+  document.getElementById('proveedor4').value    = proveedor;
+  document.getElementById('ciudad').value        = distrito;
+  document.getElementById('atiende_nom_tec').value = nombre;
+  document.getElementById('causa_dano').value    = causa;
+  document.getElementById('coordenadas_dano').value = coord3;
+  document.getElementById('qr_2').value          = qr;
+  document.getElementById('material_utilizado').value = materiales;
+
+  document.getElementById('folio-indicator').textContent = folio ? 'Folio activo: ' + folio : 'Sin folio activo';
+
+  // Re-read all fields after sync
+  const eta = g('eta'), olt = g('olt'), cluster = g('cluster');
+  const punto = g('punto'), coordenadas = g('coordenadas');
+  const accion = g('accion'), etr = g('etr'), calibre = g('calibre');
+  const ciudad = g('ciudad'), estado = g('estado');
+  const clientes = g('clientes'), falla_r = g('falla_r');
+  const hr_desp = g('hr_desp'), hr_prov = g('hr_prov');
+  const hr_llegada = g('hr_llegada'), hr_med = g('hr_med');
+  const ubicacion_1er_2do = g('ubicacion_1er_2do'), qr_2 = g('qr_2');
+  const causa_dano = g('causa_dano'), ubicacion_dano = g('ubicacion_dano');
+  const coordenadas_dano = g('coordenadas_dano'), desc_act = g('desc_act');
+  const potencia_inicial = g('potencia_inicial'), potencia_final = g('potencia_final');
+  const trabajos_realizados = g('trabajos_realizados'), hr_final = g('hr_final');
+  const atiende_nom_tec = g('atiende_nom_tec'), proveedor4 = g('proveedor4');
+  const supervisor = g('supervisor'), justificacion_sla = g('justificacion_sla');
+  const m_pausa = g('m_pausa'), t_pausa = g('t_pausa'), material_utilizado = g('material_utilizado');
+
+  const etaTxt   = `FOLIO: *${folio}*\nETA: *${eta}*\nPROVEEDOR: *${proveedor}*`;
+  const sitioTxt = `SD: *${folio}*\nSitio/punto de medición: *${punto}*\nCoordenadas: *${coordenadas}*\nProveedor: *${proveedor}*\nDistrito: *${distrito}*\nNombre: *${nombre}*`;
+  const falloTxt = `Folio: *${folio}*\nCausa del daño: *${causa}*\nAcción correctiva: *${accion}*\nETR: *${etr}*\nCalibre de fo: *${calibre}*\nCoordenadas: *${coord3}*\nNumero QR: *${qr}*\nMateriales a utilizar: *${materiales}*`;
+  const finalTxt = `FOLIO: *${folio}*\nCIUDAD: *${ciudad}*\nESTADO: *${estado}*\nCLUSTER: *${cluster}*\nOLT: *${olt}*\nCLIENTES AFECTADOS: *${clientes}*\nFALLA_REPORTADA: *${falla_r}*\nFECHA_Y_HR_DE_ASG_DESP: *${hr_desp}*\nFECHA_Y_HR_DE_ASG_PROV: *${hr_prov}*\nHR_DE_LLEGADA_A_LA_ZONA: *${hr_llegada}*\nHR_DE_LA_1er_MEDICION: *${hr_med}*\nUBICACIÓN_DE_1N_2N: *${ubicacion_1er_2do}*\nQR DE SEGUNDO NIVEL: *${qr_2}*\nCAUSA DE DAÑO: *${causa_dano}*\nUBICACIÓN_DEL_DAÑO: *${ubicacion_dano}*\nCOORDENADAS: *${coordenadas_dano}*\nDESCRIP_DE_ACTIVIDADES: *${desc_act}*\nPOTENCIA_INICIAL: *${potencia_inicial}*\nPOTENCIA_FINAL: *${potencia_final}*\nTRABAJOS_REALIZADOS: *${trabajos_realizados}*\nFECHA_HR_FINAL_DE_REPARACION: *${hr_final}*\nATIENDE_NOM_TEC: *${atiende_nom_tec}*\nPROVEEDOR: *${proveedor4}*\nSUPERVISOR DISTRITO: *${supervisor}*\nPAUSA HORA INICIAL Y FINAL: *${justificacion_sla}*\nMOTIVO DE PAUSA: *${m_pausa}*\nTIEMPO TOTAL DE PAUSA: *${t_pausa}*\nMATERIAL UTILIZADO: *${material_utilizado}*`;
+
+  document.getElementById('seccion-eta').textContent   = etaTxt;
+  document.getElementById('seccion-sitio').textContent = sitioTxt;
+  document.getElementById('seccion-fallo').textContent = falloTxt;
+  document.getElementById('seccion-final').textContent = finalTxt;
+
+  document.getElementById('seccion-eta-display').innerHTML =
+    renderLine('FOLIO', folio) + renderLine('ETA', eta) + renderLine('PROVEEDOR', proveedor);
+
+  document.getElementById('seccion-sitio-display').innerHTML =
+    renderLine('SD', folio) + renderLine('Sitio', punto) +
+    renderLine('Coordenadas', coordenadas) + renderLine('Proveedor', proveedor) +
+    renderLine('Distrito', distrito) + renderLine('Nombre', nombre);
+
+  document.getElementById('seccion-fallo-display').innerHTML =
+    renderLine('Folio', folio) + renderLine('Causa del daño', causa) +
+    renderLine('Acción', accion) + renderLine('ETR', etr) +
+    renderLine('Calibre FO', calibre) + renderLine('Coordenadas', coord3) +
+    renderLine('QR', qr) + renderLine('Materiales', materiales);
+
+  document.getElementById('seccion-final-display').innerHTML =
+    renderLine('FOLIO', folio) + renderLine('CIUDAD', ciudad) +
+    renderLine('ESTADO', estado) + renderLine('CLUSTER', cluster) +
+    renderLine('OLT', olt) + renderLine('CLIENTES', clientes) +
+    renderLine('FALLA', falla_r) + renderLine('HR_DESP', hr_desp) +
+    renderLine('HR_PROV', hr_prov) + renderLine('HR_LLEGADA', hr_llegada) +
+    renderLine('HR_MED', hr_med) + renderLine('UBICACIÓN 1N/2N', ubicacion_1er_2do) +
+    renderLine('QR 2do NIVEL', qr_2) + renderLine('CAUSA DAÑO', causa_dano) +
+    renderLine('UBICACIÓN DAÑO', ubicacion_dano) + renderLine('COORDENADAS', coordenadas_dano) +
+    renderLine('DESC ACT', desc_act) + renderLine('POT INICIAL', potencia_inicial) +
+    renderLine('POT FINAL', potencia_final) + renderLine('TRABAJOS', trabajos_realizados) +
+    renderLine('HR FINAL', hr_final) + renderLine('TÉCNICO', atiende_nom_tec) +
+    renderLine('PROVEEDOR', proveedor4) + renderLine('SUPERVISOR', supervisor) +
+    renderLine('PAUSA', justificacion_sla) + renderLine('MOT PAUSA', m_pausa) +
+    renderLine('T PAUSA', t_pausa) + renderLine('MATERIAL', material_utilizado);
+}
+
+// ─── Copiar sección ───────────────────────────────────────
+function copiarSeccion(id, btn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    btn.textContent = '✓ Copiado'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = el.textContent;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✓ Copiado'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ─── Guardar en Firebase ──────────────────────────────────
+async function guardarRegistro(esAutoguardado = false) {
+  const folio = g('folio_');
+  if (!folio) {
+    if (!esAutoguardado) showToast('Debes ingresar un SD', true);
+    return;
+  }
+
+  const statusText = document.getElementById('status-text');
+  const statusDot  = document.getElementById('status-dot');
+
+  if (esAutoguardado) {
+    statusDot.style.background = 'var(--amber)';
+    statusText.textContent = 'Guardando...';
+  }
+
+  const data = {
+    responsable: g('responsable'),
+    folio, eta: g('eta'), proveedor: g('proveedor'),
+    punto: g('punto'), coordenadas: g('coordenadas'),
+    distrito: g('distrito'), nombre: g('nombre'),
+    causa: g('causa'), accion: g('accion'), etr: g('etr'), calibre: g('calibre'),
+    coordenadas3: g('coordenadas3'), qr: g('qr'), materiales: g('materiales'),
+    ciudad: g('ciudad'), estado: g('estado'), cluster: g('cluster'), olt: g('olt'),
+    clientes: g('clientes'), falla_r: g('falla_r'), fecha: g('fecha-texto'),
+    hr_desp: g('hr_desp'), hr_prov: g('hr_prov'), hr_llegada: g('hr_llegada'),
+    hr_med: g('hr_med'), ubicacion_1er_2do: g('ubicacion_1er_2do'), qr_2: g('qr_2'),
+    causa_dano: g('causa_dano'), ubicacion_dano: g('ubicacion_dano'),
+    coordenadas_dano: g('coordenadas_dano'), desc_act: g('desc_act'),
+    potencia_inicial: g('potencia_inicial'), potencia_final: g('potencia_final'),
+    trabajos_realizados: g('trabajos_realizados'), hr_final: g('hr_final'),
+    atiende_nom_tec: g('atiende_nom_tec'), proveedor4: g('proveedor4'),
+    supervisor: g('supervisor'), justificacion_sla: g('justificacion_sla'),
+    m_pausa: g('m_pausa'), t_pausa: g('t_pausa'), material_utilizado: g('material_utilizado'),
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+try {
+    await db.collection("usuarios").doc(folio).set(data, { merge: true });
+    const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    statusDot.style.background = 'var(--green)';
+    statusText.textContent = 'Guardado a las ' + hora;
+    if (!esAutoguardado) showToast('Guardado: ' + folio);
+    cargarUltimosFolios();
+
+    // ── NUEVO: registrar en Sheets aunque no haya foto ──
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          folio:       data.folio,
+          fecha:       data.fecha,
+          distrito:    data.distrito,
+          cluster:     data.cluster,
+          responsable: data.responsable,
+          causa:       data.causa,
+          clientes:    data.clientes,   // ← NUEVO
+          observacion: data.desc_act,
+          soloRegistro: true,
+          fileName:    null,
+          fileBase64:  null
+        })
+      });
+    } catch(e) { /* silencioso, no bloquea el guardado */ }
+
+  } catch(err) {
+    console.error(err);
+    statusDot.style.background = 'var(--red)';
+    statusText.textContent = esAutoguardado ? 'Error al autoguardar' : 'Error';
+    if (!esAutoguardado) showToast('Error al guardar', true);
+  }
+}
+  
+
+document.getElementById('modificar-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  await guardarRegistro(false);
+});
+
+// ─── Buscar ───────────────────────────────────────────────
+async function buscar() {
+  const id = document.getElementById("buscarId").value.trim();
+  if (!id) { showToast('Ingresa un SD válido', true); return; }
+
+  // FIX: Limpiar galería siempre, antes de saber si hay fotos o no
+  document.getElementById('galeria-fotos').innerHTML = '';
+
+  try {
+    const doc = await db.collection("usuarios").doc(id).get();
+    if (!doc.exists) { showToast('SD no encontrado', true); return; }
+
+    const d = doc.data();
+
+    const fields = [
+      'folio_','responsable','eta','proveedor','punto','coordenadas','distrito',
+      'causa','accion','etr','calibre','coordenadas3','qr','materiales',
+      'ciudad','estado','clientes','falla_r','hr_desp','hr_prov',
+      'hr_llegada','hr_med','ubicacion_1er_2do','qr_2','causa_dano','ubicacion_dano',
+      'coordenadas_dano','desc_act','potencia_inicial','potencia_final','trabajos_realizados',
+      'hr_final','atiende_nom_tec','proveedor4','supervisor','justificacion_sla',
+      'm_pausa','t_pausa','material_utilizado'
+    ];
+    fields.forEach(fid => {
+      const el = document.getElementById(fid);
+      if (el && el.tagName !== 'SELECT') el.value = d[fid === 'folio_' ? 'folio' : fid] || '';
+    });
+
+    // FIX: Llenar también el input[type=date] visible con la fecha guardada
+    if (d.fecha) {
+      document.getElementById('fecha').value = d.fecha;
+      document.getElementById('fecha-texto').value = d.fecha;
+    }
+
+    // FIX: Cargar técnico con Select2
+    $('#nombre').val(d.nombre || '').trigger('change');
+    document.getElementById('responsable').value = d.responsable || '';
+
+    // FIX: Cargar OLT → filtrar clusters → luego cargar cluster con timeout
+    if (d.olt) {
+      $('#olt').val(d.olt).trigger('change');
+      filtrarClustersPorOLT();
+      setTimeout(() => {
+        if (d.cluster) $('#cluster').val(d.cluster).trigger('change');
+        updatePreview();
+      }, 150);
+    } else {
+      updatePreview();
+    }
+
+    // Cargar fotos si existen
+    if (d.fotos && d.fotos.length > 0) {
+      d.fotos.forEach(url => mostrarFotoEnGaleria(url));
+    }
+
+    showToast('Cargado: ' + id);
+  } catch(err) {
+    console.error(err);
+    showToast('Error al buscar', true);
+  }
+}
+
+// ─── Limpiar ──────────────────────────────────────────────
+function limpiarSeleccion() {
+  document.getElementById('buscarId').value = '';
+  document.getElementById('modificar-form').reset();
+  document.getElementById('galeria-fotos').innerHTML = '';
+  document.getElementById('fecha-texto').value = '';
+
+  $('#nombre').val(null).trigger('change');
+  $('#olt').val(null).trigger('change');
+  document.getElementById('cluster').innerHTML = '<option value="">Selecciona OLT primero</option>';
+  $('#cluster').val(null).trigger('change');
+
+  document.getElementById('proveedor').value = 'GTB';
+  document.getElementById('distrito').value  = 'JUAREZ';
+  document.getElementById('estado').value    = 'CHIHUAHUA';
+
+  updatePreview();
+}
+
+// ─── Últimos 10 folios ─────────────────────────────────────
+async function cargarUltimosFolios() {
+  const lista = document.getElementById("lista-folios");
+  lista.innerHTML = '<div style="color:var(--text3);font-size:11px;">Cargando...</div>';
+  try {
+    const snap = await db.collection("usuarios").orderBy("timestamp","desc").limit(10).get();
+    lista.innerHTML = '';
+    if (snap.empty) {
+      lista.innerHTML = '<div style="color:var(--text3);font-size:11px;">Sin registros</div>';
+      return;
+    }
+    snap.forEach(doc => {
+      const folio = doc.data().folio || doc.id;
+      const row = document.createElement('div');
+      row.className = 'folio-row';
+      row.innerHTML = `<span class="folio-id">${folio}</span><span class="folio-del" title="Eliminar">✕</span>`;
+      row.querySelector('.folio-id').onclick = () => {
+        document.getElementById('buscarId').value = folio;
+        buscar();
+      };
+      row.querySelector('.folio-del').onclick = async (e) => {
+        e.stopPropagation();
+        if (!confirm(`¿Eliminar el folio "${folio}"?`)) return;
+        try {
+          await db.collection("usuarios").doc(folio).delete();
+          showToast('Eliminado: ' + folio);
+          cargarUltimosFolios();
+        } catch(err) { showToast('Error al eliminar', true); }
+      };
+      lista.appendChild(row);
+    });
+  } catch(err) {
+    lista.innerHTML = '<div style="color:var(--text3);font-size:11px;">Error al cargar</div>';
+  }
+}
+
+// ─── Eventos input → updatePreview ────────────────────────
+document.querySelectorAll('#modificar-form input, #modificar-form select').forEach(el => {
+  el.addEventListener('input', updatePreview);
+});
+
+document.getElementById('clientes').addEventListener('change', function() {
+  if (this.value.trim() !== '') guardarRegistro(true);
+});
+
+// ─── Drag & Drop fotos ─────────────────────────────────────
+// ─── Drag & Drop fotos (Hacia Google Drive) ────────────────
+const dropZone  = document.getElementById('drop-zone');
+const inputFotos = document.getElementById('input-fotos');
+
+// IMPORTANTE: Pon aquí la URL que te dio Google Apps Script en el Paso 2
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoavHo7-EdKZ53AaY5rlWOhOhSCdRserAGBwlqWyCWYoRQjzlCn1MxJohDf9nTZ2mX/exec";
+
+dropZone.addEventListener('click', () => inputFotos.click());
+
+['dragenter','dragover','dragleave','drop'].forEach(ev => {
+  dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); }, false);
+});
+['dragenter','dragover'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.add('dragover'), false));
+['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, () => dropZone.classList.remove('dragover'), false));
+
+dropZone.addEventListener('drop', e => procesarYSubirArchivos(e.dataTransfer.files), false);
+
+inputFotos.addEventListener('change', function(e) {
+  procesarYSubirArchivos(e.target.files);
+  this.value = '';
+});
+
+// Función para convertir la imagen a texto (Base64)
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
+async function procesarYSubirArchivos(archivos) {
+  const folio = g('folio_');
+  if (!folio) { showToast('Ingresa un Folio antes de subir fotos', true); return; }
+
+  const lista = Array.from(archivos || []);
+  if (!lista.length) return;
+
+  const statusText = document.getElementById('status-text');
+  const statusDot  = document.getElementById('status-dot');
+  statusDot.style.background = 'var(--amber)';
+  statusText.textContent = `Subiendo ${lista.length} foto(s)...`;
+
+  try {
+    const urlsNuevas = [];
+
+    for (let i = 0; i < lista.length; i++) {
+      const archivo = lista[i];
+      if (!archivo.type.startsWith('image/')) continue;
+
+      const base64Data = await fileToBase64(archivo);
+      
+      const datosParaEnviar = {
+        folio: folio,
+        fecha: g('fecha'),
+        distrito: g('distrito'),
+        cluster: g('cluster'),
+        responsable: g('responsable'),
+        causa: g('causa'),
+        clientes: g('clientes'), // <--- AQUÍ FALTABA ESTO
+        observacion: g('desc_act'),
+        fileName: `${Date.now()}_${i}_${archivo.name}`,
+        fileBase64: base64Data
+      };
+
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(datosParaEnviar)
+      });
+
+      const resultado = await response.json();
+
+      if (resultado.exito && resultado.url) {
+        urlsNuevas.push(resultado.url);
+        mostrarFotoEnGaleria(resultado.url);
+      } else {
+        console.error("Fallo al subir archivo:", resultado.error || "URL vacía");
+      }
+    }
+
+// 3. Guardar los links de Drive Y TODOS LOS DATOS en tu Firebase Firestore
+      if (urlsNuevas.length > 0) {
+      
+      // Recopilamos toda la información del formulario (igual que en guardarRegistro)
+      const dataCompleta = {
+        responsable: g('responsable'),
+        folio: folio, eta: g('eta'), proveedor: g('proveedor'),
+        punto: g('punto'), coordenadas: g('coordenadas'),
+        distrito: g('distrito'), nombre: g('nombre'),
+        causa: g('causa'), accion: g('accion'), etr: g('etr'), calibre: g('calibre'),
+        coordenadas3: g('coordenadas3'), qr: g('qr'), materiales: g('materiales'),
+        ciudad: g('ciudad'), estado: g('estado'), cluster: g('cluster'), olt: g('olt'),
+        clientes: g('clientes'), falla_r: g('falla_r'), fecha: g('fecha-texto'),
+        hr_desp: g('hr_desp'), hr_prov: g('hr_prov'), hr_llegada: g('hr_llegada'),
+        hr_med: g('hr_med'), ubicacion_1er_2do: g('ubicacion_1er_2do'), qr_2: g('qr_2'),
+        causa_dano: g('causa_dano'), ubicacion_dano: g('ubicacion_dano'),
+        coordenadas_dano: g('coordenadas_dano'), desc_act: g('desc_act'),
+        potencia_inicial: g('potencia_inicial'), potencia_final: g('potencia_final'),
+        trabajos_realizados: g('trabajos_realizados'), hr_final: g('hr_final'),
+        atiende_nom_tec: g('atiende_nom_tec'), proveedor4: g('proveedor4'),
+        supervisor: g('supervisor'), justificacion_sla: g('justificacion_sla'),
+        m_pausa: g('m_pausa'), t_pausa: g('t_pausa'), material_utilizado: g('material_utilizado'),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        fotos: firebase.firestore.FieldValue.arrayUnion(...urlsNuevas) // Empaquetamos las fotos aquí mismo
+      };
+
+      // Guardamos TODO de un solo golpe en Firebase
+      await db.collection("usuarios").doc(folio).set(dataCompleta, { merge: true });
+      
+      statusDot.style.background = 'var(--green)';
+      statusText.textContent = 'Evidencia guardada';
+      showToast('Fotos y datos guardados con éxito');
+      cargarUltimosFolios(); // Actualizamos la lista lateral
+    } else {
+      statusDot.style.background = 'var(--red)';
+      statusText.textContent = 'Error al subir';
+      showToast('No se guardó ninguna foto', true);
+    }
+
+  } catch(err) {
+    console.error(err);
+    statusDot.style.background = 'var(--red)';
+    statusText.textContent = 'Error al subir';
+    showToast('Error en la comunicación', true);
+  }
+}
+function mostrarFotoEnGaleria(url) {
+  const galeria = document.getElementById('galeria-fotos');
+  const img = document.createElement('img');
+  img.src = url;
+  // Nota: Google Drive a veces no permite incrustar la imagen directamente como miniatura
+  // Si no se ve la vista previa, igual funcionará el enlace al hacer clic.
+  img.style.cssText = 'width:70px;height:70px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;';
+  img.onclick = () => window.open(url, '_blank');
+  galeria.appendChild(img);
+}
+
+  // Tienes que poner tu misma URL de Apps Script aquí
+
+async function descargarZipFolio(folio) {
+  showToast('Empaquetando ZIP de ' + folio + ' (puede tardar unos segundos)...');
+  try {
+    const url = APPS_SCRIPT_URL + "?action=downloadZip&folio=" + folio;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.exito) {
+      // Convierte el texto que nos mandó Google de vuelta a un archivo ZIP y lo descarga
+      const link = document.createElement('a');
+      link.href = "data:application/zip;base64," + data.zipBase64;
+      link.download = data.nombre;
+      link.click();
+      showToast('ZIP descargado con éxito');
+    } else {
+      showToast(data.error || 'No se pudo generar el ZIP', true);
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Error al conectar con Google Drive', true);
+  }
+}
+// ─── Init ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  cargarUltimosFolios();
+  updatePreview();
+});
+</script>
+</body>
+</html>
