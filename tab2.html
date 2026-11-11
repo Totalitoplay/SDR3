@@ -461,10 +461,10 @@
   .drop-zone:hover { background: var(--bg3); border-color: var(--text3); }
   .drop-zone.dragover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-  /* ── Pantallas angostas / celular: todo en una columna con scroll normal ── */
+  /* ── Pantallas angostas / celular: una columna y panel superior compacto ── */
   @media (max-width: 1000px) {
     html { height: auto; }
-    body { height: auto; min-height: 100%; overflow: auto; }
+    body { height: auto; min-height: 100%; overflow: auto; padding-bottom: 60px; }
 
     .main { display: block; overflow: visible; }
 
@@ -482,7 +482,66 @@
 
     .tab-panel { overflow: visible; }
     .preview-scripts { overflow: visible; }
-    .btn-save { margin-top: 0; }
+
+    /* Panel superior compacto: subir fotos + buscar + últimos registros en poco espacio */
+    .sidebar { padding: 10px 12px; gap: 10px; }
+    .sidebar > .field > label { display: none; }
+    .drop-zone { padding: 10px 12px; margin-top: 0; }
+    #galeria-fotos { margin-top: 0 !important; }
+    #galeria-fotos:empty { display: none; }
+
+    .sidebar > div:has(.search-wrap) {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .sidebar > div:has(.search-wrap) .sidebar-section-label { display: none; }
+    .sidebar > div:has(.search-wrap) .search-wrap { margin: 0 !important; }
+    .sidebar > div:has(.search-wrap) .btn { width: auto; margin: 0 !important; padding: 8px 14px; }
+
+    .sidebar > div:has(#lista-folios) .sidebar-section-label { margin-bottom: 4px; }
+    .folios-list {
+      flex-direction: row;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .folio-row {
+      flex-shrink: 0;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--border2);
+      border-radius: 999px;
+      background: var(--bg2);
+      white-space: nowrap;
+    }
+
+    /* Guardar: barra fija abajo, siempre a la mano */
+    .btn-save {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      margin: 0;
+      padding: 15px;
+      border: none;
+      border-top: 1px solid var(--green);
+      border-radius: 0;
+      background: #e3f4ec;
+      z-index: 50;
+    }
+    .btn-save:hover { background: #cfeadb; }
+
+    /* Pestañas ETA / Sitio / Fallo / Final siempre visibles al hacer scroll */
+    .tabs { position: sticky; top: 0; z-index: 20; }
+  }
+
+  @media (max-width: 520px) {
+    .sidebar > div:has(.search-wrap) { grid-template-columns: 1fr 1fr; }
+    .sidebar > div:has(.search-wrap) .search-wrap { grid-column: 1 / -1; }
   }
 </style>
 </head>
