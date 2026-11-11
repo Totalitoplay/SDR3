@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TAB 2</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-beta.1/css/select2.min.css" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
@@ -34,12 +34,14 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { height: 100%; }
+
   body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-mono);
     font-size: 13px;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -54,11 +56,7 @@
     background: var(--bg2);
     flex-shrink: 0;
   }
-  .topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
   .logo {
     font-family: var(--font-head);
     font-weight: 700;
@@ -67,22 +65,19 @@
     letter-spacing: -0.02em;
   }
   .logo span { color: var(--accent); }
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-  }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
   .status-text { color: var(--text3); font-size: 11px; }
 
+  /* ── Estructura: se adapta al ancho disponible ── */
   .main {
     display: flex;
-    justify-content: center;
     flex: 1;
+    min-height: 0;
     overflow: hidden;
     background: var(--bg);
   }
 
-.sidebar {
+  .sidebar {
     background: var(--bg2);
     border-right: 1px solid var(--border);
     display: flex;
@@ -90,11 +85,9 @@
     padding: 16px;
     gap: 16px;
     overflow-y: auto;
-    
-    /* AÑADE ESTAS 3 LÍNEAS PARA BLOQUEAR SU TAMAÑO */
-    width: 280px; 
-    min-width: 280px;
-    max-width: 280px;
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
   }
 
   .sidebar-section-label {
@@ -134,16 +127,9 @@
     transition: all 0.15s;
     text-align: center;
   }
-  .btn-accent {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
+  .btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn-accent:hover { opacity: 0.85; }
-  .btn-ghost {
-    background: transparent;
-    color: var(--text2);
-  }
+  .btn-ghost { background: transparent; color: var(--text2); }
   .btn-ghost:hover { background: var(--bg3); color: var(--text); }
   .btn-save {
     background: var(--green-dim);
@@ -151,7 +137,7 @@
     color: var(--green);
     margin-top: auto;
   }
-  .btn-save:hover { background: rgba(62,207,142,0.22); }
+  .btn-save:hover { background: rgba(5,150,105,0.22); }
 
   .folios-list { display: flex; flex-direction: column; gap: 2px; }
   .folio-row {
@@ -164,24 +150,13 @@
     transition: background 0.12s;
   }
   .folio-row:hover { background: var(--bg3); }
-  .folio-id {
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 500;
-  }
-  .folio-del {
-    color: var(--text3);
-    font-size: 14px;
-    line-height: 1;
-    padding: 0 2px;
-    transition: color 0.12s;
-  }
+  .folio-id { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .folio-del { color: var(--text3); font-size: 14px; line-height: 1; padding: 0 2px; transition: color 0.12s; }
   .folio-del:hover { color: var(--red); }
 
   .form-area {
-    width: 550px;
-    min-width: 550px;
-    max-width: 550px;
+    flex: 1 1 0;
+    min-width: 340px;
     background: var(--bg2);
     border-right: 1px solid var(--border);
     border-left: 1px solid var(--border);
@@ -217,22 +192,13 @@
   .tab-btn:hover { color: var(--text2); background: var(--bg3); }
   .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); background: var(--bg); }
 
-  .tab-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+  .tab-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .dot-eta { background: var(--amber); }
   .dot-sitio { background: var(--accent); }
   .dot-fallo { background: var(--red); }
   .dot-final { background: var(--green); }
 
-  .tab-panel {
-    display: none;
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-  }
+  .tab-panel { display: none; padding: 20px; overflow-y: auto; flex: 1; }
   .tab-panel.active { display: block; }
 
   .section-title {
@@ -247,11 +213,8 @@
     border-bottom: 1px solid var(--border);
   }
 
-  .field-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  /* Llenado de datos: una sola columna */
+  .field-grid { display: flex; flex-direction: column; gap: 10px; }
 
   .field { margin-bottom: 8px; }
   .field:last-child { margin-bottom: 0; }
@@ -292,11 +255,7 @@
   .field input:focus,
   .field select:focus { border-color: var(--accent); }
   .field input::placeholder { color: var(--text3); }
-  .field input[readonly] {
-    color: var(--text3);
-    cursor: not-allowed;
-    background: var(--bg3);
-  }
+  .field input[readonly] { color: var(--text3); cursor: not-allowed; background: var(--bg3); }
   .field select option { background: var(--bg2); }
 
   .field-note {
@@ -307,11 +266,7 @@
     line-height: 1.5;
   }
 
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 12px 0;
-  }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 
   /* SELECT2 */
   .select2-container { width: 100% !important; }
@@ -356,9 +311,8 @@
 
   /* PREVIEW */
   .preview-area {
-    width: 650px;
-    min-width: 650px;
-    max-width: 650px;
+    flex: 1.1 1 0;
+    min-width: 320px;
     background: var(--bg2);
     display: flex;
     flex-direction: column;
@@ -393,10 +347,10 @@
     padding: 16px;
     overflow-y: auto;
     flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: calc(100vh - 60px);
   }
 
   .script-card {
@@ -482,6 +436,7 @@
     z-index: 10000;
     pointer-events: none;
     min-width: 300px;
+    max-width: calc(100vw - 24px);
     justify-content: center;
   }
   .toast.show { top: 30px; opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -505,6 +460,30 @@
   }
   .drop-zone:hover { background: var(--bg3); border-color: var(--text3); }
   .drop-zone.dragover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+  /* ── Pantallas angostas / celular: todo en una columna con scroll normal ── */
+  @media (max-width: 1000px) {
+    html { height: auto; }
+    body { height: auto; min-height: 100%; overflow: auto; }
+
+    .main { display: block; overflow: visible; }
+
+    .sidebar,
+    .form-area,
+    .preview-area {
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+      overflow: visible;
+      border-left: none;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-panel { overflow: visible; }
+    .preview-scripts { overflow: visible; }
+    .btn-save { margin-top: 0; }
+  }
 </style>
 </head>
 <body>
